@@ -4,13 +4,12 @@
  * 后续如果需要可以开放其他的数据获取 和写入
  *
  */
+import Cookies from 'js-cookie'
 import { getLocal, setLocal, removeLocal } from '~/utils/session' //
 import encryption from '~/utils/encryption' // 加密解密
 import { userStore } from '~/utils/store-accessor'
 import { $axios as api } from '~/utils/api'
-
 const KEY = 'CPTBTPTPBCPTDTPT'
-const TOKEN_PASS_TIME = 1000 * 60 * 60 * 12
 
 // 设置local信息
 export function setLocalInfo(key: string, value: any) {
@@ -53,26 +52,14 @@ export function setUserinfo(userObj: any) {
 
 // 设置token 信息
 export function setTokenInfo(token: string, time: number) {
-  const tokenInfo = {
-    token,
-    createTime: time || +new Date() - 1000 * 60,
-  } // 设置token 过期时间
+  const day = new Date(time)
 
-  setLocalInfo('_t', token && tokenInfo)
+  Cookies.set('_t', token, { expires: day })
   setTokenSessionStorage(token)
 }
 
-function _checkTokenTime(time: number) {
-  const newDate = +new Date()
-  if (newDate - time > TOKEN_PASS_TIME) {
-    return false
-  } else {
-    return true
-  }
-}
-
 export function getTokenInfo() {
-  let tokenInfo: any = getLocal('_t') // 用户账号 密码
+  const tokenInfo: any = Cookies.get('_t')
   try {
     if (!tokenInfo || tokenInfo === 'undefined') {
       return {
@@ -80,14 +67,7 @@ export function getTokenInfo() {
       }
     }
     // tokenInfo = encryption.decrypt(tokenInfo, KEY);
-    tokenInfo = JSON.parse(tokenInfo)
-    const flag = _checkTokenTime(tokenInfo.createTime)
-    const tokenObj: any = { token: tokenInfo.token }
-    if (flag) {
-      tokenObj.isPass = true
-    } else {
-      tokenObj.isPass = false
-    }
+    const tokenObj: any = { token: tokenInfo, isPass: true }
     return tokenObj
   } catch (e) {
     clearAll()
@@ -105,15 +85,15 @@ export function setTokenSessionStorage(value: any) {
 }
 
 export function getVuexToken() {
-  return userStore.token || getLocal('_t')
+  return userStore.token || Cookies.get('_t')
 }
 
-export function setVuexToken(token = getLocal('_t')) {
+export function setVuexToken(token = Cookies.get('_t')) {
   userStore.set_user_token(token)
 }
 
 export function clearAll() {
   setVuexToken()
   removeLocal('_u')
-  removeLocal('_t')
+  Cookies.remove('_t')
 }

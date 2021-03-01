@@ -1,5 +1,8 @@
 <template>
-  <h1 class="red">Hello {{ name }}!</h1>
+  <div>
+    <login-panda></login-panda>
+    <h1 class="red">Hello {{ name }}!</h1>
+  </div>
 </template>
 
 <script>
