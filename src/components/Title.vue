@@ -26,13 +26,13 @@
             <router-link
               :to="{ name: 'user', params: { type: 'create' } }"
               class="pop-btn"
-              >新增用户</router-link
+              >注册</router-link
             >
             <router-link
               v-if="token"
               :to="{ name: 'user', params: { type: 'edit' } }"
               class="pop-btn"
-              >编辑用户</router-link
+              >编辑</router-link
             >
             <div class="pop-btn" role="button" @click="loginToggle">
               {{ token ? '退出' : '登录' }}
@@ -56,7 +56,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { userStore } from '~/utils/store-accessor'
+import { userStore } from '~/store'
 import { exit } from '~/utils/loginPreservationUserInfo'
 
 @Component

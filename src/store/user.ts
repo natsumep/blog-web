@@ -1,11 +1,11 @@
 import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
 
 @Module({
-  name: 'mymodule',
+  name: 'user',
   stateFactory: true,
   namespaced: true,
 })
-export class UserModule extends VuexModule {
+export default class UserModule extends VuexModule {
   _userinfoObj = null // 用户信息
   _userLoadConfigJson = null // 用户详细信息
   _token = null
@@ -35,26 +35,26 @@ export class UserModule extends VuexModule {
 
   @Mutation
   set_login_dialog_visible() {
-    this._loginDialogVisible = !this.loginDialogVisible
+    this._loginDialogVisible = !this._loginDialogVisible
   }
 
   get userinfoObj(): any {
-    return this.userinfoObj
+    return this._userinfoObj
   }
 
   get userLoadConfigJson(): any {
-    return this.userLoadConfigJson
+    return this._userLoadConfigJson
   }
 
   get token(): any {
-    return this.token
+    return this._token
   }
 
   get routeScroll(): any {
-    return this.routeScroll
+    return this._routeScroll
   }
 
   get loginDialogVisible(): any {
-    return this.loginDialogVisible
+    return this._loginDialogVisible
   }
 }

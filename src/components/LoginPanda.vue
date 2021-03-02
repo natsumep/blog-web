@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div class="panda">
+    <div class="panda" :class="pandaClass">
       <div class="ear"></div>
       <div class="face">
         <div class="eye-shade"></div>
         <div class="eye-white">
-          <div class="eye-ball"></div>
+          <div class="eye-ball" :style="eyeBallCss"></div>
         </div>
         <div class="eye-shade rgt"></div>
         <div class="eye-white rgt">
-          <div class="eye-ball"></div>
+          <div class="eye-ball" :style="eyeBallCss"></div>
         </div>
         <div class="nose"></div>
         <div class="mouth"></div>
@@ -22,13 +22,13 @@
         <div class="finger"></div>
       </div>
     </div>
-    <form :class="formClass">
+    <form :class="formClass" @submit.prevent="handleLogin">
       <div class="hand"></div>
       <div class="hand rgt"></div>
-      <h1>Login</h1>
+      <h1 style="text-align: center">登 录</h1>
       <div class="form-group">
         <input v-model="username" required="required" class="form-control" />
-        <label class="form-label">Username </label>
+        <label class="form-label">账号 </label>
       </div>
       <div class="form-group">
         <input
@@ -37,12 +37,15 @@
           type="password"
           required="required"
           class="form-control"
-          @foucs="passwordIn"
+          @focus="passwordIn"
           @blur="passwordOut"
         />
-        <label class="form-label">Password</label>
+        <label class="form-label">密码</label>
         <p class="alert">{{ errorinfo }}</p>
-        <button class="btn" @click="handleLogin">Login</button>
+        <button class="btn">登录</button>
+        <p style="margin-top: 10px">
+          没有账号？去<nuxt-link to="/user/add">注册</nuxt-link>
+        </p>
       </div>
     </form>
   </div>
@@ -67,32 +70,36 @@ export default class Index extends Vue {
     'wrong-entry': false,
   }
 
+  pandaClass = {
+    up: false,
+  }
+
   documentMouseMove: any = null
   eyeBallCss = {
-    width: 0,
-    height: 0,
+    width: 0 + 'px',
+    height: 0 + 'px',
   }
 
   username = ''
   password = ''
   errorinfo = '服务器异常'
   onMouserMove(event: any) {
-    const dw = document.documentElement.offsetWidth
-    const dh = document.documentElement.offsetHeight
+    const dw = document.documentElement.offsetWidth / 15
+    const dh = document.documentElement.offsetHeight / 15
     const x = event.pageX / dw
     const y = event.pageY / dh
     this.eyeBallCss = {
-      width: x,
-      height: y,
+      width: x + 'px',
+      height: y + 'px',
     }
   }
 
   passwordIn() {
-    this.formClass.up = true
+    this.pandaClass.up = true
   }
 
   passwordOut() {
-    this.formClass.up = false
+    this.pandaClass.up = false
   }
 
   handleLogin() {
@@ -124,54 +131,53 @@ export default class Index extends Vue {
 }
 </script>
 
-<style lang="sass" scoped>
-@import "compass";
-*, *:after, *:before{
-  @include box-sizing(border-box);
-}
-
-$primary : #FF4081;
-
-body{
-  background: $primary/ 1.25;
-  text-align: center;
-  font-family:  sans-serif;
-}
-.panda{
+<style scoped>
+.panda {
   position: relative;
   width: 200px;
   margin: 50px auto;
-
 }
 
-.face{
+.face {
   width: 200px;
   height: 200px;
   background: #fff;
-  @include border-radius(100%);
+  border-radius: 100%;
   margin: 50px auto;
-  @include box-shadow(0 10px 15px rgba(0,0,0,.15));
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
   z-index: 50;
   position: relative;
-
+  transition: top 0.5s;
+  top: 0;
 }
-.ear{
+.ear {
+  transition: top 0.5s;
+  top: 0;
+}
+.ear,
+.ear::after {
   position: absolute;
   width: 80px;
   height: 80px;
   background: #000;
   z-index: 5;
-  border:10px solid #fff;
+  border: 10px solid #fff;
   left: -15px;
   top: -15px;
-  @include border-radius(100%);
-  &:after{
-    content: '';
-    @extend .ear;
-    left: 125px;
-  }
+  border-radius: 100%;
 }
-.eye-shade{
+.ear::after {
+  content: '';
+  left: 125px;
+}
+.panda.up .face {
+  top: 70px;
+}
+.panda.up .ear {
+  top: 70px;
+  transition: top 0.5s;
+}
+.eye-shade {
   background: #000;
   width: 50px;
   height: 80px;
@@ -179,59 +185,52 @@ body{
   position: absolute;
   top: 35px;
   left: 25px;
-  @include rotate(220deg);
-  @include border-radius(25px / 20px 30px 35px 40px);
-
-   &.rgt{
-        @include rotate(140deg);
-        left: 105px;
-    }
+  transform: rotate(220deg);
+  border-radius: 25px/20px 30px 35px 40px;
+}
+.eye-shade.rgt {
+  transform: rotate(140deg);
+  left: 105px;
 }
 
-  .eye-white{
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    @include border-radius(100%);
-    background: #fff;
-    z-index: 500;
-    left: 40px;
-    top: 80px;
-    overflow: hidden;
+.eye-white {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  background: #fff;
+  z-index: 500;
+  left: 40px;
+  top: 80px;
+  overflow: hidden;
+}
+.eye-white.rgt {
+  right: 40px;
+  left: auto;
+}
 
-     &.rgt{
-        right: 40px;
-        left: auto;
-    }
-  }
-  .eye-ball{
-        position: absolute;
-        width: 0px;
-        height: 0px;
-        left: 20px;
-        top: 20px;
-        max-width: 10px;
-        max-height: 10px;
-      @include transition(.1s);
+.eye-ball {
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 20px;
+  top: 20px;
+  max-width: 10px;
+  max-height: 10px;
+  transition: 0.1s;
+}
+.eye-ball::after {
+  content: '';
+  background: #000;
+  position: absolute;
+  border-radius: 100%;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+}
 
-
-          &:after{
-              content: '';
-              background: #000;
-              position: absolute;
-              @include border-radius(100%);
-              right: 0;
-              bottom: 0px;
-              width: 20px;
-              height: 20px;
-          }
-
-    }
-
-
-
-
-.nose{
+.nose {
   position: absolute;
   height: 20px;
   width: 35px;
@@ -239,207 +238,211 @@ body{
   left: 0;
   right: 0;
   margin: auto;
-  @include border-radius(50px  20px/ 30px 15px);
-   @include rotate(15deg);
+  border-radius: 50px 20px/30px 15px;
+  transform: rotate(15deg);
   background: #000;
 }
-.body{
+
+.body {
   background: #fff;
   position: absolute;
   top: 200px;
   left: -20px;
-  @include border-radius(100px 100px 100px 100px / 126px 126px 96px 96px);
+  border-radius: 100px 100px 100px 100px/126px 126px 96px 96px;
   width: 250px;
   height: 282px;
-  @include box-shadow(0 5px 10px rgba(0,0,0,.3));
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 }
-.hand{
+
+.hand,
+.hand::after,
+.hand::before {
   width: 40px;
   height: 30px;
-  @include border-radius(50px);
-  @include box-shadow(0 2px 3px rgba(0,0,0,.15));
+  border-radius: 50px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
   background: #000;
   margin: 5px;
   position: absolute;
   top: 70px;
   left: -25px;
-  &:after, &:before{
-    content: '';
-    @extend .hand;
-    left: -5px;
-    top: 11px;
-  }
-  &:before{
-    top: 26px;
-  }
-
-  &.rgt{
-    left: auto;
-    right: -25px;
-    &:after, &:before{
-      left: auto;
-      right: -5px;
-    }
-  }
 }
-.foot{
+.hand::after,
+.hand::before {
+  content: '';
+  left: -5px;
+  top: 11px;
+}
+.hand::before {
+  top: 26px;
+}
+.hand.rgt,
+.rgt.hand::after,
+.rgt.hand::before {
+  left: auto;
+  right: -25px;
+}
+.hand.rgt::after,
+.hand.rgt::before {
+  left: auto;
+  right: -5px;
+}
+
+.foot {
   top: 360px;
   left: -80px;
   position: absolute;
   background: #000;
   z-index: 1400;
-  @include box-shadow(0 5px 5px rgba(0,0,0,.2));
-@include  border-radius(40px 40px 39px 40px / 26px 26px 63px 63px);
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 40px 40px 39px 40px/26px 26px 63px 63px;
   width: 82px;
   height: 120px;
-  &:after{
-    content: '';
-    width: 55px;
-    height: 65px;
-    background: #222;
-    @include  border-radius(100%);
-    position: absolute;
-    bottom: 10px;
-    left: 0;
-    right: 0;
-    margin: auto;
-  }
-
-
-  .finger{
-    position: absolute;
-    width: 25px;
-    height: 35px;
-    background: #222;
-    @include  border-radius(100%);
-    top: 10px;
-    right: 5px;
-    &:after, &:before{
-      content: '';
-      @extend .finger;
-      right: 30px;
-      width: 20px;
-      top: 0;
-    }
-    &:before{
-      right: 55px;
-      top: 5px;
-    }
-  }
-
-
-  &.rgt{
-    left: auto;
-    right: -80px;
-    .finger{
-      left: 5px;
-      right: auto;
-      &:after{
-        left: 30px;
-        right: auto;
-
-      }
-       &:before{
-          left: 55px;
-          right: auto;
-        }
-    }
-  }
-
-
+}
+.foot::after {
+  content: '';
+  width: 55px;
+  height: 65px;
+  background: #222;
+  border-radius: 100%;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.foot .finger,
+.foot .finger::after,
+.foot .finger::before {
+  position: absolute;
+  width: 25px;
+  height: 35px;
+  background: #222;
+  border-radius: 100%;
+  top: 10px;
+  right: 5px;
+}
+.foot .finger::after,
+.foot .finger::before {
+  content: '';
+  right: 30px;
+  width: 20px;
+  top: 0;
+}
+.foot .finger::before {
+  right: 55px;
+  top: 5px;
+}
+.foot.rgt {
+  left: auto;
+  right: -80px;
+}
+.foot.rgt .finger,
+.foot.rgt .finger::after,
+.foot.rgt .finger::before {
+  left: 5px;
+  right: auto;
+}
+.foot.rgt .finger::after {
+  left: 30px;
+  right: auto;
+}
+.foot.rgt .finger::before {
+  left: 55px;
+  right: auto;
 }
 
-
-form{
-  display: none;
+form {
   max-width: 400px;
   padding: 20px 40px;
   background: #fff;
-  height: 300px;
+  height: 320px;
   margin: auto;
   display: block;
-  @include box-shadow(0 10px 15px rgba(0,0,0,.15));
-  @include transition(.3s);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+  transition: 0.3s;
   position: relative;
-  @include translateY(-100px);
+  transform: translateY(-100px);
   z-index: 500;
-  border:1px solid #eee;
-
-  &.up{
-      @include translateY(-180px);
-  }
+  border: 1px solid #eee;
+}
+form.up {
+  transform: translateY(-180px);
 }
 
-h1{
-  color: $primary;
-  font-family: 'Dancing Script', cursive;
+h1 {
+  color: #03a9f4;
+  margin: 15px 0;
+  font-family: -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell,
+    Noto Sans, sans-serif, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', Arial;
 }
-.btn{
+
+.btn {
   background: #fff;
   padding: 5px;
   width: 150px;
   height: 35px;
-  border:1px solid $primary;
-  margin-top: 25px;
+  border: 1px solid #03a9f4;
+  margin-top: 35px;
   cursor: pointer;
-  @include transition(.3s);
-  @include box-shadow(0 50px $primary inset);
+  transition: 0.3s;
+  box-shadow: 0 50px #03a9f4 inset;
   color: #fff;
-
-    &:hover{
-        @include box-shadow(0 0 $primary inset);
-        color: $primary;
-    }
-    &:focus{
-      outline: none;
-    }
 }
-.form-group{
+.btn:hover {
+  box-shadow: 0 0 #03a9f4 inset;
+  color: #03a9f4;
+}
+.btn:focus {
+  outline: none;
+}
 
+.form-group {
   position: relative;
   font-size: 15px;
   color: #666;
-  &+&{
-    margin-top: 30px;
-  }
-
-  .form-label{
-    position: absolute;
-    z-index: 1;
-    left: 0;
-    top: 5px;
-    @include transition(.3s);
-
-  }
-
-  .form-control{
-    width: 100%;
-    position: relative;
-    z-index: 3;
-    height: 35px;
-    background: none;
-    border:none;
-    padding: 5px 0;
-    @include transition(.3s);
-    border-bottom: 1px solid #777;
-    color: #555;
-    &:invalid{outline: none;}
-
-    &:focus , &:valid{
-      outline: none;
-
-      @include box-shadow(0 1px $primary);
-      border-color:$primary;
-      + .form-label{
-        font-size: 12px;
-        color: $primary;
-        @include translateY(-15px);
-      }
-    }
-  }
-
+  text-align: center;
 }
-.alert{
+.form-group + .form-group {
+  margin-top: 30px;
+}
+.form-group .form-label {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 5px;
+  transition: 0.3s;
+}
+.form-group .form-control {
+  width: 100%;
+  position: relative;
+  z-index: 3;
+  height: 35px;
+  background: none;
+  border: none;
+  padding: 5px 28px;
+  transition: 0.3s;
+  border-bottom: 1px solid #777;
+  color: #555;
+}
+.form-group .form-control:invalid {
+  outline: none;
+}
+.form-group .form-control:focus,
+.form-group .form-control:valid {
+  outline: none;
+  box-shadow: 0 1px #03a9f4;
+  border-color: #03a9f4;
+}
+.form-group .form-control:focus + .form-label,
+.form-group .form-control:valid + .form-label {
+  font-size: 12px;
+  color: #03a9f4;
+  transform: translateY(-15px);
+}
+
+.alert {
   position: absolute;
   color: #f00;
   font-size: 16px;
@@ -448,45 +451,74 @@ h1{
   z-index: 200;
   padding: 30px 25px;
   background: #fff;
-  @include box-shadow(0 3px 5px rgba(0,0,0,.2));
-   @include  border-radius(50%);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
   opacity: 0;
-  @include scale(0);
-  @include transition(.4s .6s linear);
-  &:after, &:before{
-    content: '';
-    position: absolute;
-    width: 25px;
-    height: 25px;
-    background: #fff;
-    left: -19px;
-    bottom: -8px;
-    @include box-shadow(0 2px 5px rgba(0,0,0,.2));
-    @include  border-radius(50%);
-  }
-  &:before{
-     width: 15px;
-    height: 15px;
-    left: -35px;
-    bottom: -25px;
-  }
+  transform: scale(0, 0);
+  transition: linear 0.4s 0.6s;
+}
+.alert::after,
+.alert::before {
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background: #fff;
+  left: -19px;
+  bottom: -8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+}
+.alert::before {
+  width: 15px;
+  height: 15px;
+  left: -35px;
+  bottom: -25px;
 }
 
 .wrong-entry {
- @include animation( wrong-log 0.3s);
-
-  .alert{
-    opacity: 1;
-    @include scale(1);
+  animation: wrong-log 0.3s;
+}
+.wrong-entry .alert {
+  opacity: 1;
+  transform: scale(1, 1);
+}
+@-webkit-keyframes eye-blink {
+  to {
+    height: 30px;
   }
 }
-
-@include keyframes (eye-blink) {
-  to { height: 30px;}
+@keyframes eye-blink {
+  to {
+    height: 30px;
+  }
 }
-@include keyframes (wrong-log) {
-  0%, 100% { left: 0px;}
-  20% , 60%{left: 20px;}
-  40% , 80%{left: -20px;}
+@-webkit-keyframes wrong-log {
+  0%,
+  100% {
+    left: 0;
+  }
+  20%,
+  60% {
+    left: 20px;
+  }
+  40%,
+  80% {
+    left: -20px;
+  }
+}
+@keyframes wrong-log {
+  0%,
+  100% {
+    left: 0;
+  }
+  20%,
+  60% {
+    left: 20px;
+  }
+  40%,
+  80% {
+    left: -20px;
+  }
 }
 </style>

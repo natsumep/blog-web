@@ -1,5 +1,6 @@
+import path from 'path'
+import fs from 'fs'
 import { SERVER_PATH, SERVER_USER_PATH } from './src/config'
-
 export default {
   srcDir: 'src/',
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -10,7 +11,7 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/icon.png' }],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -93,5 +94,12 @@ export default {
   },
   cli: {
     bannerColor: 'red',
+  },
+
+  server: {
+    // https: {
+    //   key: fs.readFileSync(path.resolve(__dirname, 'cert', 'cert.key')),
+    //   cert: fs.readFileSync(path.resolve(__dirname, 'cert', 'cert.crt')),
+    // },
   },
 }
