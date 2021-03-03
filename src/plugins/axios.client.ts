@@ -1,24 +1,24 @@
 import { Plugin } from '@nuxt/types'
-const pulgin: Plugin = function ({ $axios, $message, $alert }) {
+// , $message, $alert
+const pulgin: Plugin = function (content) {
+  const { $axios } = content
   $axios.onResponse((responseObj) => {
     // eslint-disable-next-line no-console
     const resData = responseObj.data
     const code = resData.status * 1 // 强转数字
-    const msg = resData.msg || ''
+    // const msg = resData.msg || ''
     if (code === 200) {
       return resData.body
     } else {
-      $message.error(code === 500 ? '服务端异常' : msg)
+      // $message.error(code === 500 ? '服务端异常' : msg)
+      return Promise.reject(responseObj)
     }
   })
 
-  $axios.onError((responseError) => {
-    const resData = responseError?.response?.data || {}
-    const code = resData.code * 1 // 强转数字
-    const msg = resData.msg || ''
+  $axios.onError((responseError: any) => {
     if (responseError.message === 'Network Error') {
-      $message.error('网络异常')
-      return
+      // $message.error('网络异常')
+      return Promise.reject(new Error('网络异常'))
     }
     if (
       responseError.code === 'ECONNABORTED' &&
@@ -40,9 +40,12 @@ const pulgin: Plugin = function ({ $axios, $message, $alert }) {
           fn: promise
         }, a, b);
       }) */
-      $alert('当前网络存在异常，请重试', '提示')
-      return
+      // $alert('当前网络存在异常，请重试', '提示')
+      return Promise.reject(new Error('网络超时'))
     }
+    const resData = responseError?.data || {}
+    // const code = resData.code * 1 // 强转数字
+    // const msg = resData.msg || ''
     switch (responseError.request.status * 1) {
       case 401:
         // userLoginAndGetConfig().then(() => {
@@ -56,11 +59,12 @@ const pulgin: Plugin = function ({ $axios, $message, $alert }) {
         // }, () => {
         //   b(responseError);
         // })
-        $alert('登录状态已过期，请重新登录', '提示')
+        // $alert('登录状态已过期，请重新登录', '提示')
         break
       default:
-        $message.error(code === 500 ? '服务端异常' : msg)
+      // $message.error(code === 500 ? '服务端异常' : msg)`
     }
+    return Promise.reject(resData)
   })
 }
 

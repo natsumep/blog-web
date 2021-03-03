@@ -109,7 +109,9 @@ export default class Index extends Vue {
       (token: any, expiresIn: any) => {
         setTokenInfo(token, expiresIn)
       },
-      () => {
+      (e: any) => {
+        // console.log(e);
+        this.errorinfo = (e && e.msg) || '服务器异常'
         this.formClass['wrong-entry'] = true
         setTimeout(() => {
           this.formClass['wrong-entry'] = false

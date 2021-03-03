@@ -22,14 +22,12 @@ export async function loginAjax(
       username: userDatas.username,
       password: userDatas.password,
     })
-    data = data.data.body
     success && success(data.token, data.expiresIn)
     getUser()
     userStore.set_login_dialog_visible()
   } catch (e) {
-    const { XMLHttpRequest, textStatus, errorThrown } = e
     clearAll()
-    error && error(XMLHttpRequest, textStatus, errorThrown)
+    error && error(e)
   }
 
   // , {

@@ -89,7 +89,7 @@
     ></ul>
 
     <!-- 评论区 -->
-    <div v-if="hasComments" class="comments">
+    <div class="comments">
       <comments :api="'comments/list'" />
     </div>
   </div>
@@ -118,7 +118,6 @@ export default {
   },
   data() {
     return {
-      hasComments: false,
     }
   },
   computed: {
@@ -140,10 +139,6 @@ export default {
   },
   created() {},
   mounted() {
-    const hasCommentsPaths = ['/article/detail'] // 有评论区的路由集合
-    hasCommentsPaths.forEach((item) => {
-      this.$route.path.includes(item) && (this.hasComments = true)
-    })
     // this.loadData()
     window.addEventListener('scroll', this.handleScroll, true)
   },
