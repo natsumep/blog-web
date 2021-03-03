@@ -52,6 +52,19 @@
         </el-popover>
       </div>
     </div>
+    <el-dialog
+      title=""
+      width="600px"
+      top="10vh"
+      custom-class="login-dialog"
+      destroy-on-close
+      :visible.sync="loginVisible"
+      append-to-body
+      :show-close="false"
+      @close="handleLoginHidden"
+    >
+      <login-panda></login-panda>
+    </el-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -62,6 +75,7 @@ import { exit } from '~/utils/loginPreservationUserInfo'
 @Component
 export default class Index extends Vue {
   visible = false
+  loginVisible = false
   info = {
     nickname: '',
     avatar: '',
@@ -75,10 +89,23 @@ export default class Index extends Vue {
     return userStore && userStore.token
   }
 
+  get dialog() {
+    return userStore && userStore.loginDialogVisible
+  }
+
+  @Watch('dialog')
+  changeVisible(isShow: boolean) {
+    this.loginVisible = isShow
+  }
+
   @Watch('userInfo')
   changeUserInfo(val: any) {
     this.info.nickname = val.nickname
     this.info.avatar = val.avatar
+  }
+
+  handleLoginHidden() {
+    userStore.set_login_dialog_visible()
   }
 
   loginToggle() {
@@ -142,5 +169,17 @@ export default class Index extends Vue {
   &:hover {
     background-color: #f5f5f5;
   }
+}
+</style>
+
+<style>
+.login-dialog {
+  box-shadow: none;
+  background-color: transparent;
+  margin-bottom: 0;
+}
+.login-dialog .el-dialog__body,
+.login-dialog .el-dialog__header {
+  padding: 0;
 }
 </style>

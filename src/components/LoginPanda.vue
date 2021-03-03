@@ -353,8 +353,8 @@ export default class Index extends Vue {
 }
 
 form {
-  max-width: 400px;
-  padding: 20px 40px;
+  max-width: 380px;
+  padding: 20px 60px;
   background: #fff;
   height: 320px;
   margin: auto;
