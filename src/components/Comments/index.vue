@@ -9,7 +9,7 @@
         <span class="solid">|</span>全部评论
       </p>
       <p v-if="!comments.length" class="no-data">暂无数据</p>
-      <div v-else>
+      <template v-else>
         <div v-for="(item, index) in comments" :key="index" class="li-wrapper">
           <comment-list
             :item="item"
@@ -19,34 +19,37 @@
               setItem(item)
             "
           >
-            <template v-for="(option, idx) in item.children">
-              <comment-list
-                v-if="idx < item.showMoreNum"
-                :key="idx"
-                :layout-block="true"
-                :item="option"
-                @showBox="
-                  item.showCommentBox = true
+            <template #commentLi>
+              <template v-for="(option, idx) in item.children">
+                <comment-list
+                  v-if="idx < item.showMoreNum"
+                  :key="idx"
+                  :layout-block="true"
+                  :item="option"
+                  @showBox="
+                    item.showCommentBox = true
+                    toggelBox(index, item)
+                    setItem(option)
+                  "
+                ></comment-list>
+              </template>
+              <p
+                v-show="item.children.length > 2"
+                class="more"
+                @click="
+                  item.showMoreNum =
+                    item.showMoreNum == 2 ? item.children.length : 2
                   toggelBox(index, item)
-                  setItem(option)
                 "
-              ></comment-list>
+              >
+                {{
+                  item.showMoreNum == item.children.length
+                    ? '收起'
+                    : `展开其他 ${item.children.length - 2} 条回复`
+                }}
+              </p>
             </template>
-            <p
-              v-show="item.children.length > 2"
-              class="more"
-              @click="
-                item.showMoreNum =
-                  item.showMoreNum == 2 ? item.children.length : 2
-                toggelBox(index, item)
-              "
-            >
-              {{
-                item.showMoreNum == item.children.length
-                  ? '收起'
-                  : `展开其他 ${item.children.length - 2} 条回复`
-              }}
-            </p>
+
             <template #commentBox>
               <comment-box
                 v-show="item.showCommentBox"
@@ -76,7 +79,7 @@
             </template>
           </comment-list>
         </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -103,10 +106,7 @@ export default {
   },
   data() {
     return {
-      avatar:
-        (localStorage.getItem('_u') &&
-          JSON.parse(localStorage.getItem('_u')).avatar) ||
-        require('~/assets/images/user-default.png'),
+      avatar: '',
       nickName: '',
       pid: '',
       email: '',
@@ -115,7 +115,7 @@ export default {
   },
   computed: {
     userInfo() {
-      return userStore.userinfoObj
+      return userStore.userinfoObj || {}
     },
   },
   watch: {
@@ -125,6 +125,8 @@ export default {
   },
   created() {},
   mounted() {
+    this.avatar =
+      this.userInfo.avatar || require('~/assets/images/user-default.png')
     this.getList()
   },
   methods: {

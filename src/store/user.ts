@@ -34,12 +34,12 @@ export default class UserModule extends VuexModule {
   }
 
   @Mutation
-  set_login_dialog_visible() {
-    this._loginDialogVisible = !this._loginDialogVisible
+  set_login_dialog_visible(isShow: boolean) {
+    this._loginDialogVisible = isShow
   }
 
   get userinfoObj(): any {
-    return this._userinfoObj
+    return Object.assign({}, this._userinfoObj)
   }
 
   get userLoadConfigJson(): any {
@@ -51,7 +51,7 @@ export default class UserModule extends VuexModule {
   }
 
   get routeScroll(): any {
-    return this._routeScroll
+    return Object.assign({}, this._routeScroll)
   }
 
   get loginDialogVisible(): any {

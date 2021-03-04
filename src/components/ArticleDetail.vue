@@ -40,7 +40,7 @@
       <div ref="airicleContent" style="padding: 20px">
         <article>
           <div class="flex flex-center">
-            <h1 class="flex-auto no-directory" style="color: #ffd04b">
+            <h1 class="flex-auto no-directory">
               {{ data.title }}
             </h1>
             <div class="flex-fixed download-btn">
@@ -117,8 +117,7 @@ export default {
     },
   },
   data() {
-    return {
-    }
+    return {}
   },
   computed: {
     readTime() {
@@ -380,7 +379,6 @@ export default {
   position: relative;
 }
 .detail {
-  color: #999;
   padding: 0 50px 50px 50px;
   width: 100%;
 }
@@ -412,11 +410,11 @@ export default {
 }
 </style>
 <style>
+body .tui-editor-contents *:not(table) {
+  line-height: 1.6;
+}
 body .tui-editor-contents h3,
 body .tui-editor-contents h4 {
   line-height: 2.5;
-}
-body .tui-editor-contents *:not(table) {
-  line-height: 2;
 }
 </style>

@@ -9,7 +9,6 @@ export default {
       name: 'put',
       method: 'POST',
       path: '/upload',
-      serverPath: 'http://222.222.222.125:8081',
     },
   ],
   views: [

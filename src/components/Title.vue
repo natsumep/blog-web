@@ -14,6 +14,8 @@
         <el-menu-item index="/article/edit">添加文章</el-menu-item>
         <el-menu-item index="/qa">问答</el-menu-item>
         <el-menu-item index="/api">开放接口</el-menu-item>
+        <el-menu-item index="/about">关于</el-menu-item>
+        <el-menu-item index="/comment">留言</el-menu-item>
       </el-menu>
       <div class="user-top-wrapper flex">
         <el-popover
@@ -23,14 +25,12 @@
           trigger="hover"
         >
           <div style="text-align: right; margin: 0" @click="visible = !visible">
-            <router-link
-              :to="{ name: 'user', params: { type: 'create' } }"
-              class="pop-btn"
+            <router-link :to="{ name: 'user' }" class="pop-btn"
               >注册</router-link
             >
             <router-link
               v-if="token"
-              :to="{ name: 'user', params: { type: 'edit' } }"
+              :to="{ name: 'user', query: { edit: true } }"
               class="pop-btn"
               >编辑</router-link
             >
@@ -101,15 +101,15 @@ export default class Index extends Vue {
   @Watch('userInfo')
   changeUserInfo(val: any) {
     this.info.nickname = val.nickname
-    this.info.avatar = val.avatar
+    this.info.avatar = val.avatar || require('~/assets/images/user-default.png')
   }
 
   handleLoginHidden() {
-    userStore.set_login_dialog_visible()
+    userStore.set_login_dialog_visible(false)
   }
 
   loginToggle() {
-    this.token ? exit() : userStore.set_login_dialog_visible()
+    this.token ? exit() : userStore.set_login_dialog_visible(true)
   }
 }
 </script>
@@ -147,6 +147,7 @@ export default class Index extends Vue {
   width: 36px;
   height: 36px;
   border-radius: 50px;
+  background: #fff;
 }
 
 .username {

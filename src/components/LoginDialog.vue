@@ -66,7 +66,7 @@ export default {
     },
     closeDialog() {
       this.$refs.ruleForm.resetFields()
-      userStore.set_login_dialog_visible()
+      userStore.set_login_dialog_visible(false)
     },
   },
 }

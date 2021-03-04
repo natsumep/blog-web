@@ -26,7 +26,11 @@
             <span class="txt"> · {{ item.createTime | formatTime }}</span>
           </p>
         </div>
-        <p class="nickname"></p>
+        <p class="nickname">
+          <span v-if="content.isComment" style="color: #2196f3">
+            @{{ content.commentName }} </span
+          >{{ content.comment }}
+        </p>
         <div class="comment-btn-wrapper">
           <button class="comment-btn" @click="showBox">
             <i
@@ -73,10 +77,11 @@ export default {
         this.item.commentParentInfo &&
         (this.item.commentParentInfo.nickName ||
           this.item.commentParentInfo.user.nickName)
-      return this.item.comment.replace(
-        `@${nickName}`,
-        `<span style="color: #409eff;">@${nickName}</span>`
-      )
+      return {
+        isComment: !!this.item.commentParentInfo,
+        commentName: nickName,
+        comment: this.item.comment,
+      }
     },
   },
   created() {},

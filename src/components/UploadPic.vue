@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { updateFile } from '~/utils/uploadFile'
 export default {
   props: {
     avatar: {
@@ -46,23 +47,15 @@ export default {
   destroyed() {},
   created() {},
   methods: {
-    avatarUpload(e) {
+    async avatarUpload(e) {
       const file = e.target.files[0]
       if (file) {
         if (!file.type.includes('image')) return
         if (this.checkSize && file.size > 1024 * 1024 * 2) {
           this.$message.error('文件大小不能超过2M!')
         } else {
-          const formDate = new FormData()
-          formDate.append('file', file)
-          formDate.append('time', +new Date())
-          this.$axios
-            .post('http://222.222.222.125:8081/upload', formDate)
-            .then((url) => {
-              const name = url.data.url[0]
-              this.current = 'http://222.222.222.125:8081/' + name
-              this.$emit('avatarChange', this.current)
-            })
+          this.current = await updateFile(file)
+          this.$emit('avatarChange', this.current)
         }
       }
     },

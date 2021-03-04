@@ -4,7 +4,7 @@ import { assign, isEmpty } from 'lodash'
 import { Plugin } from '@nuxt/types'
 import qs from 'qs'
 import { $axios } from '~/utils/api'
-import API_CONFIG from '~/config/api'
+import API_CONFIG from '~/api'
 import { API_DEFAULT_CONFIG } from '~/config'
 class MakeApi {
   api: any = {}

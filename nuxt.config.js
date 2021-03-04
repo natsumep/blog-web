@@ -1,10 +1,13 @@
-import path from 'path'
-import fs from 'fs'
+// import path from 'path'
+// import fs from 'fs'
 import { SERVER_PATH, SERVER_USER_PATH } from './src/config'
 export default {
   srcDir: 'src/',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
+    htmlAttrs: {
+      lang: 'zh-CN',
+    },
     title: 'blog-web',
     meta: [
       { charset: 'utf-8' },
@@ -88,7 +91,7 @@ export default {
   build: {
     // 静态分析使用 分析结果可在 http://localhost:8888 上查看。
     // analyze: true,
-    transpile: [/^element-ui/],
+    transpile: [/^element-ui/, /^validator/],
     // 默认: true 为开发模式(development)， false 为生产模式(production)。
     // cssSourceMap: true,
   },

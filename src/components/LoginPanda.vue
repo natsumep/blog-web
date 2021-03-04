@@ -44,7 +44,7 @@
         <p class="alert">{{ errorinfo }}</p>
         <button class="btn">登录</button>
         <p style="margin-top: 10px">
-          没有账号？去<nuxt-link to="/user/add">注册</nuxt-link>
+          没有账号？去<nuxt-link to="/user?edit=true">注册</nuxt-link>
         </p>
       </div>
     </form>
@@ -63,6 +63,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import { Component, Vue } from 'vue-property-decorator'
 import { loginAjax } from '~/utils/loginPreservationUserInfo'
 import { setTokenInfo } from '~/utils/passwordManagement'
+import { userStore } from '~/store'
+
 @Component
 export default class Index extends Vue {
   formClass = {
@@ -108,9 +110,11 @@ export default class Index extends Vue {
       { username, password },
       (token: any, expiresIn: any) => {
         setTokenInfo(token, expiresIn)
+        userStore.set_login_dialog_visible(false)
+        this.$router.replace('/')
+        // console.log(userStore)
       },
       (e: any) => {
-        // console.log(e);
         this.errorinfo = (e && e.msg) || '服务器异常'
         this.formClass['wrong-entry'] = true
         setTimeout(() => {

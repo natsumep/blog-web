@@ -3,7 +3,7 @@
     <el-input
       v-model="comment"
       type="textarea"
-      placeholder="写下你的评论..."
+      :placeholder="placeholder"
       :rows="rows"
     ></el-input>
     <div class="btn-wrapper">
@@ -83,7 +83,7 @@ export default {
       default: '',
     },
     pid: {
-      type: String,
+      type: [String, Number],
       default: '',
     },
     email: {
@@ -93,6 +93,7 @@ export default {
   },
   data() {
     return {
+      placeholder: '写下你的评论...',
       hasInfo: false,
       visible: false,
       comment: '',
@@ -112,7 +113,7 @@ export default {
     nickName(val) {
       if (val) {
         this.comment = ''
-        this.comment += `@${val} `
+        this.placeholder = `@${val} `
       }
     },
     email(val) {
@@ -128,9 +129,10 @@ export default {
   },
   methods: {
     setInfo() {
-      if (localStorage.getItem('_u')) {
-        this.commentNickName = JSON.parse(localStorage.getItem('_u')).nickname
-        this.commentEmail = JSON.parse(localStorage.getItem('_u')).email
+      const userinfo = this.userinfoObj
+      if (userinfo) {
+        this.commentNickName = userinfo.nickname
+        this.commentEmail = userinfo.email
         ;(this.commentNickName.trim() || this.commentEmail.trim()) &&
           (this.hasInfo = true)
         return

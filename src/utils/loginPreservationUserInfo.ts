@@ -8,8 +8,7 @@ import {
   setUserinfo,
 } from '@/utils/passwordManagement'
 import { SERVER_PATH } from '~/config'
-import { $axios as api } from '~/utils/api'
-import { userStore } from '~/utils/store-accessor'
+import { $axios as api, $api } from '~/utils/api'
 
 const serverpath = SERVER_PATH
 export async function loginAjax(
@@ -18,13 +17,12 @@ export async function loginAjax(
   error?: any
 ) {
   try {
-    let data: any = await api.post<any>(serverpath + 'login', {
+    const data: any = await api.post<any>(serverpath + 'login', {
       username: userDatas.username,
       password: userDatas.password,
     })
     success && success(data.token, data.expiresIn)
     getUser()
-    userStore.set_login_dialog_visible()
   } catch (e) {
     clearAll()
     error && error(e)
@@ -46,7 +44,7 @@ export async function loginAjax(
 
 // 获取用户信息
 export async function getUser() {
-  const userDetail = await api.get(serverpath + 'user/detail')
+  const userDetail = await $api['user/detail']()
   setUserinfo(userDetail)
 }
 

@@ -1,5 +1,4 @@
 import { SERVER_PATH as serverPath } from '~/config/index'
-// const serverPath = "http://222.222.222.125:7001/api";
 
 export const article = [
   {
@@ -7,7 +6,6 @@ export const article = [
     method: 'GET',
     path: '/article',
     showErrorText: true,
-
     serverPath,
   },
   {
@@ -21,7 +19,6 @@ export const article = [
     name: 'detail',
     method: 'GET',
     showErrorText: true,
-
     path: '/article/:id',
     serverPath,
   },
@@ -30,7 +27,6 @@ export const article = [
     method: 'POST',
     path: '/article',
     showErrorText: true,
-
     serverPath,
     params: {
       value: '',
@@ -40,7 +36,6 @@ export const article = [
     name: 'update',
     method: 'PUT',
     showErrorText: true,
-
     path: '/article/:id',
     serverPath,
     params: {
@@ -51,7 +46,6 @@ export const article = [
     name: 'delete',
     method: 'DELETE',
     showErrorText: true,
-
     path: '/article/:id',
     serverPath,
     params: {
