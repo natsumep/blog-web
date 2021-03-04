@@ -120,7 +120,6 @@
 import isEmail from 'validator/es/lib/isEmail'
 import isMobilePhone from 'validator/es/lib/isMobilePhone'
 import { userStore } from '~/utils/store-accessor'
-import { setLocalInfo } from '~/utils/passwordManagement'
 export default {
   data() {
     return {
@@ -208,7 +207,6 @@ export default {
           this.$api[api](this.ruleForm).then(
             () => {
               const obj = JSON.parse(JSON.stringify(this.ruleForm))
-              setLocalInfo('_u', obj)
               userStore.set_userinfo(obj)
               this.$message.success(msg + '成功')
               this.$router.replace('/')

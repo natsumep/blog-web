@@ -27,6 +27,7 @@ export default {
     '@/plugins/axios',
     '@/plugins/axios.server',
     '@/plugins/axios-accessor',
+    '@/plugins/visit-view.client',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

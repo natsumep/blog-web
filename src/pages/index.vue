@@ -123,11 +123,59 @@ const bgc = [
     min: 200,
   },
 ]
-@Component
+function getBgc(val: any) {
+  let rgb = 'blue'
+  bgc.forEach((item) => {
+    val < item.max && val >= item.min && (rgb = item.value)
+  })
+  return rgb
+}
+async function getArticleList(param: any, $axios: any) {
+  const res: any = await $axios.get('article', param)
+  const data = res
+  const { page, rows } = param
+  const { list = [], total = 0 } = data
+  const arr: any = []
+  list.forEach((item: any, i: number) => {
+    const obj = {
+      index: i + 1 + (page - 1) * rows,
+      ...item,
+      time: dateFormat('YYYY-mm-dd HH:MM:SS', item.createTime),
+      cardPic: item.cardPic.replace('.jpg', '_thumb.jpg'),
+      type: item.type.split('/'),
+      bgc: getBgc(item.views),
+    }
+    arr.push(obj)
+  })
+  return {
+    list: arr,
+    total,
+  }
+}
+@Component({
+  async asyncData({ $axios }) {
+    const data = await Promise.all([
+      getArticleList(
+        {
+          page: 1,
+          rows: 20,
+        },
+        $axios
+      ),
+      $axios.get('articleType'),
+    ])
+    return {
+      ...data[0],
+      typeList: data[1],
+    }
+    // await this.getArticleList()
+  },
+})
 export default class Home extends Vue {
   searchText = ''
   page = 1
   rows = 10
+  serverData: any = {}
   list: any = []
   total = 0
   typeList = []
@@ -164,8 +212,7 @@ export default class Home extends Vue {
 
   mounted() {
     document.addEventListener('scroll', this.handleScroll, true)
-    this.getArticleList()
-    this.getType()
+    console.log(this)
   }
 
   destroyed() {
@@ -188,14 +235,6 @@ export default class Home extends Vue {
     }
   }
 
-  getBgc(val: any) {
-    let rgb = 'blue'
-    bgc.forEach((item) => {
-      val < item.max && val >= item.min && (rgb = item.value)
-    })
-    return rgb
-  }
-
   resetList() {
     this.list = []
     this.page = 1
@@ -215,25 +254,9 @@ export default class Home extends Vue {
     }
     this.searchText && (params.searchText = this.searchText)
     this.type && (params.type = this.type)
-    const res: any = await this.$axios.get('article', params)
-    const data = res
-    const { page, rows } = this
+    const data = await getArticleList(params, this.$axios)
     const { list = [], total = 0 } = data
-    const arr: any = []
-    list.forEach((item: any, i: number) => {
-      const obj = {
-        index: i + 1 + (page - 1) * rows,
-        ...item,
-        time: dateFormat('YYYY-mm-dd HH:MM:SS', item.createTime),
-        cardPic: item.cardPic.replace('.jpg', '_thumb.jpg'),
-        type: item.type.split('/'),
-        bgc: this.getBgc(item.views),
-      }
-      if (this.isLogined) {
-        arr.push(obj)
-      } else if (!item.isPrivate) arr.push(obj)
-    })
-    this.list = [...arr, ...this.list]
+    this.list = [...list, ...this.list]
     this.total = total
   }
 }

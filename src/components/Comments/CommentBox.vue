@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     setInfo() {
-      const userinfo = this.userinfoObj
+      const userinfo = this.userinfo
       if (userinfo) {
         this.commentNickName = userinfo.nickname
         this.commentEmail = userinfo.email
@@ -155,7 +155,7 @@ export default {
         return
       }
       // 未登录的话让他自己掰个昵称或邮箱
-      if (!localStorage.getItem('_u')) {
+      if (!this.userinfo) {
         const obj = {
           nickName: this.commentNickName,
           email: this.commentEmail,

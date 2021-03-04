@@ -46,7 +46,6 @@ export function getUserinfo(): any {
 
 // 设置用户信息
 export function setUserinfo(userObj: any) {
-  setLocalInfo('_u', userObj)
   userStore.set_userinfo(userObj)
 }
 
@@ -94,6 +93,5 @@ export function setVuexToken(token = Cookies.get('_t')) {
 
 export function clearAll() {
   setVuexToken()
-  removeLocal('_u')
   Cookies.remove('_t')
 }

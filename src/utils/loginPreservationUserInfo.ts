@@ -28,7 +28,7 @@ export async function loginAjax(
     error && error(e)
   }
 
-  // , {
+  /// , {
   //   headers: {
   //     ['Content-Type']: 'application/x-www-form-urlencoded; charset=UTF-8'
   //   },

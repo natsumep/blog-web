@@ -377,6 +377,8 @@ export default {
   width: 800px;
   margin: 0 auto;
   position: relative;
+  background: #fff;
+  border-radius: 10px;
 }
 .detail {
   padding: 0 50px 50px 50px;

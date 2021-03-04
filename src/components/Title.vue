@@ -104,6 +104,13 @@ export default class Index extends Vue {
     this.info.avatar = val.avatar || require('~/assets/images/user-default.png')
   }
 
+  created() {
+    this.info = {
+      ...this.info,
+      ...this.userInfo,
+    }
+  }
+
   handleLoginHidden() {
     userStore.set_login_dialog_visible(false)
   }
