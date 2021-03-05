@@ -212,7 +212,6 @@ export default class Home extends Vue {
 
   mounted() {
     document.addEventListener('scroll', this.handleScroll, true)
-    console.log(this)
   }
 
   destroyed() {
