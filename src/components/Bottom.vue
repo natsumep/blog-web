@@ -10,7 +10,8 @@
         </div>
       </div>
       <span style="color: #666; margin-left: 10px">
-        今日访问量 {{ views.toDoyCount }}; 总计访问量 {{ views.count }}
+        今日访问量（vv） {{ views.toDoyCount }}; 总计访问量（vv）
+        {{ views.count }}
       </span>
     </div>
   </div>

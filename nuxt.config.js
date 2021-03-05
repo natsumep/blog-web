@@ -92,7 +92,9 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     // 静态分析使用 分析结果可在 http://localhost:8888 上查看。
-    // analyze: true,
+    analyze: {
+      analyzerMode: 'static',
+    },
     transpile: [/^element-ui/, /^validator/],
     // 默认: true 为开发模式(development)， false 为生产模式(production)。
     // cssSourceMap: true,
