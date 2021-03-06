@@ -123,16 +123,16 @@ export default {
       }
     },
   },
-  created() {},
-  mounted() {
+  created() {
     this.setInfo()
   },
+  mounted() {},
   methods: {
     setInfo() {
-      const userinfo = this.userinfo
-      if (userinfo) {
-        this.commentNickName = userinfo.nickname
-        this.commentEmail = userinfo.email
+      const userInfo = this.userInfo
+      if (userInfo) {
+        this.commentNickName = userInfo.nickname
+        this.commentEmail = userInfo.email
         ;(this.commentNickName.trim() || this.commentEmail.trim()) &&
           (this.hasInfo = true)
         return
@@ -150,12 +150,17 @@ export default {
     },
     release() {
       this.visible = false
-      if (!this.comment.trim()) {
+      const comment = this.comment.trim()
+      if (!comment) {
         this.$message.error('请输入评论内容')
         return
       }
+      if (comment.length > 200) {
+        this.$message.error('评论内容最多支持200')
+        return
+      }
       // 未登录的话让他自己掰个昵称或邮箱
-      if (!this.userinfo) {
+      if (!this.userInfo) {
         const obj = {
           nickName: this.commentNickName,
           email: this.commentEmail,
@@ -167,7 +172,7 @@ export default {
       const data = {
         articleId: this.$route.params.id,
         pid: this.pid, //   如果是回复的别人的回复需要传回复的id
-        comment: this.comment,
+        comment,
         nickName: this.commentNickName,
         email: this.commentEmail,
       }
