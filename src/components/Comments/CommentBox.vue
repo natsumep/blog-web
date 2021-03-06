@@ -26,7 +26,11 @@
               <el-input v-model="commentNickName" size="mini"></el-input>
             </el-form-item>
             <el-form-item label="邮箱">
-              <el-input v-model="commentEmail" size="mini"></el-input>
+              <el-input
+                v-model="commentEmail"
+                placeholder="邮箱不会被公布"
+                size="mini"
+              ></el-input>
             </el-form-item>
           </el-form>
           <div style="text-align: right; margin: 0">
@@ -131,8 +135,8 @@ export default {
     setInfo() {
       const userInfo = this.userInfo
       if (userInfo) {
-        this.commentNickName = userInfo.nickname
-        this.commentEmail = userInfo.email
+        this.commentNickName = userInfo.nickname || ''
+        this.commentEmail = userInfo.email || ''
         ;(this.commentNickName.trim() || this.commentEmail.trim()) &&
           (this.hasInfo = true)
         return

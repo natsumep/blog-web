@@ -19,11 +19,11 @@
         </div>
 
         <div>
-          <router-link :to="`/article/edit/${data.id}`"
+          <router-link v-if="data.canDelete" :to="`/article/edit/${data.id}`"
             ><el-button type="primary" icon="el-icon-edit" circle></el-button
           ></router-link>
-          <!-- <el-popconfirm
-            v-if="canDelete"
+          <el-popconfirm
+            v-if="data.canDelete"
             title="确认删除当前文章？"
             @confirm="deleteItem"
           >
@@ -34,7 +34,7 @@
               icon="el-icon-delete"
               circle
             ></el-button>
-          </el-popconfirm> -->
+          </el-popconfirm>
         </div>
       </div>
       <div ref="airicleContent" style="padding: 20px">

@@ -56,7 +56,11 @@
               <el-form-item label="电话" prop="phone">
                 <el-input v-model="ruleForm.phone"></el-input>
               </el-form-item>
-              <el-form-item label="email" prop="email">
+              <el-form-item
+                placeholder="请输入正确的email，用于更换密码"
+                label="email"
+                prop="email"
+              >
                 <el-input v-model="ruleForm.email"></el-input>
               </el-form-item>
             </el-col>
@@ -76,7 +80,8 @@
           <el-form-item label="个人主页" prop="home">
             <el-input
               v-model="ruleForm.home"
-              placeholder="个人主页支持输入1~24位字母加数字组合,通过访问 https://www.tinker.run/${个人主页} 可以进入个人主页"
+              placeholder="个人主页支持输入1~24位字母加数字组合,通过访问 https://www.tinker.run/${个人主页} 可以进入个人主页 
+暂未开放"
             ></el-input>
           </el-form-item>
           <el-form-item label="github">

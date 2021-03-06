@@ -1,7 +1,14 @@
 import { Plugin } from '@nuxt/types'
+import { userStore } from '~/store'
 // , $message, $alert
 const pulgin: Plugin = function (content) {
   const { $axios } = content
+  $axios.onRequest((config) => {
+    const token = userStore.token
+    if (token) config.headers.Authorization = 'Bearer ' + token
+    // 其他的请求前业务逻辑 比如：api map
+    return config
+  })
   $axios.onResponse((responseObj) => {
     // eslint-disable-next-line no-console
     const resData = responseObj.data
