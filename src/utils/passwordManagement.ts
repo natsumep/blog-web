@@ -8,7 +8,6 @@ import Cookies from 'js-cookie'
 import { getLocal, setLocal, removeLocal } from '~/utils/session' //
 import encryption from '~/utils/encryption' // 加密解密
 import { userStore } from '~/utils/store-accessor'
-import { $axios as api } from '~/utils/api'
 const KEY = 'CPTBTPTPBCPTDTPT'
 
 // 设置local信息
@@ -53,8 +52,8 @@ export function setUserinfo(userObj: any) {
 export function setTokenInfo(token: string, time: number) {
   const day = new Date(time)
 
-  Cookies.set('_t', token, { expires: day })
-  setTokenSessionStorage(token)
+  token && Cookies.set('_t', token, { expires: day })
+  token && setTokenSessionStorage(token)
 }
 
 export function getTokenInfo() {
@@ -80,7 +79,6 @@ export function setTokenSessionStorage(value: any) {
   if (value) {
     setVuexToken(value)
   }
-  api.setHeader('authorization', `Bearer ${value}`)
 }
 
 export function getVuexToken() {

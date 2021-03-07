@@ -8,14 +8,14 @@
 <script>
 // import { easeout } from '~/utils/animation'
 export default {
-  async asyncData({ route, $api, params }) {
+  async asyncData({ error, $api, params }) {
     try {
       const data = await $api['article/detail']({ id: params.id })
       return {
         data,
       }
     } catch (e) {
-      route.replace('/')
+      error({ statusCode: 404 })
     }
   },
   data() {

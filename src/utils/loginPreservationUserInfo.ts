@@ -7,17 +7,15 @@ import {
   clearAll,
   setUserinfo,
 } from '@/utils/passwordManagement'
-import { SERVER_PATH } from '~/config'
-import { $axios as api, $api } from '~/utils/api'
+import { $api } from '~/utils/api'
 
-const serverpath = SERVER_PATH
 export async function loginAjax(
   userDatas: { username: any; password: any },
   success: { (token: any, expiresIn: any): void; (arg0: any, arg1: any): any },
   error?: any
 ) {
   try {
-    const data: any = await api.post<any>(serverpath + 'login', {
+    const data: any = await $api['login/index']({
       username: userDatas.username,
       password: userDatas.password,
     })

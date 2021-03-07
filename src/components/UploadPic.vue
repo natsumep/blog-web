@@ -51,12 +51,8 @@ export default {
       const file = e.target.files[0]
       if (file) {
         if (!file.type.includes('image')) return
-        if (this.checkSize && file.size > 1024 * 1024 * 2) {
-          this.$message.error('文件大小不能超过2M!')
-        } else {
-          this.current = await updateFile(file)
-          this.$emit('avatarChange', this.current)
-        }
+        this.current = await updateFile(file)
+        this.current && this.$emit('avatarChange', this.current)
       }
     },
   },
