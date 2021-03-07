@@ -44,7 +44,7 @@
         <p class="alert">{{ errorinfo }}</p>
         <button class="btn">登录</button>
         <p style="margin-top: 10px">
-          没有账号？去<nuxt-link to="/user?edit=true">注册</nuxt-link>
+          没有账号？去<nuxt-link to="/user">注册</nuxt-link>
         </p>
       </div>
     </form>
@@ -111,7 +111,7 @@ export default class Index extends Vue {
       (token: any, expiresIn: any) => {
         setTokenInfo(token, expiresIn)
         userStore.set_login_dialog_visible(false)
-        this.$router.replace('/')
+        this.$route.fullPath === '/login' && this.$router.replace('/')
         // console.log(userStore)
       },
       (e: any) => {
