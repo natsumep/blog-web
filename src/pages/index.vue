@@ -1,17 +1,24 @@
 <template>
   <div class="wrapper">
     <div class="article-tag">
-      <h4 style="margin-bottom: 20px">文章标签</h4>
-      <el-tag
-        v-for="item in typeList"
-        :key="item.type"
-        class="tag-item"
-        :type="item.type"
-        effect="dark"
-        @click="searchTag(item.type)"
-      >
-        {{ item.type }}({{ item.length }})
-      </el-tag>
+      <div style="margin-bottom: 15px">
+        <random-one></random-one>
+      </div>
+      <el-card class="box-card">
+        <div slot="header" class="clearfix">
+          <span>文章标签</span>
+        </div>
+        <el-tag
+          v-for="item in typeList"
+          :key="item.type"
+          class="tag-item"
+          :type="item.type"
+          effect="dark"
+          @click="searchTag(item.type)"
+        >
+          {{ item.type }}({{ item.length }})
+        </el-tag>
+      </el-card>
     </div>
     <div class="filter-wrapper">
       <p>
@@ -328,6 +335,8 @@ export default class Home extends Vue {
   min-height: calc(100vh - 66px);
   margin: 0 auto;
   padding: 20px;
+  bottom: 0;
+  overflow: auto;
 }
 .article-tag {
   position: fixed;
@@ -336,7 +345,7 @@ export default class Home extends Vue {
   max-width: 300px;
 }
 .tag-item {
-  margin: 0 20px 20px 0;
+  margin: 0 20px 10px 0;
   cursor: pointer;
   animation: 0.4s;
 }

@@ -48,6 +48,7 @@ class MakeApi {
         path,
         mockPath,
         showErrorText,
+        serverPath = '',
         notShowError,
         hasLoading,
       } = api
@@ -74,6 +75,7 @@ class MakeApi {
                   apiName,
                   hasLoading,
                   showErrorText,
+                  baseURL: serverPath,
                   method,
                   notShowError,
                   path,
