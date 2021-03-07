@@ -15,7 +15,7 @@ const pulgin: Plugin = function ({ $axios, req }) {
     if (code === 200) {
       return resData.body
     } else {
-      return {}
+      return Promise.reject(responseObj)
     }
   })
 }

@@ -1,4 +1,5 @@
 import { Plugin } from '@nuxt/types'
+import { Message as $message, MessageBox } from 'element-ui'
 import { userStore } from '~/store'
 // , $message, $alert
 const pulgin: Plugin = function (content) {
@@ -24,8 +25,8 @@ const pulgin: Plugin = function (content) {
 
   $axios.onError((responseError: any) => {
     if (responseError.message === 'Network Error') {
-      // $message.error('网络异常')
-      return Promise.reject(new Error('网络异常'))
+      $message.error('网络异常')
+      return '网络异常'
     }
     if (
       responseError.code === 'ECONNABORTED' &&
@@ -47,13 +48,14 @@ const pulgin: Plugin = function (content) {
           fn: promise
         }, a, b);
       }) */
-      // $alert('当前网络存在异常，请重试', '提示')
-      return Promise.reject(new Error('网络超时'))
+      MessageBox.alert('当前网络存在异常，请重试', '提示')
+      return '网络超时'
     }
-    const resData = responseError?.data || {}
-    // const code = resData.code * 1 // 强转数字
-    // const msg = resData.msg || ''
-    switch (responseError.request.status * 1) {
+    const resData = responseError?.data || responseError?.request || {}
+    const config = responseError.config || {}
+    const code = resData.code * 1 || resData.status // 强转数字
+    const msg = resData.msg || ''
+    switch (code) {
       case 401:
         // userLoginAndGetConfig().then(() => {
         //   api[responseError.config.apiName]({
@@ -66,10 +68,10 @@ const pulgin: Plugin = function (content) {
         // }, () => {
         //   b(responseError);
         // })
-        // $alert('登录状态已过期，请重新登录', '提示')
+        !config.notShowError && $message.error('登录状态已过期，请重新登录')
         break
       default:
-      // $message.error(code === 500 ? '服务端异常' : msg)`
+        !config.notShowError && $message.error(code <= 500 ? '服务端异常' : msg)
     }
     return Promise.reject(resData)
   })

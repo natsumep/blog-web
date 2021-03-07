@@ -48,6 +48,7 @@ class MakeApi {
         path,
         mockPath,
         showErrorText,
+        notShowError,
         hasLoading,
       } = api
       const apiName = `${namespace}${sep}${name}`
@@ -74,6 +75,7 @@ class MakeApi {
                   hasLoading,
                   showErrorText,
                   method,
+                  notShowError,
                   path,
                 },
                 outerOptions
