@@ -13,6 +13,7 @@
         <div v-for="(item, index) in comments" :key="index" class="li-wrapper">
           <comment-list
             :item="item"
+            @refresh="getList"
             @showBox="
               item.showCommentBox = true
               toggelBox(index, item)
@@ -26,6 +27,7 @@
                   :key="idx"
                   :layout-block="true"
                   :item="option"
+                  @refresh="getList"
                   @showBox="
                     item.showCommentBox = true
                     toggelBox(index, item)

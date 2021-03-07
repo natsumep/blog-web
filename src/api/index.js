@@ -25,6 +25,15 @@ export default {
       serverPath,
     },
   ],
+  login: [
+    {
+      name: 'index',
+      method: 'POST',
+      path: '/login',
+      serverPath,
+      notShowError: true,
+    },
+  ],
   article,
   user,
   comments,

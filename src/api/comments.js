@@ -15,4 +15,11 @@ export const comments = [
     showErrorText: true,
     serverPath,
   },
+  {
+    name: 'delete',
+    method: 'DELETE',
+    path: '/article/comment/:articleId',
+    showErrorText: true,
+    serverPath,
+  },
 ]

@@ -8,37 +8,56 @@
         class="avatar"
       />
       <div class="content">
-        <div class="comment-list-wrapper">
-          <img
-            v-if="layoutBlock"
-            :src="item.user.avatar || defaultAvatar"
-            alt=""
-            class="avatar"
-          />
+        <div class="comment-content">
+          <div class="comment-list-wrapper">
+            <img
+              v-if="layoutBlock"
+              :src="item.user.avatar || defaultAvatar"
+              alt=""
+              class="avatar"
+            />
+            <p class="nickname">
+              {{
+                item.nickName ||
+                item.user.nickName ||
+                item.email ||
+                item.user.email ||
+                '匿名'
+              }}
+              <span class="txt"> · {{ item.createTime | formatTime }}</span>
+            </p>
+          </div>
           <p class="nickname">
-            {{
-              item.nickName ||
-              item.user.nickName ||
-              item.email ||
-              item.user.email ||
-              '匿名'
-            }}
-            <span class="txt"> · {{ item.createTime | formatTime }}</span>
+            <span v-if="content.isComment" style="color: #2196f3">
+              @{{ content.commentName }} </span
+            >{{ content.comment }}
           </p>
-        </div>
-        <p class="nickname">
-          <span v-if="content.isComment" style="color: #2196f3">
-            @{{ content.commentName }} </span
-          >{{ content.comment }}
-        </p>
-        <div class="comment-btn-wrapper">
-          <button class="comment-btn" @click="showBox">
-            <i
-              style="font-size: 16px; position: relative; top: 2px"
-              class="el-icon-chat-dot-square"
-            ></i>
-            回复
-          </button>
+          <div class="comment-btn-wrapper">
+            <button class="comment-btn" @click="showBox">
+              <i
+                style="font-size: 16px; position: relative; top: 1px"
+                class="el-icon-chat-dot-square"
+              ></i>
+              回复
+            </button>
+            <el-popconfirm
+              v-if="item.canDelete"
+              title="确认删除当前回复？"
+              @confirm="deleteItem"
+            >
+              <button
+                slot="reference"
+                class="comment-btn delete"
+                style="color: red"
+              >
+                <i
+                  style="font-size: 16px; position: relative; top: 1px"
+                  class="el-icon-delete"
+                ></i>
+                删除
+              </button>
+            </el-popconfirm>
+          </div>
         </div>
         <slot name="commentLi"></slot>
       </div>
@@ -90,6 +109,16 @@ export default {
     showBox() {
       this.$emit('showBox')
     },
+    deleteItem() {
+      this.$api['comments/delete'](this.item.id)
+        .then(() => {
+          this.$emit('refresh')
+        })
+        .catch((err) => {
+          this.$message.error(err.msg)
+        })
+      this.$emit('refresh')
+    },
   },
 }
 </script>
@@ -97,7 +126,12 @@ export default {
 <style lang="less" scoped>
 .comment-list-wrapper {
   display: flex;
-
+  .comment-btn.delete {
+    display: none;
+  }
+  .comment-content:hover .comment-btn.delete {
+    display: inline-block;
+  }
   .content {
     flex: 1 1 auto;
   }

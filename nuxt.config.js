@@ -95,7 +95,7 @@ export default {
     analyze: {
       analyzerMode: 'static',
     },
-    transpile: [/^element-ui/, /^validator/],
+    transpile: [/^element-ui/, /^validator/, /^highlight/],
     // 默认: true 为开发模式(development)， false 为生产模式(production)。
     // cssSourceMap: true,
   },

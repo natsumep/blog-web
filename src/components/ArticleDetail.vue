@@ -75,18 +75,35 @@
             {{ data.abstract }}
           </h3>
           <nuxt-content :document="data.val" height="100%" />
-
-          <viewer v-if="data.val" :initial-value="data.val" height="100%" />
+          <markdown-viewer
+            v-if="data.val"
+            ref="detail"
+            :value="data.val"
+            @change-edit="getDom"
+          ></markdown-viewer>
+          <!-- <viewer v-if="data.val" :initial-value="data.val"  /> -->
         </article>
       </div>
     </div>
 
     <!-- 目录 -->
-    <ul
-      ref="directoryUl"
-      class="directory-wrapper"
-      @click="lightHigh($event)"
-    ></ul>
+    <ul class="directory-wrapper">
+      <h2>目录</h2>
+      <div ref="directoryUl">
+        <li
+          v-for="(item, index) in directoryList"
+          :key="item.href"
+          @click="lightHigh($event, index)"
+        >
+          <a
+            class="li lighthigh-follow-li"
+            :class="item.value"
+            :data-id="item.href"
+            >{{ item.label }}</a
+          >
+        </li>
+      </div>
+    </ul>
 
     <!-- 评论区 -->
     <div class="comments">
@@ -95,17 +112,10 @@
   </div>
 </template>
 <script>
-import { Viewer } from '@toast-ui/vue-editor'
-import '@toast-ui/editor/dist/toastui-editor-viewer.css'
 import * as Jspdf from 'jspdf'
 import html2canvas from 'html2canvas'
 import { dateFormat } from '~/utils/time'
-import Comments from '~/components/Comments'
 export default {
-  components: {
-    viewer: Viewer,
-    Comments,
-  },
   props: {
     canDelete: Boolean,
     id: { type: String, default: '' },
@@ -117,7 +127,9 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      directoryList: [],
+    }
   },
   computed: {
     readTime() {
@@ -136,16 +148,21 @@ export default {
       }
     },
   },
+  watch: {},
   created() {},
+  updated() {},
+  _handleScroll: null,
   mounted() {
     // this.loadData()
-    window.addEventListener('scroll', this.handleScroll, true)
+    window.addEventListener(
+      'scroll',
+      (this._handleScroll = this.handleScroll.bind(this)),
+      true
+    )
   },
-  updated() {
-    this.getDom()
-  },
+
   destroyed() {
-    window.removeEventListener('scroll', this.handleScroll, true)
+    window.removeEventListener('scroll', this._handleScroll, true)
   },
   methods: {
     // h标签的用法
@@ -157,61 +174,52 @@ export default {
     getDom() {
       const hArr = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6']
       const target = []
-      const dom = document.querySelectorAll('*')
+      const dom =
+        this?.$refs?.detail?.$el?.querySelectorAll('h1,h2,h3,h4,h5,h6') || []
       dom.forEach((item, index) => {
         if (hArr.includes(item.nodeName)) {
           item.id = `${item.nodeName}_${index}`
           item.classList.add('lighthigh-follow')
           target.push({
-            value: item.nodeName,
+            value: { [item.nodeName]: true, active: false },
             label: item.textContent,
             href: `#${item.id}`,
           })
         }
       })
-      const directory = this.$refs.directoryUl
-      let fragments = ''
-      target.slice(2).forEach((item) => {
-        fragments += this.integrationLi(item)
+      this.directoryList = target
+      this.$nextTick(() => {
+        this.handleScroll()
       })
-      directory.insertAdjacentHTML('beforeend', fragments)
     },
-    lightHigh(e) {
-      const directoryLi = this.$refs.directoryUl.childNodes
-      const target = e.target
-      const id = target.dataset.id
-      directoryLi.forEach((item) => {
-        item.childNodes[0].classList.remove('active')
+    lightHigh(_e, index) {
+      this.directoryList.forEach((li, i) => {
+        if (i !== index) {
+          li.value.active = false
+        } else {
+          li.value.active = true
+        }
       })
-      target.classList.add('active')
       // 锚点定位
-      const offsetTop = document.querySelector(id).offsetTop
-      document.documentElement.scrollTop = offsetTop - 80
-    },
-    integrationLi(item) {
-      const li = `<li><a class="${item.value} li lighthigh-follow-li" data-id="${item.href}">${item.label}</a></li>`
-      return li
+      const offsetTop = document.querySelector(this.directoryList[index].href)
+        .offsetTop
+      document.documentElement.scrollTop = offsetTop - 30
     },
     handleScroll() {
       const dom = document.querySelectorAll('.lighthigh-follow')
       const clientH =
         document.documentElement.clientHeight || document.body.clientHeight
-      const directoryLi = document.querySelectorAll('.lighthigh-follow-li')
-      if (dom.length > 2) {
-        dom.forEach((item, index) => {
-          if (index > 1) {
-            const clientRectTop = item.getBoundingClientRect().top // 内容区的top 距离窗口的高度;
-            if (clientRectTop <= clientH * 0.4) {
-              directoryLi[index - 2].classList.add('active')
-              directoryLi.forEach((item, idx) => {
-                if (idx !== index - 2) {
-                  item.classList.remove('active')
-                }
-              })
+      dom.forEach((item, index) => {
+        const clientRectTop = item.getBoundingClientRect().top // 内容区的top 距离窗口的高度;
+        if (clientRectTop <= clientH * 0.4) {
+          this.directoryList[index].value.active = true
+          this.directoryList.forEach((_item, idx) => {
+            if (idx !== index) {
+              this.directoryList[idx].value.active = false
             }
-          }
-        })
-      }
+          })
+        }
+      })
     },
 
     loadData() {
@@ -228,7 +236,7 @@ export default {
       this.$api['article/delete']({ id: this.id }).then(
         () => {
           this.$message.success('删除成功')
-          this.$router.replace('/article/list')
+          this.$router.replace('/')
         },
         () => {
           this.$message.error('删除失败')
@@ -335,7 +343,7 @@ export default {
 }
 .H2 {
   font-size: 16px;
-  padding-left: 44px;
+  padding-left: 10px;
 }
 .H2::before {
   content: '';
@@ -349,13 +357,13 @@ export default {
   top: -2px;
 }
 .H3 {
-  padding-left: 62px;
+  padding-left: 20px;
 }
 .H4,
 .H5,
 .H6 {
   font-size: 12px;
-  padding-left: 76px;
+  padding-left: 30px;
 }
 .H3::before,
 .H4::before,
@@ -399,11 +407,12 @@ export default {
 }
 
 .directory-wrapper {
-  width: 280px;
+  max-width: 300px;
   position: fixed;
-  left: calc(50% - 785px);
-  top: 20%;
+  left: calc(50% + 400px);
+  top: 200px;
   font-size: 14px;
+  list-style-type: none;
 }
 @media screen and (max-width: 1600px) {
   .directory-wrapper {
