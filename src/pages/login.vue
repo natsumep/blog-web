@@ -1,6 +1,9 @@
 <template>
   <div>
     <login-panda></login-panda>
+    <div style="text-align: center">
+      <nuxt-link to="/">随便看看</nuxt-link>
+    </div>
   </div>
 </template>
 

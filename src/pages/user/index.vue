@@ -167,6 +167,7 @@ export default {
     this.isEdit = this.$route.query.edit && userStore.token
     this.notLogin = this.$route.query.edit && !userStore.token
     this.isEdit && this.getUser()
+    userStore.set_login_dialog_visible(false)
   },
   destroyed() {},
   methods: {
