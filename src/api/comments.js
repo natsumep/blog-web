@@ -12,14 +12,14 @@ export const comments = [
     name: 'create',
     method: 'POST',
     path: '/article/comment/:articleId',
-    showErrorText: true,
+    notShowError: true,
     serverPath,
   },
   {
     name: 'delete',
     method: 'DELETE',
     path: '/article/comment/:articleId',
-    showErrorText: true,
+    notShowError: true,
     serverPath,
   },
 ]

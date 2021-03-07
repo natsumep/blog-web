@@ -23,7 +23,7 @@ export default class Index extends Vue {
   views: any = {}
 
   async created() {
-    const data = await this.$axios.get('/views')
+    const data = await this.$axios.get('/views').catch
     this.views = data
   }
 }

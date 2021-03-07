@@ -134,15 +134,15 @@ export default {
   methods: {
     getList() {
       if (this.api) {
-        this.$api[this.api]({ articleId: this.$route.params.id }).then(
-          (data) => {
+        this.$api[this.api]({ articleId: this.$route.params.id })
+          .then((data) => {
             this.comments = data
             this.comments.forEach((item) => {
               item.showCommentBox = false
               item.showMoreNum = 2
             })
-          }
-        )
+          })
+          .catch()
       }
     },
     toggelBox(index, item) {

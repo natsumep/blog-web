@@ -110,7 +110,7 @@ export default {
       this.$emit('showBox')
     },
     deleteItem() {
-      this.$api['comments/delete'](this.item.id)
+      this.$api['comments/delete']({ articleId: this.item.id })
         .then(() => {
           this.$emit('refresh')
         })

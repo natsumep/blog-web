@@ -88,11 +88,12 @@ class MakeApi {
     })
   }
 }
-function replaceUrl(url: string, option: any) {
+function replaceUrl(url: string, option: any = {}) {
   let arr = url.split('/')
   arr = arr.map((item) => {
     if (item && item[0] === ':') {
-      return option[item.slice(1)]
+      const val = option[item.slice(1)]
+      return val ?? ''
     }
     return item
   })
