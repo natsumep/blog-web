@@ -25,7 +25,20 @@
 import 'codemirror/lib/codemirror.css'
 import '@toast-ui/editor/dist/toastui-editor.css'
 import 'highlight.js/styles/github.css'
-import hljs from 'highlight.js'
+// import hljs from 'highlight.js'
+
+import hljs from 'highlight.js/lib/core'
+import javascript from 'highlight.js/lib/languages/javascript'
+import java from 'highlight.js/lib/languages/java'
+import typescript from 'highlight.js/lib/languages/typescript'
+import shell from 'highlight.js/lib/languages/shell'
+import sql from 'highlight.js/lib/languages/sql'
+import c from 'highlight.js/lib/languages/c'
+import markdown from 'highlight.js/lib/languages/markdown'
+import nginx from 'highlight.js/lib/languages/nginx'
+import xml from 'highlight.js/lib/languages/xml'
+import css from 'highlight.js/lib/languages/css'
+
 import { Editor } from '@toast-ui/vue-editor'
 import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight'
 import 'tui-color-picker/dist/tui-color-picker.css'
@@ -37,6 +50,17 @@ import chart from '@toast-ui/editor-plugin-chart'
 // import fontSizePicker from 'tui-font-size-picker';
 import { Component, Vue, Emit, Model, Watch } from 'vue-property-decorator'
 import { updateFile } from '~/utils/uploadFile'
+;(hljs as any).registerLanguage('js', javascript)
+;(hljs as any).registerLanguage('java', java)
+;(hljs as any).registerLanguage('ts', typescript)
+;(hljs as any).registerLanguage('sh', shell)
+;(hljs as any).registerLanguage('sql', sql)
+;(hljs as any).registerLanguage('c', c)
+;(hljs as any).registerLanguage('md', markdown)
+;(hljs as any).registerLanguage('nginx', nginx)
+;(hljs as any).registerLanguage('xml', xml)
+;(hljs as any).registerLanguage('html', xml)
+;(hljs as any).registerLanguage('css', css)
 
 @Component({
   components: {
@@ -95,7 +119,7 @@ export default class Upload extends Vue {
       async (blob: Blob, callback: any) => {
         // 此处填写自己的上传逻辑，url为上传后的图片地址
         const url = await updateFile(blob)
-        callback(url)
+        url && callback(url)
       }
     )
     ;(this.$refs.viweMain as any).editor.eventManager.listen(
@@ -104,10 +128,12 @@ export default class Upload extends Vue {
         const file = data.data.dataTransfer.files[0]
         if (file.type.includes('image')) return
         const url = await updateFile(file)
-        ;(this.$refs.viweMain as any).editor.exec('AddLink', {
-          linkText: file.name,
-          url,
-        })
+        if (url) {
+          ;(this.$refs.viweMain as any).editor.exec('AddLink', {
+            linkText: file.name,
+            url,
+          })
+        }
       }
     )
   }
