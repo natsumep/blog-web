@@ -1,10 +1,39 @@
 <template>
   <div class="wrapper">
+    <div class="article-tag">
+      <h4 style="margin-bottom: 20px">文章标签</h4>
+      <el-tag
+        v-for="item in typeList"
+        :key="item.type"
+        class="tag-item"
+        :type="item.type"
+        effect="dark"
+        @click="searchTag(item.type)"
+      >
+        {{ item.type }}({{ item.length }})
+      </el-tag>
+    </div>
     <div class="filter-wrapper">
       <p>
-        共 <span class="total">{{ total }}</span> 搜索结果
+        {{ getSearchTitle.first }}
+        <span style="color: #409eff">{{ getSearchTitle.tag }}</span>
+        {{ getSearchTitle.last }}<span class="total"> {{ total }}</span> 篇
       </p>
-      <el-select
+      <div>
+        <el-input
+          v-model="searchTextVal"
+          placeholder="请输入搜索内容"
+          class="input-with-select"
+          @keyup.native.enter="handleSearchText"
+        >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click="handleSearchText"
+          ></el-button>
+        </el-input>
+      </div>
+      <!-- <el-select
         v-model="type"
         size="mini"
         filterable
@@ -19,7 +48,7 @@
           :value="item.type"
         >
         </el-option>
-      </el-select>
+      </el-select> -->
     </div>
     <div v-for="item in list" :key="item.id" class="item">
       <router-link :to="`/article/${item.id}`">
@@ -130,8 +159,8 @@ function getBgc(val: any) {
   })
   return rgb
 }
-async function getArticleList(param: any, $axios: any) {
-  const res: any = await $axios.get('article', param)
+async function getArticleList(param: any, $api: any) {
+  const res: any = await $api['article/list'](param)
   const data = res
   const { page, rows } = param
   const { list = [], total = 0 } = data
@@ -145,6 +174,11 @@ async function getArticleList(param: any, $axios: any) {
       type: item.type.split('/'),
       bgc: getBgc(item.views),
     }
+    const lenght = obj.type.length
+    if (lenght > 4) {
+      obj.type = obj.type.splice(0, 4)
+      obj.type.push('...(' + (lenght - 4) + ')')
+    }
     arr.push(obj)
   })
   return {
@@ -153,16 +187,16 @@ async function getArticleList(param: any, $axios: any) {
   }
 }
 @Component({
-  async asyncData({ $axios }) {
+  async asyncData({ $api }) {
     const data = await Promise.all([
       getArticleList(
         {
           page: 1,
           rows: 20,
         },
-        $axios
+        $api
       ),
-      $axios.get('articleType'),
+      $api['article/type'](),
     ])
     return {
       ...data[0],
@@ -173,6 +207,7 @@ async function getArticleList(param: any, $axios: any) {
 })
 export default class Home extends Vue {
   searchText = ''
+  searchTextVal = ''
   page = 1
   rows = 10
   serverData: any = {}
@@ -196,14 +231,28 @@ export default class Home extends Vue {
     return userStore.token
   }
 
-  @Watch('searchText')
-  changeSearchText() {
-    this.resetList()
-  }
+  // @Watch('searchText')
+  // changeSearchText() {
+  //   this.resetList()
+  // }
 
   @Watch('isLogined')
   changeLogined(val: any) {
     val && this.resetList()
+  }
+
+  get getSearchTitle() {
+    if (this.searchText) {
+      return {
+        first: `查询到内容包含 `,
+        tag: this.searchText,
+        last: `的文章共`,
+      }
+    } else if (this.type) {
+      return { first: `查询到标签为 `, tag: this.type, last: `的文章共` }
+    } else {
+      return { last: `共有文章` }
+    }
   }
 
   created() {
@@ -240,6 +289,18 @@ export default class Home extends Vue {
     this.getArticleList()
   }
 
+  searchTag(tag: string) {
+    this.type = tag
+    this.searchText = ''
+    this.resetList()
+  }
+
+  handleSearchText() {
+    this.searchText = this.searchTextVal
+    this.type = ''
+    this.resetList()
+  }
+
   getType() {
     this.$axios.get('articleType').then((data: any) => {
       this.typeList = data
@@ -253,7 +314,7 @@ export default class Home extends Vue {
     }
     this.searchText && (params.searchText = this.searchText)
     this.type && (params.type = this.type)
-    const data = await getArticleList(params, this.$axios)
+    const data = await getArticleList(params, (this as any).$api)
     const { list = [], total = 0 } = data
     this.list = [...list, ...this.list]
     this.total = total
@@ -263,12 +324,25 @@ export default class Home extends Vue {
 
 <style lang="less" scoped>
 .wrapper {
-  width: 1200px;
+  width: 1000px;
   min-height: calc(100vh - 66px);
   margin: 0 auto;
   padding: 20px;
 }
-
+.article-tag {
+  position: fixed;
+  top: 130px;
+  left: calc(100vw / 2 + 500px);
+  max-width: 300px;
+}
+.tag-item {
+  margin: 0 20px 20px 0;
+  cursor: pointer;
+  animation: 0.4s;
+}
+.tag-item:hover {
+  transform: scale(1.08);
+}
 a {
   color: #333;
 }

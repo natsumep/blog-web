@@ -183,6 +183,7 @@ export default {
       this.$api['comments/create'](data)
         .then(() => {
           this.comment = ''
+          this.$message.success('新增成功')
           this.$emit('refresh')
         })
         .catch((err) => {

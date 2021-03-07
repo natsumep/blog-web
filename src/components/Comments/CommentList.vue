@@ -112,6 +112,7 @@ export default {
     deleteItem() {
       this.$api['comments/delete']({ articleId: this.item.id })
         .then(() => {
+          this.$message.success('删除成功')
           this.$emit('refresh')
         })
         .catch((err) => {
