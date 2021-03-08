@@ -8,7 +8,7 @@ export async function updateFile(blob: Blob) {
   const formDate = new FormData()
   formDate.append('file', blob)
   formDate.append('time', String(+new Date()))
-  const data: any = await $axios.post('/upload', formDate).catch
+  const data: any = await $axios.post('/upload', formDate).catch()
   // callback(url)
   const name = (data.url && data.url[0]) || ''
   return name

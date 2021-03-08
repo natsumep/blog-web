@@ -39,7 +39,8 @@ export default class Index extends Vue {
   }
 
   get formName() {
-    return this.wordInfo.content
+    const author = this.wordInfo.author
+    return `「${author ? author + ' ' : ''}${this.wordInfo.from}」`
   }
 
   mounted() {
