@@ -45,7 +45,7 @@ import 'tui-color-picker/dist/tui-color-picker.css'
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax'
 import '@toast-ui/editor/dist/i18n/zh-cn.js'
 import uml from '@toast-ui/editor-plugin-uml'
-import chart from '@toast-ui/editor-plugin-chart'
+// import chart from '@toast-ui/editor-plugin-chart'
 // import tableMergedCell from '@toast-ui/editor-plugin-table-merged-cell'
 // import fontSizePicker from 'tui-font-size-picker';
 import { Component, Vue, Emit, Model, Watch } from 'vue-property-decorator'
@@ -84,7 +84,7 @@ export default class Upload extends Vue {
       [codeSyntaxHighlight, { hljs }],
       colorSyntax,
       uml,
-      chart,
+      // chart,
       // tableMergedCell,
       // fontSizePicker
     ],
