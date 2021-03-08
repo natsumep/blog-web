@@ -29,7 +29,7 @@ export default {
     '@/plugins/axios.server',
     '@/plugins/axios-accessor',
     '@/plugins/visit-view.client',
-    '@/plugins/ba.client',
+    // '@/plugins/ba.client',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
