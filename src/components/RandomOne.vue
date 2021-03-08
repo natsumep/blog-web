@@ -10,7 +10,7 @@
     <div class="flex flex-item-center">
       <div class="w-max">
         <p>{{ word }}</p>
-        <p style="text-align: right">----{{ formName }}</p>
+        <p style="text-align: right">——{{ formName }}</p>
       </div>
       <like-icon
         v-if="wordInfo.id"
