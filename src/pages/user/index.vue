@@ -27,7 +27,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item v-if="!isEdit" label="账号" prop="username">
-                <el-input v-model="ruleForm.username"></el-input>
+                <el-input v-model="ruleForm.username" maxlength="30"></el-input>
               </el-form-item>
               <el-form-item v-if="isEdit" label="账号">
                 <span>{{ ruleForm.username }}</span>
@@ -36,6 +36,7 @@
               <el-form-item v-if="!isEdit" label="密码" prop="password">
                 <el-input
                   v-model="ruleForm.password"
+                  maxlength="18"
                   type="password"
                   autocomplete="off"
                 ></el-input>
@@ -43,12 +44,13 @@
               <el-form-item v-if="!isEdit" label="确认密码" prop="checkPass">
                 <el-input
                   v-model="ruleForm.checkPass"
+                  maxlength="18"
                   type="password"
                   autocomplete="off"
                 ></el-input>
               </el-form-item>
               <el-form-item label="昵称" prop="nickname">
-                <el-input v-model="ruleForm.nickname"></el-input>
+                <el-input v-model="ruleForm.nickname" maxlength="18"></el-input>
               </el-form-item>
               <el-form-item label="姓名">
                 <el-input v-model="ruleForm.name"></el-input>
@@ -124,6 +126,7 @@
 
 import isEmail from 'validator/es/lib/isEmail'
 import isMobilePhone from 'validator/es/lib/isMobilePhone'
+import { setTokenInfo } from '@/utils/passwordManagement'
 import { userStore } from '~/utils/store-accessor'
 export default {
   data() {
@@ -237,8 +240,12 @@ export default {
             msg = '编辑'
           }
           this.$api[api](this.ruleForm).then(
-            () => {
+            (data) => {
               const obj = JSON.parse(JSON.stringify(this.ruleForm))
+              if (!userStore.token) {
+                const { token, expiresIn } = data
+                setTokenInfo(token, expiresIn)
+              }
               userStore.set_userinfo(obj)
               this.$message.success(msg + '成功')
               this.$router.replace('/')
