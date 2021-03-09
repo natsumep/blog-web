@@ -143,15 +143,41 @@ export default {
       },
       isEdit: false,
       rules: {
-        nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
-        username: [{ required: true, message: '请选择账号', trigger: 'blur' }],
-        password: [{ required: true, message: '请选择密码', trigger: 'blur' }],
-        email: [{ validator: this.validatorEmail, trigger: 'blur' }],
-        phone: [{ validator: this.validatorPhone, trigger: 'blur' }],
-        home: [{ validator: this.validatorHome, trigger: 'blur' }],
+        nickname: [
+          {
+            required: true,
+            message: '请输入昵称',
+            trigger: ['blur', 'change'],
+          },
+        ],
+        username: [
+          {
+            required: true,
+            message: '请选择账号',
+            trigger: ['blur', 'change'],
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: '请选择密码',
+            trigger: ['blur', 'change'],
+          },
+        ],
+        email: [
+          { validator: this.validatorEmail, trigger: ['blur', 'change'] },
+        ],
+        phone: [
+          { validator: this.validatorPhone, trigger: ['blur', 'change'] },
+        ],
+        home: [{ validator: this.validatorHome, trigger: ['blur', 'change'] }],
         checkPass: [
-          { validator: this.validatePass2, trigger: 'blur' },
-          { required: true, message: '请再次输入密码', trigger: 'blur' },
+          { validator: this.validatePass2, trigger: ['blur', 'change'] },
+          {
+            required: true,
+            message: '请再次输入密码',
+            trigger: ['blur', 'change'],
+          },
         ],
       },
     }
@@ -192,7 +218,7 @@ export default {
     validatePass2(rule, value, callback) {
       if (value === '') {
         callback(new Error('请再次输入密码'))
-      } else if (value !== this.ruleForm.pass) {
+      } else if (value !== this.ruleForm.password) {
         callback(new Error('两次输入密码不一致!'))
       } else {
         callback()

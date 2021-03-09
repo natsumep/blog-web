@@ -10,16 +10,24 @@
     <div class="flex flex-item-center">
       <div class="w-max">
         <p>{{ word }}</p>
-        <p style="text-align: right">——{{ formName }}</p>
+        <p class="author">——{{ formName }}</p>
       </div>
-      <like-icon
-        v-if="wordInfo.id"
-        style="padding-left: 10px"
-        :is-load="likeLoading"
-        :is-active="isLiked"
-        @change="likeChange"
-      ></like-icon>
+      <div>
+        <like-icon
+          v-if="wordInfo.id"
+          style="padding-left: 10px; cursor: pointer; position: relative"
+          :is-load="likeLoading"
+          :is-active="isLiked"
+          @change="likeChange"
+        ></like-icon>
+        <div class="likes">
+          {{ likeLenght }}
+        </div>
+      </div>
     </div>
+    <nuxt-link to="/api/word"
+      ><div class="want-api">我也要用这个api</div></nuxt-link
+    >
   </el-card>
 </template>
 <script lang="ts">
@@ -30,12 +38,16 @@ export default class Index extends Vue {
   isLiked = false
   wordInfo: any = {
     content: '一日不见兮，思之如狂。',
-    contentForm: '凤求凰 / 琴歌',
-    contentFormWho: '司马相如',
+    from: '凤求凰 / 琴歌',
+    author: '司马相如',
   }
 
   get word() {
     return this.wordInfo.content
+  }
+
+  get likeLenght() {
+    return this.isLiked ? this.wordInfo.likes + 1 : this.wordInfo.likes
   }
 
   get formName() {
@@ -62,3 +74,31 @@ export default class Index extends Vue {
   }
 }
 </script>
+
+<style lang="less" scoped>
+.author {
+  text-align: right;
+  color: #999;
+  font-size: 14px;
+  margin-top: 12px;
+}
+.likes {
+  color: #333;
+  margin-left: 4px;
+  text-align: center;
+  font-size: 12px;
+}
+.want-api {
+  background-image: linear-gradient(135deg, #fec163 10%, #de4313 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 12px;
+  margin-bottom: -10px;
+  margin-top: 10px;
+  transition: all 0.3s;
+  transform-origin: left;
+}
+.want-api:hover {
+  transform: scale(1.1);
+}
+</style>
