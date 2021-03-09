@@ -108,8 +108,18 @@
                 <p class="abstr">{{ item.abstract }}</p>
               </div>
               <div class="txt">
+                <nuxt-link
+                  class="flex margin user-item"
+                  :to="'/' + item.userHome"
+                >
+                  <img
+                    class="user-avatar"
+                    :src="item.userAvatar || userDefault"
+                    alt="头像"
+                  />
+                  <p class="">{{ item.userNickname }}</p>
+                </nuxt-link>
                 <p class="margin">{{ item.time }}</p>
-                <p class="margin">{{ item.author }}</p>
                 <p class="margin">
                   <i
                     style="font-size: 16px; margin-right: 8px"
@@ -226,6 +236,7 @@ async function getArticleList(param: any, $api: any) {
   },
 })
 export default class Home extends Vue {
+  userDefault = require('~/assets/images/user-default.png')
   searchText = ''
   searchTextVal = ''
   page = 1
@@ -378,6 +389,7 @@ a {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
+
 .item {
   min-height: 90px;
   overflow: hidden;
@@ -390,7 +402,16 @@ a {
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   }
 }
-
+.user-item {
+  // border: 1px solid transparent;
+  border-radius: 30px;
+  padding: 2px 5px;
+}
+.user-item:hover {
+  // border: 1px solid red;
+  background-image: linear-gradient(135deg, #fec163 10%, #de4313 100%);
+  color: #fff;
+}
 .txt {
   display: flex;
   align-items: center;
@@ -399,7 +420,12 @@ a {
   color: #909399;
   margin-top: 8px;
 }
-
+.user-avatar {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
 .title-wrapper {
   margin-right: 10px;
   display: flex;
