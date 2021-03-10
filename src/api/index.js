@@ -2,6 +2,7 @@ import { article } from './article'
 import { user } from './user'
 import { comments } from './comments'
 import { word } from './oword'
+import { qa } from './qa'
 import { SERVER_PATH as serverPath } from '~/config/index'
 
 export default {
@@ -39,4 +40,5 @@ export default {
   user,
   comments,
   word,
+  qa,
 }
