@@ -242,11 +242,12 @@ export default {
           this.$api[api](this.ruleForm).then(
             (data) => {
               const obj = JSON.parse(JSON.stringify(this.ruleForm))
+              // 仅在没有登录的注册才写入用户信息
               if (!userStore.token) {
                 const { token, expiresIn } = data
                 setTokenInfo(token, expiresIn)
+                userStore.set_userinfo(obj)
               }
-              userStore.set_userinfo(obj)
               this.$message.success(msg + '成功')
               this.$router.replace('/')
             },

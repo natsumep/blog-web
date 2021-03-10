@@ -9,9 +9,19 @@ export default {
   // },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'blog-web',
+    title: 'start coding',
     meta: [
       { charset: 'utf-8' },
+      {
+        name: 'description',
+        content:
+          '一个包含技术问答、博客、前端、后端、web、html、css、javascript、typescript、后端的技术交流平台。你可以编写博客、提问、访问开放api。',
+      },
+      {
+        name: 'keywords',
+        content:
+          '技术问答,博客,前端,后端,web,html,css,javascript,typescript,后端,nuxt,开发者社区,技术笔记,api',
+      },
       {
         name: 'viewport',
         content:
