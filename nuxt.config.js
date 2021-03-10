@@ -9,7 +9,7 @@ export default {
   // },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'start coding',
+    title: '博客',
     meta: [
       { charset: 'utf-8' },
       {
@@ -43,6 +43,7 @@ export default {
     '@/plugins/axios.server',
     '@/plugins/axios-accessor',
     '@/plugins/visit-view.client',
+    '@/plugins/onInit',
     // '@/plugins/ba.client',
   ],
 

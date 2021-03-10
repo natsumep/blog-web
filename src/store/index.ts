@@ -12,9 +12,11 @@ export const actions = {
     if (process.server) {
       const userToken = getCookie(req.headers.cookie, '_t')
       if (userToken) {
-        const userDetail = await $api['user/detail']()
-        userStore.set_userinfo(userDetail)
-        userStore.set_user_token(userToken)
+        try {
+          const userDetail = await $api['user/detail']()
+          userStore.set_userinfo(userDetail)
+          userStore.set_user_token(userToken)
+        } catch (e) {}
       }
       // const token = req.;
     }

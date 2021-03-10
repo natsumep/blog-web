@@ -40,22 +40,6 @@
           ></el-button>
         </el-input>
       </div>
-      <!-- <el-select
-        v-model="type"
-        size="mini"
-        filterable
-        clearable
-        placeholder="请选择分类"
-        @change="resetList"
-      >
-        <el-option
-          v-for="(item, index) in typeList"
-          :key="index"
-          :label="item.type"
-          :value="item.type"
-        >
-        </el-option>
-      </el-select> -->
     </div>
     <template v-if="list.length">
       <div v-for="item in list" :key="item.id" class="item">
@@ -95,7 +79,7 @@
             </svg>
             <div class="flex-auto title-wrapper">
               <div>
-                <p class="title">
+                <div class="title">
                   {{ item.title }}
                   <span
                     v-for="(option, index) in item.type"
@@ -104,7 +88,7 @@
                     :class="item.bgc"
                     >{{ option }}</span
                   >
-                </p>
+                </div>
                 <p class="abstr">{{ item.abstract }}</p>
               </div>
               <div class="txt">
@@ -120,20 +104,20 @@
                   <p class="">{{ item.userNickname }}</p>
                 </nuxt-link>
                 <p class="margin">{{ item.time }}</p>
-                <p class="margin">
+                <div class="margin">
                   <i
                     style="font-size: 16px; margin-right: 8px"
                     class="el-icon-view"
                   ></i
                   >{{ item.views || 0 }}
-                </p>
-                <p>
+                </div>
+                <div>
                   <i
                     style="font-size: 16px; margin-right: 4px"
                     class="el-icon-chat-line-round"
                   ></i
                   >{{ item.commentLength || 0 }}
-                </p>
+                </div>
               </div>
             </div>
             <img
