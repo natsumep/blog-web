@@ -12,7 +12,7 @@
           <!-- 最新问答 -->
           <div v-if="qaList.length">
             <div v-for="(item, index) in qaList" :key="index">
-              <router-link class="qa-list" :to="`/qa-detail/${item.id}`">
+              <nuxt-link class="qa-list" :to="`/q/${item.id}`">
                 <div class="num-wrapper has-answer">
                   <p class="num">{{ item.answerTotal || 0 }}</p>
                   <p class="txt">回答</p>
@@ -43,7 +43,7 @@
                     >
                   </p>
                 </div>
-              </router-link>
+              </nuxt-link>
             </div>
 
             <el-pagination
@@ -110,9 +110,7 @@ export default class Index extends Vue {
     return userStore.token
   }
 
-  mounted() {
-    this.initData()
-  }
+  mounted() {}
 
   async initData() {
     const params = {
@@ -135,7 +133,7 @@ export default class Index extends Vue {
 
   ask() {
     this.token
-      ? this.$router.push({ path: '/ask' })
+      ? this.$router.push({ path: '/q/build' })
       : userStore.set_login_dialog_visible(true)
   }
 }

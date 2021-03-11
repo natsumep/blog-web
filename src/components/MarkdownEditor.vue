@@ -1,6 +1,7 @@
 <template>
   <div
-    style="min-height: 500px; margin-bottom: 40px; height: calc(100vh - 210px)"
+    style="margin-bottom: 40px; height: calc(100vh - 210px)"
+    :style="{ 'min-height': minHeight + 'px', height: height }"
   >
     <editor
       ref="viweMain"
@@ -48,7 +49,14 @@ import uml from '@toast-ui/editor-plugin-uml'
 // import chart from '@toast-ui/editor-plugin-chart'
 // import tableMergedCell from '@toast-ui/editor-plugin-table-merged-cell'
 // import fontSizePicker from 'tui-font-size-picker';
-import { Component, Vue, Emit, Model, Watch } from 'vue-property-decorator'
+import {
+  Component,
+  Vue,
+  Emit,
+  Model,
+  Watch,
+  Prop,
+} from 'vue-property-decorator'
 import { updateFile } from '~/utils/uploadFile'
 ;(hljs as any).registerLanguage('js', javascript)
 ;(hljs as any).registerLanguage('java', java)
@@ -95,6 +103,8 @@ export default class Upload extends Vue {
   @Emit()
   change() {}
 
+  @Prop({ default: 500 }) minHeight!: number
+  @Prop({ default: 'calc(100vh - 210px)' }) height!: string
   @Watch('value')
   changeVal(data: string) {
     this.$refs.viweMain &&

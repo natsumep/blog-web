@@ -1,12 +1,17 @@
 <template>
   <div class="comment-wrapper">
-    <div v-if="hasMyCommoent" class="my-commoent">
+    <div v-if="hasMyComment" class="my-commoent">
       <img class="avatar" :src="avatar" alt="" />
-      <comment-box :rows="4" :has-cancel="false" @refresh="getList" />
+      <comment-box
+        :rows="4"
+        :has-cancel="false"
+        :post-api="postApi"
+        @refresh="getList"
+      />
     </div>
     <div class="comment-li">
-      <p v-if="hasMyCommoent" class="total-comment">
-        <span class="solid">|</span>全部评论
+      <p v-if="hasMyComment" class="total-comment">
+        <span class="solid">|</span>全部{{ type }}
       </p>
       <p v-if="!comments.length" class="no-data">暂无数据</p>
       <template v-else>
@@ -60,6 +65,10 @@
                 :pid="pid"
                 :index="index"
                 :email="email"
+                :answer-id="qaId"
+                :id-name="idName"
+                :post-api="postApi"
+                :type="type"
                 @refresh="getList"
                 @hideBox="
                   item.showCommentBox = false
@@ -96,14 +105,33 @@ export default {
     CommentBox,
   },
   props: {
+    qaId: {
+      type: [String, Number],
+      default: '',
+      require: true,
+    },
+    idName: {
+      type: String,
+      default: '',
+      require: true,
+    },
     api: {
       type: String,
       default: '',
       require: true,
     },
-    hasMyCommoent: {
+    postApi: {
+      type: String,
+      default: '',
+      require: true,
+    },
+    hasMyComment: {
       type: Boolean,
       default: true,
+    },
+    type: {
+      type: String,
+      default: '评论',
     },
   },
   data() {
@@ -134,13 +162,16 @@ export default {
   methods: {
     getList() {
       if (this.api) {
-        this.$api[this.api]({ articleId: this.$route.params.id })
+        const params = {}
+        params[this.idName] = this.qaId ? this.qaId : this.$route.params.id
+        this.$api[this.api](params)
           .then((data) => {
             this.comments = data
             this.comments.forEach((item) => {
               item.showCommentBox = false
               item.showMoreNum = 2
             })
+            this.$emit('showComments', this.comments.length)
           })
           .catch()
       }
@@ -156,6 +187,10 @@ export default {
     },
     setItem(item) {
       this.pid = item.id
+      if (this.idName === 'qaId' && item.isParent) {
+        this.pid = ''
+        // 如果是回复的回复  pid 给回复的id, 路由要给答案的id
+      }
       ;(item.nickName || item.user.nickName) &&
         (this.nickName = item.nickName || item.user.nickName)
       ;(item.email || item.user.email) &&

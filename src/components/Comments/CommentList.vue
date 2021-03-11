@@ -84,6 +84,11 @@ export default {
       type: Object,
       default: () => {},
     },
+    postApi: {
+      type: String,
+      default: '',
+      require: true,
+    },
   },
   data() {
     return {
@@ -110,7 +115,7 @@ export default {
       this.$emit('showBox')
     },
     deleteItem() {
-      this.$api['comments/delete']({ articleId: this.item.id })
+      this.$api[this.postApi]({ articleId: this.item.id })
         .then(() => {
           this.$message.success('删除成功')
           this.$emit('refresh')

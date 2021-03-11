@@ -70,9 +70,28 @@ import { userStore } from '~/utils/store-accessor'
 
 export default {
   props: {
+    answerId: {
+      type: [String, Number],
+      default: '',
+      require: true,
+    },
+    idName: {
+      type: String,
+      default: '',
+      require: true,
+    },
+    postApi: {
+      type: String,
+      default: '',
+      require: true,
+    },
     layout: {
       type: String,
       default: 'block', // 'flex' 浮窗使用
+    },
+    type: {
+      type: String,
+      default: '评论',
     },
     rows: {
       type: Number,
@@ -97,7 +116,7 @@ export default {
   },
   data() {
     return {
-      placeholder: '写下你的评论...',
+      placeholder: `写下你的${this.type}...`,
       hasInfo: false,
       visible: false,
       comment: '',
@@ -156,11 +175,11 @@ export default {
       this.visible = false
       const comment = this.comment.trim()
       if (!comment) {
-        this.$message.error('请输入评论内容')
+        this.$message.error(`请输入${this.type}内容`)
         return
       }
       if (comment.length > 200) {
-        this.$message.error('评论内容最多支持200')
+        this.$message.error(`${this.type}内容最多支持200`)
         return
       }
       // 未登录的话让他自己掰个昵称或邮箱
@@ -180,7 +199,14 @@ export default {
         nickName: this.commentNickName,
         email: this.commentEmail,
       }
-      this.$api['comments/create'](data)
+      debugger
+      if (this.idName === 'qaId') {
+        // 如果是回复的回复  pid 给回复的id, 路由要给答案的id
+        // 如果是回复答案  pid 不传, 路由要给答案的id
+        data.answerId = this.answerId
+      }
+      data[this.idName] = this.$route.params.id
+      this.$api[this.postApi](data)
         .then(() => {
           this.comment = ''
           this.$message.success('新增成功')

@@ -107,7 +107,11 @@
 
     <!-- 评论区 -->
     <div class="comments">
-      <comments :api="'comments/list'" />
+      <comments
+        :api="'comments/list'"
+        post-api="comments/create"
+        id-name="articleId"
+      />
     </div>
   </div>
 </template>
