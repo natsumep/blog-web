@@ -26,7 +26,7 @@
       </div>
     </div>
     <nuxt-link to="/api/word"
-      ><div class="want-api">我也要用这个api</div></nuxt-link
+      ><div class="want-api">我也要用这个接口</div></nuxt-link
     >
   </el-card>
 </template>
@@ -57,17 +57,28 @@ export default class Index extends Vue {
 
   mounted() {
     this.loadData()
+    setInterval(() => {
+      this.loadData()
+    }, 10000)
   }
 
   async loadData() {
-    this.wordInfo = await (this as any).$api['word/index']()
-    this.isLiked = false
+    try {
+      this.wordInfo = await (this as any).$api['word/index']()
+      this.isLiked = false
+    } catch (e) {
+      this.$message.warning('请求过于频繁，缓缓 缓缓...')
+    }
   }
 
   async likeChange() {
     this.likeLoading = true
     const url = this.isLiked ? 'word/unlike' : 'word/like'
-    await (this as any).$api[url]({ id: this.wordInfo.id })
+    try {
+      await (this as any).$api[url]({ id: this.wordInfo.id })
+    } catch (e) {
+      this.$message.warning('请求过于频繁，缓缓 缓缓...')
+    }
     this.isLiked = !this.isLiked
     this.likeLoading = false
     // isLike

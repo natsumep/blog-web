@@ -24,9 +24,12 @@ const pulgin: Plugin = function (content) {
   })
 
   $axios.onError((responseError: any) => {
+    const config = responseError.config || {}
+    const resData = responseError?.data || responseError?.request || {}
+
     if (responseError.message === 'Network Error') {
-      $message.error('网络异常')
-      return '网络异常'
+      !config.notShowError && $message.error('网络异常')
+      return Promise.reject(resData)
     }
     if (
       responseError.code === 'ECONNABORTED' &&
@@ -48,11 +51,10 @@ const pulgin: Plugin = function (content) {
           fn: promise
         }, a, b);
       }) */
-      MessageBox.alert('当前网络存在异常，请重试', '提示')
-      return '网络超时'
+      !config.notShowError &&
+        MessageBox.alert('当前网络存在异常，请重试', '提示')
+      return Promise.reject(resData)
     }
-    const resData = responseError?.data || responseError?.request || {}
-    const config = responseError.config || {}
     const code = resData.code * 1 || resData.status // 强转数字
     const msg = resData.msg || ''
     switch (code) {

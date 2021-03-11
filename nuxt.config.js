@@ -70,7 +70,7 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    retry: { retries: 3 },
+    // retry: { retries: 3 },
     baseURL: SERVER_PATH,
   },
 
@@ -91,9 +91,10 @@ export default {
       lang: 'zh-CN',
     },
   },
-  router: {
-    // middleware: 'view',
-  },
+  // router: {
+  //   // middleware: 'view',
+  //   middleware: 'auth',
+  // },
   // Content module configuration: https://go.nuxtjs.dev/config-content
   content: {},
 

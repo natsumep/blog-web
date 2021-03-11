@@ -89,7 +89,10 @@ export function setVuexToken(token = Cookies.get('_t')) {
   userStore.set_user_token(token)
 }
 
-export function clearAll() {
-  setVuexToken()
+export function removeTokenCookie() {
   Cookies.remove('_t')
+}
+export function clearAll() {
+  removeTokenCookie()
+  setVuexToken()
 }

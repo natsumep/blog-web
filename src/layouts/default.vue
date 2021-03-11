@@ -9,10 +9,18 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { removeTokenCookie } from '~/utils/passwordManagement'
 @Component({
   fetch() {},
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  middleware = 'auto'
+  mounted() {
+    if (!this.$store.state?.user?.token) {
+      removeTokenCookie()
+    }
+  }
+}
 </script>
 <style>
 html {
