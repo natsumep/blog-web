@@ -227,8 +227,8 @@ export default {
         callback()
       }
     },
-    getUser() {
-      this.ruleForm = userStore.userinfoObj
+    async getUser() {
+      this.ruleForm = await this.$api['user/detail']({ edit: true })
     },
     submitForm() {
       this.$refs.userForm.validate((valid) => {

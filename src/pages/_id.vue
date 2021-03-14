@@ -1,9 +1,9 @@
 <template>
   <div class="wrapper">
     <div class="article-tag">
-      <!-- <div style="margin-bottom: 15px">
-        <random-one></random-one>
-      </div> -->
+      <div style="margin-bottom: 15px">
+        <about-me :userinfo="userHomeInfo"></about-me>
+      </div>
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>文章标签</span>
@@ -18,7 +18,16 @@
         >
           {{ item.type }}({{ item.length }})
         </el-tag>
+        <div v-if="!typeList.length" style="color: #999; padding: 57px">
+          没有任何标签信息。
+        </div>
       </el-card>
+    </div>
+    <div v-if="isMyself">
+      <el-tabs v-model="activeName" type="card" @tab-click="handleTabClick">
+        <el-tab-pane label="全部文章" name="all"></el-tab-pane>
+        <el-tab-pane label="私人文章" name="private"></el-tab-pane>
+      </el-tabs>
     </div>
     <div class="filter-wrapper">
       <p>
@@ -128,11 +137,15 @@ async function getArticleList(param: any, $api: any) {
         },
         $api
       ),
-      $api['article/type'](),
+      $api['article/type']({
+        home: route.params.id || '',
+      }),
+      $api['user/home']({ id: route.params.id }),
     ])
     return {
       ...data[0],
       typeList: data[1],
+      userHomeInfo: data[2],
       type: t,
       searchText: q,
       searchTextVal: q,
@@ -142,6 +155,8 @@ async function getArticleList(param: any, $api: any) {
 })
 export default class Home extends Vue {
   userDefault = require('~/assets/images/user-default.png')
+  isMyself = false
+  activeName = 'all'
   searchText = ''
   searchTextVal = ''
   page = 1
@@ -151,6 +166,7 @@ export default class Home extends Vue {
   total = 0
   typeList = []
   type = ''
+  userHomeInfo = userStore.userinfoObj
   chartdata: any = {
     labels: [],
     datasets: [
@@ -208,11 +224,17 @@ export default class Home extends Vue {
   }
 
   mounted() {
+    this.isMyself = userStore.userinfoObj.home === this.$route.params.id
     document.addEventListener('scroll', this.handleScroll, true)
   }
 
   destroyed() {
     document.removeEventListener('scroll', this.handleScroll, true)
+  }
+
+  handleTabClick() {
+    this.resetList()
+    this.getType()
   }
 
   handleScroll() {
@@ -262,7 +284,13 @@ export default class Home extends Vue {
   }
 
   getType() {
-    this.$axios.get('articleType').then((data: any) => {
+    const params: any = {
+      home: this.$route.params.id || '',
+    }
+    if (this.activeName === 'private') {
+      params.isPrivate = true
+    }
+    ;(this as any).$api['article/type'](params).then((data: any) => {
       this.typeList = data
     })
   }
@@ -275,6 +303,9 @@ export default class Home extends Vue {
     }
     this.searchText && (params.searchText = this.searchText)
     this.type && (params.type = this.type)
+    if (this.activeName === 'private') {
+      params.isPrivate = true
+    }
     const data = await getArticleList(params, (this as any).$api)
     const { list = [], total = 0 } = data
     this.list = [...list, ...this.list]
@@ -284,6 +315,9 @@ export default class Home extends Vue {
 </script>
 
 <style lang="less" scoped>
+/deep/ .el-tabs__nav {
+  background: #fff;
+}
 .wrapper {
   width: 850px;
   min-height: calc(100vh - 66px);

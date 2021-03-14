@@ -22,4 +22,10 @@ export const user = [
       value: '',
     },
   },
+  {
+    name: 'home',
+    method: 'GET',
+    path: 'user/home/:id',
+    serverPath,
+  },
 ]

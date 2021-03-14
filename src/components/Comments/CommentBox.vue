@@ -199,7 +199,6 @@ export default {
         nickName: this.commentNickName,
         email: this.commentEmail,
       }
-      debugger
       if (this.idName === 'qaId') {
         // 如果是回复的回复  pid 给回复的id, 路由要给答案的id
         // 如果是回复答案  pid 不传, 路由要给答案的id

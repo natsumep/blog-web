@@ -10,6 +10,9 @@
         text-color="#fff"
         active-text-color="#409eff"
       >
+        <el-menu-item v-if="token" :index="`/${userInfo.home}`"
+          >我的主页</el-menu-item
+        >
         <el-menu-item index="/">文章列表</el-menu-item>
         <el-menu-item index="/article/edit">添加文章</el-menu-item>
         <el-menu-item index="/q">问答</el-menu-item>
@@ -34,6 +37,7 @@
               class="pop-btn"
               >编辑</router-link
             >
+
             <div class="pop-btn" role="button" @click="loginToggle">
               {{ token ? '退出' : '登录' }}
             </div>
