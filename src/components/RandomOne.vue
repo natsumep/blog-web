@@ -36,6 +36,7 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class Index extends Vue {
   likeLoading = false
   isLiked = false
+  timer: any = null
   wordInfo: any = {
     content: '一日不见兮，思之如狂。',
     from: '凤求凰 / 琴歌',
@@ -57,9 +58,13 @@ export default class Index extends Vue {
 
   mounted() {
     this.loadData()
-    setInterval(() => {
+    this.timer = setInterval(() => {
       this.loadData()
     }, 10000)
+  }
+
+  destroyed() {
+    this.timer && clearInterval(this.timer)
   }
 
   async loadData() {
