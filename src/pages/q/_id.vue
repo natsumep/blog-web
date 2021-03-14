@@ -34,16 +34,6 @@
           }}
         </p>
         <p class="time">创建于 {{ detail.createTime }}</p>
-        <p class="time">
-          <span
-            role="button"
-            class="show-comment"
-            @click="openComment = !openComment"
-          >
-            评论 {{ detail.supplementTotal || 0 }}</span
-          >
-          · 浏览 {{ detail.views || 0 }}
-        </p>
       </div>
 
       <markdown-viewer v-if="detail.val" :value="detail.val" height="100%" />
@@ -55,14 +45,24 @@
           >{{ tag }}</span
         >
       </div>
+      <div style="padding-bottom: 10px">
+        <span
+          role="button"
+          class="show-comment"
+          @click="openComment = !openComment"
+        >
+          问题补充 [ {{ detail.supplementTotal || 0 }} ]</span
+        >
+        <span style="font-size: 20px; margin: 0 3px"> · </span
+        ><span style="color: #888"> 浏览：{{ detail.views || 0 }}</span>
+      </div>
       <!-- 评论 -->
       <comments
-        v-show="openComment"
+        :show-comment="!!openComment"
         api="qa/getsupplement"
         post-api="qa/supplement"
         id-name="qaId"
         type="问题补充"
-        @showComments="showComments"
       />
     </div>
     <p class="title-h1 qa-detail">{{ total || 0 }} 个回复</p>
@@ -128,6 +128,25 @@
     </div>
     <div v-show="userStore.token">
       <p class="title-h1 qa-detail">撰写回答</p>
+      <div
+        class="widget-vertical-three-main"
+        style="height: 400px; background: #eee; margin-top: 10px"
+      >
+        <div class="flex">
+          <el-button type="primary" @click="submit">发表</el-button>
+          <el-checkbox v-model="anonymous" style="margin-right: 30px"
+            >是否匿名</el-checkbox
+          >
+        </div>
+        <editor
+          ref="viweMain"
+          height="100%"
+          :initial-value="editorText"
+          :options="editorOptions"
+          initial-edit-type="markdown"
+          preview-style="vertical"
+        />
+      </div>
       <!-- <ask :not-header="true" @answer="getAnswerList" /> -->
     </div>
   </div>
@@ -148,7 +167,7 @@ export default {
     return {
       userStore,
       defaultAvatar: require('~/assets/images/user-default.png'),
-      openComment: true,
+      openComment: false,
       detail: {},
       total: 0,
       answerList: [],
@@ -161,9 +180,9 @@ export default {
   },
   destroyed() {},
   methods: {
-    showComments(val) {
-      this.openComment = val
-    },
+    // showComments(val) {
+    //   this.openComment = val
+    // },
     changeHasMyComment(index, item) {
       this.$set(this.answerList, index, item)
     },
@@ -211,7 +230,7 @@ export default {
 
 <style lang="less" scoped>
 .section {
-  padding: 50px;
+  padding: 25px 50px;
   background-color: rgba(255, 255, 255, 0.9);
   position: relative;
 }
@@ -257,12 +276,8 @@ export default {
 }
 
 .show-comment {
+  color: #409eff;
   cursor: pointer;
-  text-decoration: underline;
-
-  &:hover {
-    color: #ffd04b;
-  }
 }
 
 .avatar {
@@ -274,7 +289,10 @@ export default {
 }
 
 .tag-outter {
-  margin: 24px 0;
+  margin: 12px 0;
+}
+/deep/ .total-comment {
+  display: none;
 }
 
 .tag-wrapper {

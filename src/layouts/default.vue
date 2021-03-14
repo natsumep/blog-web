@@ -16,7 +16,7 @@ import { removeTokenCookie } from '~/utils/passwordManagement'
 export default class Home extends Vue {
   middleware = 'auto'
   mounted() {
-    if (!this.$store.state?.user?.token) {
+    if (!this.$store.getters['user/token']) {
       removeTokenCookie()
     }
   }

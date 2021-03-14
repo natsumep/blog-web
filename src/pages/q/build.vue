@@ -8,7 +8,7 @@
       margin: 20px auto 0 auto;
     "
   >
-    <div v-if="!notHeader" class="widget-vertical-three-header">
+    <div class="widget-vertical-three-header">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/q' }">问答</el-breadcrumb-item>
@@ -53,7 +53,7 @@ function getHTMLLength(html) {
 export default {
   beforeRouteEnter(_to, _from, next) {
     next((vm) => {
-      if (vm.$route.params.id && this.notHeader) {
+      if (vm.$route.params.id) {
         vm.loadData()
       } else {
         vm.setVal({})
@@ -67,12 +67,6 @@ export default {
     } else {
       next()
     }
-  },
-  props: {
-    notHeader: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -119,31 +113,21 @@ export default {
         anonymous: this.anonymous,
         length,
       }
-      if (!this.notHeader) {
-        obj.title = title
-        obj.type = type
-        obj.val = val
-      } else {
-        obj.answer = val
-      }
+
+      obj.title = title
+      obj.type = type
+      obj.val = val
+
       if (this.checkData(obj)) {
-        let api = 'qa/create'
-        let msg = '添加'
-        if (this.notHeader) {
-          api = 'qa/answer'
-          msg = '回答'
-          obj.qaId = this.$route.params.id
-        }
+        const api = 'qa/create'
+        const msg = '添加'
+
         this.$api[api](obj).then(
           () => {
             this.$message.success(msg + '成功')
             this.hadEdit = false
-            if (!this.notHeader) {
-              this.$router.replace('/q')
-            } else {
-              this.setVal({})
-              this.$emit('answer')
-            }
+
+            this.$router.replace('/q')
           },
           () => {
             this.$message.error(msg + '失败，请重试')
@@ -152,13 +136,8 @@ export default {
       }
     },
     checkData(data) {
-      const { title, val, answer } = data
-      if (this.notHeader) {
-        if (!answer.length) {
-          this.$message.error('内容存在空值，请输入完再提交')
-          return false
-        }
-      } else if (!title.length || !val.length) {
+      const { title, val } = data
+      if (!title.length || !val.length) {
         this.$message.error('标题、内容存在空值，请输入完再提交')
         return false
       }

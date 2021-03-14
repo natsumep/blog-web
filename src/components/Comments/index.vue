@@ -1,11 +1,12 @@
 <template>
   <div class="comment-wrapper">
-    <div v-if="hasMyComment" class="my-commoent">
+    <div v-if="hasMyComment && showComment" class="my-commoent">
       <img class="avatar" :src="avatar" alt="" />
       <comment-box
         :rows="4"
-        :has-cancel="false"
         :post-api="postApi"
+        :has-cancel="false"
+        :id-name="idName"
         @refresh="getList"
       />
     </div>
@@ -108,7 +109,10 @@ export default {
     qaId: {
       type: [String, Number],
       default: '',
-      require: true,
+    },
+    showComment: {
+      type: Boolean,
+      default: true,
     },
     idName: {
       type: String,
