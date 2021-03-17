@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card">
     <div slot="header" class="clearfix">
-      <span>one</span>
+      <span>句子杂货铺</span>
       <el-button style="float: right; padding: 3px 0" type="text">
         <i class="el-icon-refresh" style="font-size: 20px" @click="loadData">
         </i>
@@ -39,7 +39,7 @@ export default class Index extends Vue {
   timer: any = null
   wordInfo: any = {
     content: '一日不见兮，思之如狂。',
-    from: '凤求凰 / 琴歌',
+    source: '凤求凰 / 琴歌',
     author: '司马相如',
   }
 
@@ -53,7 +53,7 @@ export default class Index extends Vue {
 
   get formName() {
     const author = this.wordInfo.author
-    return `「${author ? author + ' ' : ''}${this.wordInfo.from}」`
+    return `「${author ? author + ' ' : ''}${this.wordInfo.source}」`
   }
 
   mounted() {
@@ -69,7 +69,7 @@ export default class Index extends Vue {
 
   async loadData() {
     try {
-      this.wordInfo = await (this as any).$api['word/index']()
+      this.wordInfo = await (this as any).$api['sentence/index']()
       this.isLiked = false
     } catch (e) {
       this.$message.warning('请求过于频繁，缓缓 缓缓...')
@@ -77,8 +77,10 @@ export default class Index extends Vue {
   }
 
   async likeChange() {
+    // 如果喜欢不让取消了 接口也停用了
+    if (this.isLiked) return
     this.likeLoading = true
-    const url = this.isLiked ? 'word/unlike' : 'word/like'
+    const url = this.isLiked ? 'sentence/unlike' : 'sentence/like'
     try {
       await (this as any).$api[url]({ id: this.wordInfo.id })
     } catch (e) {
@@ -106,7 +108,7 @@ export default class Index extends Vue {
 }
 .want-api {
   background-image: linear-gradient(135deg, #fec163 10%, #de4313 100%);
-  -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   font-size: 12px;
   margin-bottom: -10px;

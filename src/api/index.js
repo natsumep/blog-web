@@ -1,7 +1,7 @@
 import { article } from './article'
 import { user } from './user'
 import { comments } from './comments'
-import { word } from './oword'
+import { sentence } from './sentence'
 import { qa } from './qa'
 import { SERVER_PATH as serverPath } from '~/config/index'
 
@@ -39,6 +39,6 @@ export default {
   article,
   user,
   comments,
-  word,
+  sentence,
   qa,
 }

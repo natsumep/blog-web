@@ -1,4 +1,4 @@
-export const word = [
+export const sentence = [
   {
     name: 'index',
     method: 'GET',
