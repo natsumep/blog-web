@@ -32,6 +32,7 @@
                   v-if="idx < item.showMoreNum"
                   :key="idx"
                   :layout-block="true"
+                  :post-api="postApi"
                   :item="option"
                   @refresh="getList"
                   @showBox="
