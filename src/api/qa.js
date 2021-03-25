@@ -47,13 +47,19 @@ export const qa = [
   {
     name: 'getcomment',
     method: 'GET',
-    path: '/qa/:qaId/comment',
+    path: '/qa/:answerId/comment',
     serverPath,
   },
   {
     name: 'comment',
     method: 'POST',
     path: '/qa/:answerId/comment',
+    serverPath,
+  },
+  {
+    name: 'commentDelete',
+    method: 'delete',
+    path: '/qa/comment/:id',
     serverPath,
   },
   // 评论
@@ -66,7 +72,13 @@ export const qa = [
   {
     name: 'supplement',
     method: 'POST',
-    path: '/qa/supplement',
+    path: '/qa/supplement/:qaId',
+    serverPath,
+  },
+  {
+    name: 'supplementDelete',
+    method: 'delete',
+    path: '/qa/supplement/:id',
     serverPath,
   },
 ]

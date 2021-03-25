@@ -1,6 +1,11 @@
 <template>
   <div style="height: 100%; padding-top: 20px; min-height: calc(100vh - 66px)">
-    <article-detail v-if="id" :id="id" :data="data" can-delete></article-detail>
+    <article-detail
+      v-if="id && isClient"
+      :id="id"
+      :data="data"
+      can-delete
+    ></article-detail>
     <to-top></to-top>
   </div>
 </template>
@@ -21,6 +26,7 @@ export default {
   data() {
     return {
       id: '',
+      isClient: process.client,
       data: {
         val: '',
       },

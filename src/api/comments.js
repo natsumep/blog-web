@@ -18,7 +18,7 @@ export const comments = [
   {
     name: 'delete',
     method: 'DELETE',
-    path: '/article/comment/:articleId',
+    path: '/article/comment/:id',
     notShowError: true,
     serverPath,
   },

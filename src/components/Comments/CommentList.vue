@@ -1,5 +1,5 @@
 <template v-slot:commentLi>
-  <div>
+  <div class="comment-list">
     <div class="comment-list-wrapper">
       <img
         v-if="!layoutBlock"
@@ -7,7 +7,10 @@
         alt=""
         class="avatar"
       />
-      <div class="content">
+      <div
+        class="content"
+        :class="{ 'not-child': !item.children || !item.children.length }"
+      >
         <div class="comment-content">
           <div class="comment-list-wrapper">
             <img
@@ -58,24 +61,38 @@
               </button>
             </el-popconfirm>
           </div>
+          <comment-box
+            v-show="showCommentBox"
+            :item="item"
+            :type="type"
+            @addItem="addItem($event)"
+            @hideBox="showCommentBox = false"
+          ></comment-box>
         </div>
         <slot name="commentLi"></slot>
       </div>
     </div>
-    <slot name="commentBox"></slot>
   </div>
 </template>
 
 <script>
+import CommentBox from './CommentBox'
 import { dateFormat } from '~/utils/time.ts'
 
 export default {
+  components: {
+    CommentBox,
+  },
   filters: {
     formatTime: (val) => {
       return dateFormat('YYYY-mm-dd HH:MM:SS', new Date(val).getTime())
     },
   },
   props: {
+    type: {
+      type: String,
+      default: '评论',
+    },
     layoutBlock: {
       type: Boolean,
       default: false,
@@ -83,6 +100,11 @@ export default {
     item: {
       type: Object,
       default: () => {},
+    },
+    deleteApi: {
+      type: String,
+      default: '',
+      require: true,
     },
     postApi: {
       type: String,
@@ -92,6 +114,7 @@ export default {
   },
   data() {
     return {
+      showCommentBox: false,
       defaultAvatar: require('~/assets/images/user-default.png'),
     }
   },
@@ -112,18 +135,22 @@ export default {
   mounted() {},
   methods: {
     showBox() {
-      this.$emit('showBox')
+      this.showCommentBox = true
+    },
+    addItem(content) {
+      this.showCommentBox = false
+      this.$emit('addItem', { content, item: this.item })
     },
     deleteItem() {
-      this.$api[this.postApi]({ articleId: this.item.id })
-        .then(() => {
-          this.$message.success('删除成功')
-          this.$emit('refresh')
-        })
-        .catch((err) => {
-          this.$message.error(err.msg)
-        })
-      this.$emit('refresh')
+      this.$emit('deleteItem')
+      // this.$api[this.deleteApi]({ id: this.item.id })
+      //   .then(() => {
+      //     this.$message.success('删除成功')
+      //     this.$emit('refresh')
+      //   })
+      //   .catch((err) => {
+      //     this.$message.error(err.msg)
+      //   })
     },
   },
 }
@@ -140,8 +167,17 @@ export default {
   }
   .content {
     flex: 1 1 auto;
+    padding-bottom: 10px;
+    &.not-child {
+      border-bottom: 1px solid #e4e4e4;
+      margin-bottom: 10px;
+    }
   }
-
+  .comment-list:last-child {
+    .content {
+      border: 0;
+    }
+  }
   .avatar {
     width: 36px;
     height: 36px;
@@ -176,8 +212,6 @@ export default {
 
   .comment-btn-wrapper {
     margin: 8px 0 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #eee;
   }
 }
 </style>

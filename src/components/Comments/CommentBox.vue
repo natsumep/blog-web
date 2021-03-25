@@ -70,21 +70,6 @@ import { userStore } from '~/utils/store-accessor'
 
 export default {
   props: {
-    answerId: {
-      type: [String, Number],
-      default: '',
-      require: true,
-    },
-    idName: {
-      type: String,
-      default: '',
-      require: true,
-    },
-    postApi: {
-      type: String,
-      default: '',
-      require: true,
-    },
     layout: {
       type: String,
       default: 'block', // 'flex' 浮窗使用
@@ -105,9 +90,9 @@ export default {
       type: String,
       default: '',
     },
-    pid: {
-      type: [String, Number],
-      default: '',
+    item: {
+      type: Object,
+      default: () => ({}),
     },
     email: {
       type: String,
@@ -133,23 +118,17 @@ export default {
     userInfo(val) {
       val && this.setInfo()
     },
-    nickName(val) {
-      if (val) {
-        this.comment = ''
-        this.placeholder = `@${val} `
-      }
-    },
-    email(val) {
-      if (val && !this.nickName) {
-        this.comment = ''
-        this.comment += `@${val} `
-      }
-    },
   },
   created() {
     this.setInfo()
   },
-  mounted() {},
+  mounted() {
+    const nikeName =
+      (this.item.user && this.item.user.nickName) || this.item.nickName
+    if (nikeName) {
+      this.placeholder = `回复 @${nikeName}`
+    }
+  },
   methods: {
     setInfo() {
       const userInfo = this.userInfo
@@ -179,7 +158,7 @@ export default {
         return
       }
       if (comment.length > 200) {
-        this.$message.error(`${this.type}内容最多支持200`)
+        this.$message.error(`${this.type}内容最多支持200字`)
         return
       }
       // 未登录的话让他自己掰个昵称或邮箱
@@ -193,27 +172,21 @@ export default {
           (this.hasInfo = true)
       }
       const data = {
-        articleId: this.$route.params.id,
-        pid: this.pid, //   如果是回复的别人的回复需要传回复的id
         comment,
         nickName: this.commentNickName,
         email: this.commentEmail,
       }
-      if (this.idName === 'qaId') {
-        // 如果是回复的回复  pid 给回复的id, 路由要给答案的id
-        // 如果是回复答案  pid 不传, 路由要给答案的id
-        data.answerId = this.answerId
-      }
-      data[this.idName] = this.$route.params.id
-      this.$api[this.postApi](data)
-        .then(() => {
-          this.comment = ''
-          this.$message.success('新增成功')
-          this.$emit('refresh')
-        })
-        .catch((err) => {
-          this.$message.error(err.msg)
-        })
+      this.comment = ''
+      this.$emit('addItem', data)
+      // this.$api[this.postApi](data)
+      //   .then(() => {
+      //     this.comment = ''
+      //     this.$message.success('新增成功')
+      //     this.$emit('refresh')
+      //   })
+      //   .catch((err) => {
+      //     this.$message.error(err.msg)
+      //   })
     },
     hideBox() {
       this.$emit('hideBox')

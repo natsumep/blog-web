@@ -74,7 +74,7 @@
           <h3 class="no-directory" style="padding: 20px 0">
             {{ data.abstract }}
           </h3>
-          <nuxt-content :document="data.val" height="100%" />
+          <!-- <nuxt-content :document="data.val" height="100%" /> -->
           <markdown-viewer
             v-if="data.val"
             ref="detail"
@@ -108,9 +108,9 @@
     <!-- 评论区 -->
     <div class="comments">
       <comments
-        :api="'comments/list'"
-        post-api="comments/create"
-        id-name="articleId"
+        :comments="comments"
+        @addItem="addItem"
+        @deleteItem="deleteCommit"
       />
     </div>
   </div>
@@ -120,6 +120,9 @@ import * as Jspdf from 'jspdf'
 import html2canvas from 'html2canvas'
 import { dateFormat } from '~/utils/time'
 export default {
+  components: {
+    markdownViewer: () => import('../MarkdownViewer.client'),
+  },
   props: {
     canDelete: Boolean,
     id: { type: String, default: '' },
@@ -132,6 +135,7 @@ export default {
   },
   data() {
     return {
+      comments: [],
       directoryList: [],
     }
   },
@@ -158,6 +162,7 @@ export default {
   _handleScroll: null,
   mounted() {
     // this.loadData()
+    this.loadComments()
     window.addEventListener(
       'scroll',
       (this._handleScroll = this.handleScroll.bind(this)),
@@ -169,6 +174,42 @@ export default {
     window.removeEventListener('scroll', this._handleScroll, true)
   },
   methods: {
+    loadComments() {
+      this.$api['comments/list']({ articleId: this.id })
+        .then((data) => {
+          this.comments = data.map((item) => {
+            item.showCommentBox = false
+            item.showMoreNum = 2
+            return item
+          })
+        })
+        .catch()
+    },
+    deleteCommit(id) {
+      this.$api['comments/delete']({ id })
+        .then(() => {
+          this.$message.success('删除成功')
+          this.loadComments()
+        })
+        .catch((err) => {
+          this.$message.error(err.msg)
+        })
+    },
+    addItem(dataInfo) {
+      const { content, item } = dataInfo
+      const option = { ...content, articleId: this.id }
+      if (item.id) {
+        option.pid = item.id
+      }
+      this.$api['comments/create'](option)
+        .then(() => {
+          this.loadComments()
+          this.$message.success('新增成功')
+        })
+        .catch((err) => {
+          this.$message.error(err.msg)
+        })
+    },
     // h标签的用法
     // 一、<h1>用来修饰网页的主标题，一般是网页的标题，文章标题，<h1>中部署主关键词。<h1>尽量靠近在html 中的<body>标签，
     //    越近越好，以便让搜索引擎最快的领略主题。
@@ -261,7 +302,7 @@ export default {
       }).then((canvas) => {
         // const pageData = canvas.toDataURL('image/jpeg', 1.0)
         // 方向默认竖直，尺寸ponits，格式a4[595.28,841.89]
-        const pdf = new ('', 'px', [canvas.width, canvas.height])()
+        const pdf = new Jspdf('', 'px', [canvas.width, canvas.height])()
         // addImage后两个参数控制添加图片的尺寸，此处将页面高度按照a4纸宽高比列进行压缩
         pdf.addImage(canvas, 'JPEG', 20, 0, canvas.width, canvas.height)
         pdf.save(this.data.title + 'a4.nopage.pdf')

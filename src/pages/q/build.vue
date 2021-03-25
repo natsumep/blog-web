@@ -46,11 +46,14 @@
 function getHTMLLength(html) {
   let div = document.createElement('div')
   div.innerHTML = html
-  const length = div.textContent.length
+  const length = div.textContent.trim().length
   div = null
   return length
 }
 export default {
+  components: {
+    markdownEditor: () => import('~/components/MarkdownEditor.client'),
+  },
   beforeRouteEnter(_to, _from, next) {
     next((vm) => {
       if (vm.$route.params.id) {

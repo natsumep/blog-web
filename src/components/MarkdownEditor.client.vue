@@ -117,7 +117,7 @@ export default class Upload extends Vue {
   }
 
   getHtml() {
-    ;(this.$refs.viweMain as any).invoke('getHtml')
+    return (this.$refs.viweMain as any).invoke('getHtml')
   }
 
   mounted() {

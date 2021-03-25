@@ -2,93 +2,56 @@
   <div class="comment-wrapper">
     <div v-if="hasMyComment && showComment" class="my-commoent">
       <img class="avatar" :src="avatar" alt="" />
-      <comment-box
-        :rows="4"
-        :post-api="postApi"
-        :has-cancel="false"
-        :id-name="idName"
-        @refresh="getList"
-      />
+      <comment-box :rows="4" @addItem="addItemParent($event)" />
     </div>
     <div class="comment-li">
       <p v-if="hasMyComment" class="total-comment">
         <span class="solid">|</span>全部{{ type }}
       </p>
-      <p v-if="!comments.length" class="no-data">暂无数据</p>
+      <p v-if="!comments.length && showMsg" class="no-data">暂无数据</p>
       <template v-else>
         <div v-for="(item, index) in comments" :key="index" class="li-wrapper">
           <comment-list
             :item="item"
-            @refresh="getList"
-            @showBox="
-              item.showCommentBox = true
-              toggelBox(index, item)
-              setItem(item)
-            "
+            :type="type"
+            @addItem="addItem($event)"
+            @deleteItem="deleteItem(item.id)"
           >
-            <template #commentLi>
-              <template v-for="(option, idx) in item.children">
-                <comment-list
-                  v-if="idx < item.showMoreNum"
-                  :key="idx"
-                  :layout-block="true"
-                  :post-api="postApi"
-                  :item="option"
-                  @refresh="getList"
-                  @showBox="
-                    item.showCommentBox = true
+            <template v-if="item.children && item.children.length" #commentLi>
+              <div
+                style="
+                  background: #f5f5f5;
+                  padding: 15px 15px 0 15px;
+                  border-radius: 5px;
+                "
+              >
+                <template v-for="(option, idx) in item.children">
+                  <comment-list
+                    v-if="idx < item.showMoreNum"
+                    :key="idx"
+                    :type="type"
+                    :layout-block="true"
+                    :item="option"
+                    @deleteItem="deleteItem(option.id)"
+                    @addItem="addItem($event)"
+                  ></comment-list>
+                </template>
+                <p
+                  v-show="item.children.length > 2"
+                  class="more"
+                  @click="
+                    item.showMoreNum =
+                      item.showMoreNum == 2 ? item.children.length : 2
                     toggelBox(index, item)
-                    setItem(option)
                   "
-                ></comment-list>
-              </template>
-              <p
-                v-show="item.children.length > 2"
-                class="more"
-                @click="
-                  item.showMoreNum =
-                    item.showMoreNum == 2 ? item.children.length : 2
-                  toggelBox(index, item)
-                "
-              >
-                {{
-                  item.showMoreNum == item.children.length
-                    ? '收起'
-                    : `展开其他 ${item.children.length - 2} 条回复`
-                }}
-              </p>
-            </template>
-
-            <template #commentBox>
-              <comment-box
-                v-show="item.showCommentBox"
-                style="width: calc(100% - 46px); margin-left: 46px"
-                :nick-name="nickName"
-                :pid="pid"
-                :index="index"
-                :email="email"
-                :answer-id="qaId"
-                :id-name="idName"
-                :post-api="postApi"
-                :type="type"
-                @refresh="getList"
-                @hideBox="
-                  item.showCommentBox = false
-                  toggelBox(index, item)
-                "
-              ></comment-box>
-              <p
-                v-show="!item.showCommentBox"
-                role="button"
-                class="edit-outline"
-                @click="
-                  item.showCommentBox = true
-                  toggelBox(index, item)
-                  setItem(item)
-                "
-              >
-                <i class="el-icon-edit-outline"></i> 添加新评论
-              </p>
+                >
+                  {{
+                    item.showMoreNum == item.children.length
+                      ? '收起'
+                      : `展开其他 ${item.children.length - 2} 条回复`
+                  }}
+                </p>
+              </div>
             </template>
           </comment-list>
         </div>
@@ -107,28 +70,17 @@ export default {
     CommentBox,
   },
   props: {
-    qaId: {
-      type: [String, Number],
-      default: '',
+    comments: {
+      type: Array,
+      default: () => [],
+    },
+    showMsg: {
+      type: Boolean,
+      default: false,
     },
     showComment: {
       type: Boolean,
       default: true,
-    },
-    idName: {
-      type: String,
-      default: '',
-      require: true,
-    },
-    api: {
-      type: String,
-      default: '',
-      require: true,
-    },
-    postApi: {
-      type: String,
-      default: '',
-      require: true,
     },
     hasMyComment: {
       type: Boolean,
@@ -145,7 +97,6 @@ export default {
       nickName: '',
       pid: '',
       email: '',
-      comments: [],
     }
   },
   computed: {
@@ -162,24 +113,29 @@ export default {
   mounted() {
     this.avatar =
       this.userInfo.avatar || require('~/assets/images/user-default.png')
-    this.getList()
+    // this.getList()
   },
   methods: {
+    deleteItem(id) {
+      this.$emit('deleteItem', id)
+    },
+    addItem(content) {
+      this.$emit('addItem', content)
+    },
+    addItemParent(content) {
+      this.$emit('addItem', { content, item: {} })
+    },
     getList() {
-      if (this.api) {
-        const params = {}
-        params[this.idName] = this.qaId ? this.qaId : this.$route.params.id
-        this.$api[this.api](params)
-          .then((data) => {
-            this.comments = data
-            this.comments.forEach((item) => {
-              item.showCommentBox = false
-              item.showMoreNum = 2
-            })
-            this.$emit('showComments', this.comments.length)
-          })
-          .catch()
-      }
+      // this.$api[this.api]()
+      //   .then((data) => {
+      //     this.comments = data
+      //     this.comments.forEach((item) => {
+      //       item.showCommentBox = false
+      //       item.showMoreNum = 2
+      //     })
+      //     this.$emit('showComments', this.comments.length)
+      //   })
+      //   .catch()
     },
     toggelBox(index, item) {
       this.comments.forEach((option, idx) => {
@@ -191,11 +147,6 @@ export default {
       this.$set(this.comments, index, item)
     },
     setItem(item) {
-      this.pid = item.id
-      if (this.idName === 'qaId' && item.isParent) {
-        this.pid = ''
-        // 如果是回复的回复  pid 给回复的id, 路由要给答案的id
-      }
       ;(item.nickName || item.user.nickName) &&
         (this.nickName = item.nickName || item.user.nickName)
       ;(item.email || item.user.email) &&

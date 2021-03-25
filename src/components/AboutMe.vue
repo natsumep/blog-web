@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-v-html */
 <template>
   <el-card class="box-card">
     <div slot="header" class="clearfix">

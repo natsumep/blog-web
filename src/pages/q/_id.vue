@@ -35,8 +35,13 @@
         </p>
         <p class="time">创建于 {{ detail.createTime }}</p>
       </div>
-
-      <markdown-viewer v-if="detail.val" :value="detail.val" height="100%" />
+      <client-only placeholder="markdow内容loading...">
+        <markdown-viewer
+          v-if="detail.val && isClient"
+          :value="detail.val"
+          height="100%"
+        />
+      </client-only>
       <div class="tag-outter">
         <span
           v-for="(tag, tagid) in detail.type"
@@ -60,92 +65,91 @@
       <comments
         :show-comment="!!openComment"
         api="qa/getsupplement"
+        delete-api="qa/supplementDelete"
         post-api="qa/supplement"
         id-name="qaId"
         type="问题补充"
       />
     </div>
-    <p class="title-h1 qa-detail">{{ total || 0 }} 个回复</p>
-    <div v-if="!refreshAnswer">
+
+    <div class="qa-detail" style="background: none; padding: 0">
+      <p class="title-h1">{{ total || 0 }} 个回复</p>
       <div
-        v-for="(item, index) in answerList"
-        :key="index"
-        class="answer-section"
+        v-if="total === 0"
+        style="text-align: center; color: #999; padding: 20px"
       >
-        <div class="info" style="margin-bottom: 14px">
-          <img
-            class="avatar"
-            :src="
-              !item.anonymous && item.user && item.user.avatar
-                ? item.user.avatar
-                : defaultAvatar
-            "
-            alt=""
-          />
-          <p class="name">
-            {{ !item.anonymous && item.user ? item.user.nickName : '匿名' }}
-          </p>
-          <p class="time">创建于 {{ item.createTime | formatTime }}</p>
-        </div>
-        <div class="answer-content">
-          <viewer
-            v-if="item.answer"
-            :initial-value="item.answer"
-            height="100%"
-          />
-        </div>
-        <p
-          class="comments-btn"
-          role="button"
-          @click="
-            item.hasMyComment = !item.hasMyComment
-            changeHasMyComment(index, item)
-          "
+        等待回复中...
+      </div>
+      <div v-if="!refreshAnswer">
+        <div
+          v-for="(item, index) in answerList"
+          :key="index"
+          class="answer-section"
         >
-          评论
-        </p>
-        <comment-box
-          v-show="item.hasMyComment"
-          :rows="4"
-          :answer-id="item.id"
-          id-name="qaId"
-          post-api="qa/comment"
-          :has-cancel="false"
-          @refresh="refreshComment(index)"
-        />
-        <div class="comments">
-          <comments
-            ref="getComment"
-            api="qa/getcomment"
-            post-api="qa/comment"
-            id-name="qaId"
-            :qa-id="item.id"
-            :has-my-comment="false"
-            type="回答"
-          />
+          <div class="info" style="margin-bottom: 14px">
+            <img
+              class="avatar"
+              :src="
+                !item.anonymous && item.user && item.user.avatar
+                  ? item.user.avatar
+                  : defaultAvatar
+              "
+              alt=""
+            />
+            <p class="name">
+              {{ !item.anonymous && item.user ? item.user.nickName : '匿名' }}
+            </p>
+            <p class="time">创建于 {{ item.createTime | formatTime }}</p>
+          </div>
+          <div class="answer-content">
+            <client-only placeholder="markdow内容loading...">
+              <markdown-viewer
+                v-if="item.answer"
+                :value="item.answer"
+                height="100%"
+              />
+            </client-only>
+          </div>
+          <p
+            class="comments-btn"
+            role="button"
+            @click="
+              item.hasMyComment = !item.hasMyComment
+              changeHasMyComment(index, item)
+            "
+          >
+            评论
+          </p>
+          <div class="comments">
+            <comments
+              ref="getComment"
+              api="qa/getcomment"
+              post-api="qa/comment"
+              delete-api="qa/commentDelete"
+              id-name="answerId"
+              :qa-id="item.id"
+              type="回答"
+              :show-comment="!!item.hasMyComment"
+            />
+          </div>
         </div>
       </div>
     </div>
-    <div v-show="userStore.token">
-      <p class="title-h1 qa-detail">撰写回答</p>
-      <div
-        class="widget-vertical-three-main"
-        style="height: 400px; background: #eee; margin-top: 10px"
-      >
-        <div class="flex">
-          <el-button type="primary" @click="submit">发表</el-button>
-          <el-checkbox v-model="anonymous" style="margin-right: 30px"
-            >是否匿名</el-checkbox
+
+    <div v-show="userStore.token" class="qa-detail" style="padding-bottom: 1px">
+      <p class="title-h1" style="margin-top: 10px">撰写回答</p>
+      <div class="widget-vertical-three-main" style="margin-top: 10px">
+        <div class="flex-end">
+          <el-button
+            type="primary"
+            style="margin: -45px 0 9px 0"
+            @click="submit"
+            >发表</el-button
           >
         </div>
-        <editor
-          ref="viweMain"
-          height="100%"
-          :initial-value="editorText"
-          :options="editorOptions"
-          initial-edit-type="markdown"
-          preview-style="vertical"
-        />
+        <client-only placeholder="markdown编辑器loading...">
+          <markdown-editor v-if="isClient" ref="viweMain"></markdown-editor>
+        </client-only>
       </div>
       <!-- <ask :not-header="true" @answer="getAnswerList" /> -->
     </div>
@@ -154,10 +158,19 @@
 
 <script>
 import { userStore } from '~/store'
-import '@toast-ui/editor/dist/toastui-editor-viewer.css'
 import { dateFormat } from '~/utils/time'
+function getHTMLLength(html) {
+  let div = document.createElement('div')
+  div.innerHTML = html
+  const length = div.textContent.trim().length
+  div = null
+  return length
+}
 export default {
-  components: {},
+  components: {
+    markdownEditor: () => import('~/components/MarkdownEditor.client'),
+    markdownViewer: () => import('~/components/MarkdownViewer.client'),
+  },
   filters: {
     formatTime: (val) => {
       return dateFormat('YYYY-mm-dd HH:MM:SS', new Date(val).getTime())
@@ -165,6 +178,7 @@ export default {
   },
   data() {
     return {
+      isClient: process.client,
       userStore,
       defaultAvatar: require('~/assets/images/user-default.png'),
       openComment: false,
@@ -224,28 +238,52 @@ export default {
         }
       )
     },
+    submit() {
+      const answer = this.$refs.viweMain.getMarkdown()
+      const length = getHTMLLength(this.$refs.viweMain.getHtml())
+      if (!length) {
+        this.$message.error('请输入回答内容再提交~')
+        return false
+      }
+      const option = {
+        answer,
+        qaId: this.$route.params.id,
+      }
+      this.$api['qa/answer'](option).then(
+        () => {
+          this.$message.success('添加回答' + '成功')
+          this.hadEdit = false
+
+          this.$router.replace('/q')
+        },
+        () => {
+          this.$message.error('添加回答' + '失败，请重试')
+        }
+      )
+    },
   },
 }
 </script>
 
 <style lang="less" scoped>
 .section {
-  padding: 25px 50px;
-  background-color: rgba(255, 255, 255, 0.9);
   position: relative;
 }
 
 .answer-section {
   width: 1200px;
   margin: 10px auto;
-  padding: 24px;
+  padding: 8px 24px;
   background-color: rgba(255, 255, 255, 0.9);
   position: relative;
 }
 
 .qa-detail {
   width: 1200px;
+  padding: 25px 50px;
   margin: 24px auto;
+  background: #fff;
+  border-radius: 10px;
 }
 
 .title {
@@ -262,17 +300,18 @@ export default {
 .info {
   display: flex;
   align-items: center;
-  color: #999;
-  font-size: 12px;
+  font-size: 14px;
   margin: 14px 0 24px;
 }
 
 .name {
   margin-left: 14px;
+  color: #2196f3;
 }
 
 .time {
-  margin-left: 30px;
+  margin-left: 15px;
+  color: #999;
 }
 
 .show-comment {
@@ -320,9 +359,7 @@ export default {
   margin: 0 auto;
 }
 .comments {
-  margin-top: 10px;
-  padding: 14px;
-  background-color: rgba(245, 245, 245, 0.6);
+  margin: 10px 0 0 30px;
 }
 .comments-btn {
   line-height: 32px;
