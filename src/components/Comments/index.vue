@@ -2,7 +2,12 @@
   <div class="comment-wrapper">
     <div v-if="hasMyComment && showComment" class="my-commoent">
       <img class="avatar" :src="avatar" alt="" />
-      <comment-box :rows="4" @addItem="addItemParent($event)" />
+      <comment-box
+        :has-cancel="hasCancel"
+        :rows="4"
+        @hideBox="hideBox"
+        @addItem="addItemParent($event)"
+      />
     </div>
     <div class="comment-li">
       <p v-if="hasMyComment" class="total-comment">
@@ -18,24 +23,20 @@
             @deleteItem="deleteItem(item.id)"
           >
             <template v-if="item.children && item.children.length" #commentLi>
-              <div
-                style="
-                  background: #f5f5f5;
-                  padding: 15px 15px 0 15px;
-                  border-radius: 5px;
-                "
-              >
-                <template v-for="(option, idx) in item.children">
-                  <comment-list
-                    v-if="idx < item.showMoreNum"
-                    :key="idx"
-                    :type="type"
-                    :layout-block="true"
-                    :item="option"
-                    @deleteItem="deleteItem(option.id)"
-                    @addItem="addItem($event)"
-                  ></comment-list>
-                </template>
+              <div class="comment-child-list">
+                <div>
+                  <template v-for="(option, idx) in item.children">
+                    <comment-list
+                      v-if="idx < (item.showMoreNum || 2)"
+                      :key="idx"
+                      :type="type"
+                      :layout-block="true"
+                      :item="option"
+                      @deleteItem="deleteItem(option.id)"
+                      @addItem="addItem($event)"
+                    ></comment-list>
+                  </template>
+                </div>
                 <p
                   v-show="item.children.length > 2"
                   class="more"
@@ -48,7 +49,9 @@
                   {{
                     item.showMoreNum == item.children.length
                       ? '收起'
-                      : `展开其他 ${item.children.length - 2} 条回复`
+                      : `展开其他 ${
+                          item.children.length - (item.showMoreNum || 2)
+                        } 条回复`
                   }}
                 </p>
               </div>
@@ -75,6 +78,10 @@ export default {
       default: () => [],
     },
     showMsg: {
+      type: Boolean,
+      default: false,
+    },
+    hasCancel: {
       type: Boolean,
       default: false,
     },
@@ -152,6 +159,9 @@ export default {
       ;(item.email || item.user.email) &&
         (this.email = item.email || item.user.email)
     },
+    hideBox() {
+      this.$emit('hideBox')
+    },
   },
 }
 </script>
@@ -203,7 +213,15 @@ export default {
     }
   }
 }
-
+.comment-child-list {
+  background: #f5f5f5;
+  padding: 15px 15px 5px 15px;
+  border-radius: 5px;
+  margin-top: 10px;
+  /deep/ .comment-conten {
+    margin-left: 46px;
+  }
+}
 .no-data {
   text-align: center;
   color: #999;

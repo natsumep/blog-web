@@ -56,7 +56,7 @@
           class="show-comment"
           @click="openComment = !openComment"
         >
-          问题补充 [ {{ detail.supplementTotal || 0 }} ]</span
+          问题补充 [ {{ supplementComment.length || 0 }} ]</span
         >
         <span style="font-size: 20px; margin: 0 3px"> · </span
         ><span style="color: #888"> 浏览：{{ detail.views || 0 }}</span>
@@ -64,11 +64,13 @@
       <!-- 评论 -->
       <comments
         :show-comment="!!openComment"
-        api="qa/getsupplement"
-        delete-api="qa/supplementDelete"
-        post-api="qa/supplement"
+        :has-cancel="true"
+        :comments="supplementComment"
         id-name="qaId"
         type="问题补充"
+        @deleteItem="deleteSupplementComment"
+        @addItem="addSupplementComment"
+        @hideBox="openComment = false"
       />
     </div>
 
@@ -113,23 +115,18 @@
           <p
             class="comments-btn"
             role="button"
-            @click="
-              item.hasMyComment = !item.hasMyComment
-              changeHasMyComment(index, item)
-            "
+            @click="item.hasMyComment = !item.hasMyComment"
           >
             评论
           </p>
           <div class="comments">
             <comments
-              ref="getComment"
-              api="qa/getcomment"
-              post-api="qa/comment"
-              delete-api="qa/commentDelete"
-              id-name="answerId"
-              :qa-id="item.id"
-              type="回答"
+              :comments="item.children"
               :show-comment="!!item.hasMyComment"
+              :has-cancel="true"
+              @addItem="addQaComment($event, item)"
+              @deleteItem="deleteQaComment($event, item)"
+              @hideBox="item.hasMyComment = false"
             />
           </div>
         </div>
@@ -186,10 +183,14 @@ export default {
       total: 0,
       answerList: [],
       refreshAnswer: false,
+
+      supplementComment: [],
+      qaComment: [],
     }
   },
   mounted() {
     this.loadData()
+    this.loadSupplementComment()
     this.getAnswerList()
   },
   destroyed() {},
@@ -197,11 +198,92 @@ export default {
     // showComments(val) {
     //   this.openComment = val
     // },
+    loadSupplementComment() {
+      this.$api['qa/getsupplement']({ qaId: this.$route.params.id })
+        .then((data) => {
+          this.supplementComment = data.map((item) => {
+            item.showCommentBox = false
+            item.showMoreNum = 2
+            return item
+          })
+        })
+        .catch()
+    },
+    deleteSupplementComment(id) {
+      this.$api['qa/supplementDelete']({ id })
+        .then(() => {
+          this.$message.success('删除成功')
+          this.loadSupplementComment()
+        })
+        .catch((err) => {
+          this.$message.error(err.msg)
+        })
+    },
+    addSupplementComment(dataInfo) {
+      const { content, item } = dataInfo
+      const option = { ...content, qaId: this.$route.params.id }
+      if (item.id) {
+        option.pid = item.id
+      }
+      this.$api['qa/supplement'](option)
+        .then(() => {
+          this.loadSupplementComment()
+          this.$message.success('新增成功')
+        })
+        .catch((err) => {
+          this.$message.error(err.msg)
+        })
+    },
+    async loadQaComment(answerId) {
+      let data = []
+      try {
+        data = await this.$api['qa/getcomment']({
+          answerId,
+        })
+      } catch (_e) {
+        return data
+      }
+
+      return (this.supplementComment = data.map((item) => {
+        item.showCommentBox = false
+        item.showMoreNum = 2
+        return item
+      }))
+    },
+    deleteQaComment(id, answer) {
+      this.$api['qa/commentDelete']({ id })
+        .then(async () => {
+          this.$message.success('删除成功')
+          const data = await this.loadQaComment(answer.id)
+          answer.children = data
+        })
+        .catch((err) => {
+          this.$message.error(err.msg)
+        })
+    },
+    addQaComment(dataInfo, answer) {
+      const { content, item } = dataInfo
+      const option = {
+        ...content,
+        answerId: answer.id,
+        qaId: this.$route.params.id,
+      }
+      if (item.id) {
+        option.pid = item.id
+      }
+      this.$api['qa/comment'](option)
+        .then(async () => {
+          const data = await this.loadQaComment(answer.id)
+          answer.children = data
+          this.$message.success('新增成功')
+        })
+        .catch((err) => {
+          this.$message.error(err.msg)
+        })
+    },
+
     changeHasMyComment(index, item) {
       this.$set(this.answerList, index, item)
-    },
-    refreshComment(index) {
-      this.$refs.getComment[index].getList()
     },
     del() {
       this.$api['qa/del']({ id: this.$route.params.id }).then(() => {
@@ -229,9 +311,16 @@ export default {
       this.refreshAnswer = true
       this.$api['qa/getanswer']({ qaId: this.$route.params.id }).then(
         (data) => {
-          this.answerList = data.list
-          this.answerList.forEach((item) => {
+          this.answerList = data.list.map((item) => {
             item.hasMyComment = false
+            item.children &&
+              item.children.map &&
+              item.children.map((item) => {
+                item.showCommentBox = false
+                item.showMoreNum = 2
+                return item
+              })
+            return item
           })
           this.total = data.total
           this.refreshAnswer = false
@@ -253,8 +342,8 @@ export default {
         () => {
           this.$message.success('添加回答' + '成功')
           this.hadEdit = false
-
-          this.$router.replace('/q')
+          this.$refs.viweMain.clearValue()
+          this.getAnswerList()
         },
         () => {
           this.$message.error('添加回答' + '失败，请重试')

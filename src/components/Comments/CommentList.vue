@@ -30,44 +30,47 @@
               <span class="txt"> · {{ item.createTime | formatTime }}</span>
             </p>
           </div>
-          <p class="nickname">
-            <span v-if="content.isComment" style="color: #2196f3">
-              @{{ content.commentName }} </span
-            >{{ content.comment }}
-          </p>
-          <div class="comment-btn-wrapper">
-            <button class="comment-btn" @click="showBox">
-              <i
-                style="font-size: 16px; position: relative; top: 1px"
-                class="el-icon-chat-dot-square"
-              ></i>
-              回复
-            </button>
-            <el-popconfirm
-              v-if="item.canDelete"
-              title="确认删除当前回复？"
-              @confirm="deleteItem"
-            >
-              <button
-                slot="reference"
-                class="comment-btn delete"
-                style="color: red"
-              >
+          <div class="comment-conten">
+            <p class="nickname">
+              <span v-if="content.isComment" style="color: #2196f3">
+                @{{ content.commentName }} </span
+              >{{ content.comment }}
+            </p>
+            <div class="comment-btn-wrapper">
+              <button class="comment-btn" @click="showBox">
                 <i
                   style="font-size: 16px; position: relative; top: 1px"
-                  class="el-icon-delete"
+                  class="el-icon-chat-dot-square"
                 ></i>
-                删除
+                回复
               </button>
-            </el-popconfirm>
+              <el-popconfirm
+                v-if="item.canDelete"
+                title="确认删除当前回复？"
+                @confirm="deleteItem"
+              >
+                <button
+                  slot="reference"
+                  class="comment-btn delete"
+                  style="color: red"
+                >
+                  <i
+                    style="font-size: 16px; position: relative; top: 1px"
+                    class="el-icon-delete"
+                  ></i>
+                  删除
+                </button>
+              </el-popconfirm>
+            </div>
+            <comment-box
+              v-show="showCommentBox"
+              style="margin-top: 8px"
+              :item="item"
+              :type="type"
+              @addItem="addItem($event)"
+              @hideBox="showCommentBox = false"
+            ></comment-box>
           </div>
-          <comment-box
-            v-show="showCommentBox"
-            :item="item"
-            :type="type"
-            @addItem="addItem($event)"
-            @hideBox="showCommentBox = false"
-          ></comment-box>
         </div>
         <slot name="commentLi"></slot>
       </div>
@@ -173,11 +176,7 @@ export default {
       margin-bottom: 10px;
     }
   }
-  .comment-list:last-child {
-    .content {
-      border: 0;
-    }
-  }
+
   .avatar {
     width: 36px;
     height: 36px;
@@ -207,11 +206,31 @@ export default {
     font-size: 14px;
     color: #313131;
     outline: 0;
+    padding: 0;
     cursor: pointer;
   }
 
   .comment-btn-wrapper {
-    margin: 8px 0 14px;
+    margin-top: 8px;
+  }
+}
+.comment-list:first-child {
+  .content {
+    border: 0;
+    padding-bottom: 0;
+  }
+}
+.comment-list + .comment-list {
+  &:last-child {
+    .content {
+      border: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+.li-wrapper + .li-wrapper:last-child {
+  .content {
+    border: 0;
   }
 }
 </style>

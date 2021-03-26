@@ -288,7 +288,6 @@ export default {
         cardPic,
       } = this
       const val = this.$refs.viweMain.getMarkdown()
-      debugger
       const length = getHTMLLength(this.$refs.viweMain.getHtml())
       const obj = {
         title,

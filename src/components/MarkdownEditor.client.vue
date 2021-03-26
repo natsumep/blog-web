@@ -120,6 +120,10 @@ export default class Upload extends Vue {
     return (this.$refs.viweMain as any).invoke('getHtml')
   }
 
+  clearValue() {
+    ;(this.$refs.viweMain as any).invoke('setMarkdown', '')
+  }
+
   mounted() {
     ;(this.$refs.viweMain as any).editor.eventManager.removeEventHandler(
       'addImageBlobHook'

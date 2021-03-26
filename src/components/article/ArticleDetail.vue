@@ -445,7 +445,7 @@ export default {
 }
 
 .comments {
-  padding: 32px;
+  padding: 15px 32px;
   min-height: 200px;
   background-color: rgba(255, 255, 255, 0.9);
   margin-top: 24px;
