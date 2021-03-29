@@ -16,6 +16,7 @@
         <el-menu-item index="/">文章列表</el-menu-item>
         <el-menu-item index="/article/edit">添加文章</el-menu-item>
         <el-menu-item index="/q">问答</el-menu-item>
+        <el-menu-item index="/sentence">句子杂货铺</el-menu-item>
         <el-menu-item index="/api">开放接口</el-menu-item>
         <el-menu-item index="/about">碎碎念</el-menu-item>
         <el-menu-item index="/comment">留言</el-menu-item>
@@ -44,13 +45,19 @@
           </div>
           <div slot="reference" class="flex-item-center">
             <p class="username">{{ info.nickname }}</p>
-            <div class="user-solid" @click="visible = !visible">
+            <div
+              class="user-solid"
+              :class="{ 'user-active': token }"
+              @click="visible = !visible"
+            >
               <img v-if="token" class="avatar" :src="info.avatar" alt="" />
-              <i
-                v-else
-                style="font-size: 24px; color: #fff"
-                class="el-icon-user-solid"
-              ></i>
+              <div v-else class="flex" style="color: #fff">
+                <i
+                  style="font-size: 24px; color: #fff"
+                  class="el-icon-user-solid"
+                ></i
+                >点击登录
+              </div>
             </div>
           </div>
         </el-popover>
@@ -143,8 +150,8 @@ export default class Index extends Vue {
   align-items: center;
 }
 .user-solid {
-  width: 36px;
   height: 36px;
+  padding: 3px 10px;
   border-radius: 50px;
   background-color: rgba(255, 255, 255, 0.2);
   display: flex;
@@ -152,6 +159,9 @@ export default class Index extends Vue {
   justify-content: center;
   cursor: pointer;
   margin-left: 8px;
+}
+.user-active {
+  padding: 0;
 }
 
 .avatar {

@@ -235,7 +235,7 @@ export default {
         if (valid) {
           let api = 'user/create'
           let msg = '新增'
-          if (userStore.token) {
+          if (this.isEdit) {
             api = 'user/update'
             msg = '编辑'
           }
@@ -243,7 +243,7 @@ export default {
             (data) => {
               const obj = JSON.parse(JSON.stringify(this.ruleForm))
               // 仅在没有登录的注册才写入用户信息
-              if (!userStore.token) {
+              if (!userStore.token || this.isEdit) {
                 const { token, expiresIn } = data
                 setTokenInfo(token, expiresIn)
                 userStore.set_userinfo(obj)

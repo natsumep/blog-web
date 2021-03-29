@@ -230,7 +230,7 @@ export default {
   created() {},
   methods: {
     toLogin() {
-      userStore.set_login_dialog_visible()
+      userStore.set_login_dialog_visible(true)
     },
     avatarChange(val) {
       this.cardPic = val

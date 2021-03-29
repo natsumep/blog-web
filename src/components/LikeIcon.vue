@@ -3,10 +3,13 @@
     v-loading="isLoad"
     class="like-button"
     element-loading-spinner="el-icon-loading"
-    :class="{ liked: isActive }"
+    :class="{ liked: isActive, 'can-click': canClick }"
     @click="changeLike"
   >
-    <span class="like-icon">
+    <span
+      class="like-icon"
+      :style="{ width: width + 'px', height: width + 'px' }"
+    >
       <div class="heart-animation-1"></div>
       <div class="heart-animation-2"></div>
     </span>
@@ -18,6 +21,10 @@ import { Component, Vue, Emit, Prop } from 'vue-property-decorator'
 export default class Index extends Vue {
   @Prop({ default: false }) private isActive!: boolean
   @Prop({ default: false }) private isLoad!: boolean
+  @Prop({ default: true }) private canClick!: boolean
+
+  @Prop({ default: 24 }) private width!: number
+
   @Emit()
   change() {}
 
@@ -42,17 +49,18 @@ export default class Index extends Vue {
   flex-flow: row wrap;
   width: 50%;
 }
+.can-click {
+  cursor: pointer;
+}
 .like-icon {
   transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   filter: grayscale(100%);
-  width: 18px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   display: inline-block;
   position: relative;
-  margin-right: 0.25em;
   font-size: 1.5rem;
-  background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyMSAxOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTAuMTAxIDQuNDE3UzguODk1LjIwNyA1LjExMS4yMDdjLTQuNDY1IDAtMTAuOTY3IDYuODQ2IDUuMDgyIDE3LjU5MkMyNS4yMzcgNy4wMyAxOS42NjUuMjAyIDE1LjUwMS4yMDJjLTQuMTYyIDAtNS40IDQuMjE1LTUuNCA0LjIxNXoiIGZpbGw9IiNGRjZFNkYiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==')
-    no-repeat center;
+  background: url('~/assets/images/like_btn.svg') no-repeat center;
   background-size: 100%;
   animation: heartUnlike 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }

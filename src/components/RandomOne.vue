@@ -12,10 +12,18 @@
         <p>{{ word }}</p>
         <p class="author">——{{ formName }}</p>
       </div>
-      <div>
+      <div
+        :class="{ 'like-actied': isLiked }"
+        style="padding-left: 5px; width: 50px"
+      >
         <like-icon
           v-if="wordInfo.id"
-          style="padding-left: 10px; cursor: pointer; position: relative"
+          style="
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            justify-content: center;
+          "
           :is-load="likeLoading"
           :is-active="isLiked"
           @change="likeChange"
@@ -53,7 +61,8 @@ export default class Index extends Vue {
 
   get formName() {
     const author = this.wordInfo.author
-    return `「${author ? author + ' ' : ''}${this.wordInfo.source}」`
+    const data = [author, this.wordInfo.source].filter((item) => !!item)
+    return data.join(' · ')
   }
 
   mounted() {
@@ -102,9 +111,12 @@ export default class Index extends Vue {
 }
 .likes {
   color: #333;
-  margin-left: 4px;
   text-align: center;
   font-size: 12px;
+}
+
+.like-actied .likes {
+  color: #ff6e6f;
 }
 .want-api {
   background-image: linear-gradient(135deg, #fec163 10%, #de4313 100%);
