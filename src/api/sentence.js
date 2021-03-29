@@ -35,6 +35,13 @@ export const sentence = [
     serverPath: 'https://api.tinker.run/sentence',
   },
   {
+    name: 'report',
+    method: 'POST',
+    path: '/report',
+    notShowError: true,
+    serverPath: 'https://api.tinker.run/sentence',
+  },
+  {
     name: 'caihong',
     method: 'GET',
     path: '/',
@@ -66,6 +73,13 @@ export const sentence = [
     name: 'caihonguncollce',
     method: 'POST',
     path: '/uncollect/:id',
+    notShowError: true,
+    serverPath: 'https://api.tinker.run/caihong',
+  },
+  {
+    name: 'caihongreport',
+    method: 'POST',
+    path: '/report',
     notShowError: true,
     serverPath: 'https://api.tinker.run/caihong',
   },

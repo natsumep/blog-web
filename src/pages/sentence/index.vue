@@ -1,6 +1,61 @@
 <template>
-  <div class="sentence" :style="style">
+  <div class="sentence" :class="{ 'sentence-night': isNight }" :style="style">
     <div class="sentence-body flex-center">
+      <div class="top-btns">
+        <div style="margin-bottom: 20px" class="flex flex-warp flex-center">
+          <div class="flex-item-center">
+            轮询：
+            <el-switch
+              v-model="needLoop"
+              active-color="#13ce66"
+              active-text="开启"
+              inactive-text="关闭"
+              @change="changeLoop"
+            ></el-switch>
+          </div>
+          <div style="margin-left: 20px" class="flex-item-cente">
+            轮询时间(秒)：
+            <el-select
+              v-model="loopTime"
+              style="width: 80px"
+              placeholder="请选择"
+              size="mini"
+              @change="changeLoopTime"
+            >
+              <el-option
+                v-for="item in [10, 20, 30, 40, 50, 60, 100, 200]"
+                :key="item"
+                :label="item"
+                :value="item"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div style="margin-left: 20px" class="flex-item-center">
+            显示内容：
+            <el-switch
+              v-model="isCaihong"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="彩虹屁🌈"
+              inactive-text="句子杂货铺"
+              @change="changeType"
+            >
+            </el-switch>
+          </div>
+        </div>
+        <div class="top-menus flex flex-right">
+          <el-button type="primary" @click="handleTabBtnClick('myself')"
+            >我的</el-button
+          >
+          <el-button type="primary" @click="handleTabBtnClick('check')"
+            >我要审核</el-button
+          >
+          <el-button type="primary" @click="handleTabBtnClick('upload')"
+            >我要上传<i class="el-icon-upload el-icon--right"></i
+          ></el-button>
+        </div>
+      </div>
       <div style="margin-bottom: 10vh; max-width: 50vw">
         <div class="sentence-btns flex-just-center">
           <div class="icon-content" :class="{ 'like-active': isLiked }">
@@ -42,8 +97,18 @@
               />
             </div>
           </div>
+          <div>
+            <div style="margin-left: 60px">
+              <img
+                src="~/assets/images/report.svg"
+                style="width: 40px; cursor: pointer"
+                alt="举报"
+                @click="showReport = true"
+              />
+            </div>
+          </div>
         </div>
-        <div class="sentence-text">
+        <div class="sentence-text" :class="{ 'caihong-sentence': isCaihong }">
           {{ word }}
         </div>
         <div class="sentence-author">
@@ -51,6 +116,12 @@
         </div>
       </div>
     </div>
+    <sentence-report
+      v-model="showReport"
+      :sententce="wordInfo.content"
+      :sententce-id="wordInfo.id"
+      :sententce-type="searchType"
+    ></sentence-report>
   </div>
 </template>
 
@@ -58,10 +129,11 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { isSupportWebp } from '@/utils/browser'
 import { userStore } from '@/utils/store-accessor'
-async function loadData(api: any) {
+async function loadData(api: any, type = 'sentence') {
   let data
+  const url = type === 'sentence' ? 'sentence/index' : 'sentence/caihong'
   try {
-    data = await api['sentence/index']()
+    data = await api[url]()
     return data
   } catch (e) {
     return null
@@ -76,6 +148,23 @@ async function loadData(api: any) {
 })
 export default class Home extends Vue {
   style: any = {}
+  needLoop = true
+  isCaihong = false
+  likeLoading = false
+  loopTime = 30
+  collceLoading = false
+  timer: any = null
+  showReport = false
+  isNight = false
+  wordInfo: any = {
+    content: '一日不见兮，思之如狂。',
+    source: '凤求凰 / 琴歌',
+    author: '司马相如',
+  }
+
+  get searchType() {
+    return this.isCaihong ? 'caihong' : 'sentence'
+  }
 
   get isLiked() {
     return this.wordInfo.isLike
@@ -83,15 +172,6 @@ export default class Home extends Vue {
 
   get isCollceed() {
     return this.wordInfo.isCollect
-  }
-
-  likeLoading = false
-  collceLoading = false
-
-  wordInfo: any = {
-    content: '一日不见兮，思之如狂。',
-    source: '凤求凰 / 琴歌',
-    author: '司马相如',
   }
 
   get word() {
@@ -118,7 +198,9 @@ export default class Home extends Vue {
       return
     }
     this.collceLoading = true
-    const url = this.isCollceed ? 'sentence/uncollce' : 'sentence/collce'
+    const url = this.isCollceed
+      ? `sentence/${this.isCaihong ? 'caihong' : ''}uncollce`
+      : `sentence/${this.isCaihong ? 'caihong' : ''}collce`
     const msg = this.isCollceed ? '取消收藏' : '收藏'
     try {
       await (this as any).$api[url]({ id: this.wordInfo.id })
@@ -139,7 +221,9 @@ export default class Home extends Vue {
     // 如果喜欢不让取消了 接口也停用了
     if (this.isLiked) return
     this.likeLoading = true
-    const url = this.isLiked ? 'sentence/unlike' : 'sentence/like'
+    const url = this.isLiked
+      ? `sentence/${this.isCaihong ? 'caihong' : ''}unlike`
+      : `sentence/${this.isCaihong ? 'caihong' : ''}like`
     try {
       await (this as any).$api[url]({ id: this.wordInfo.id })
       this.wordInfo.likes += 1
@@ -153,26 +237,83 @@ export default class Home extends Vue {
   }
 
   async hanldeRefresh() {
-    this.wordInfo = await loadData((this as any).$api)
+    this.wordInfo = await loadData((this as any).$api, this.searchType)
   }
 
-  mounted() {
+  loopSearch() {
+    this.clearLoop()
+    this.timer = setInterval(() => {
+      this.hanldeRefresh()
+    }, this.loopTime * 1000)
+  }
+
+  clearLoop() {
+    clearInterval(this.timer)
+  }
+
+  changeLoopTime() {
+    if (this.needLoop) {
+      this.loopSearch()
+    }
+  }
+
+  changeLoop(isActive: boolean) {
+    if (isActive) {
+      this.loopSearch()
+    } else {
+      this.clearLoop()
+    }
+  }
+
+  changeType() {
+    this.initBackgroun()
+    this.hanldeRefresh()
+  }
+
+  initBackgroun() {
+    this.loopSearch()
     const canWebp = isSupportWebp()
     const hours = new Date().getHours()
+    this.isNight = hours > 16 || hours < 6
     let url = ''
-    if (canWebp) {
-      if (hours > 16 || hours < 6) {
-        url = require('~/assets/images/sentence.webp')
+    if (!this.isCaihong) {
+      if (canWebp) {
+        if (this.isNight) {
+          url = require('~/assets/images/sentence.webp')
+        } else {
+          url = require('~/assets/images/sentence-morning.webp')
+        }
+      } else if (this.isNight) {
+        url = require('~/assets/images/sentence.jpeg')
       } else {
-        url = require('~/assets/images/sentence-morning.webp')
+        url = require('~/assets/images/sentence-morning.jpeg')
       }
-    } else if (hours > 16 || hours < 6) {
-      url = require('~/assets/images/sentence.jpeg')
+    } else if (canWebp) {
+      url = require('~/assets/images/caihong.webp')
     } else {
-      url = require('~/assets/images/sentence-morning.jpeg')
+      url = require('~/assets/images/caihong.jpeg')
     }
 
     this.style = { 'background-image': `url('${url}')` }
+  }
+
+  handleTabBtnClick(type: string) {
+    if (!userStore.token) {
+      this.$message.warning('请先登录在操作哟~~')
+      return
+    }
+    switch (type) {
+      case 'upload':
+        break
+      case 'myself':
+        break
+      case 'check':
+        break
+    }
+  }
+
+  mounted() {
+    this.initBackgroun()
   }
   // and more functionality to discover
 }
@@ -183,6 +324,7 @@ export default class Home extends Vue {
   height: 100%;
   height: calc(100vh - 60px);
   background-size: 100% 100%;
+  position: relative;
 }
 .sentence-body {
   height: 100%;
@@ -221,9 +363,27 @@ export default class Home extends Vue {
   margin: 40px 0 20px 0;
   text-align: center;
 }
+.sentence-text.caihong-sentence {
+  background-image: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
+}
+.sentence-night .sentence-text:not(.caihong-sentence) {
+  background: none;
+  background-image: none;
+  -webkit-text-fill-color: #fff;
+}
 .sentence-author {
   text-align: center;
   font-size: 24px;
   color: #999;
+}
+.sentence-night .sentence-author {
+  color: #fff;
+}
+
+.top-btns {
+  position: absolute;
+  padding: 20px;
+  top: 0;
+  right: 0;
 }
 </style>
