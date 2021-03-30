@@ -51,8 +51,9 @@
           <el-button type="primary" @click="handleTabBtnClick('check')"
             >我要审核</el-button
           >
-          <el-button type="primary" @click="handleTabBtnClick('upload')"
-            >我要上传<i class="el-icon-upload el-icon--right"></i
+          <el-button type="primary" @click="handleTabBtnClick('upload')">
+            我要上传
+            <i class="el-icon-upload el-icon--right"></i
           ></el-button>
         </div>
       </div>
@@ -114,6 +115,13 @@
         <div class="sentence-author">
           {{ formName }}
         </div>
+      </div>
+      <div style="position: absolute; right: 15px; bottom: 15px">
+        部分数据来源于一言(Hitokoto)，<a
+          href="https://hitokoto.cn/"
+          target="_blank"
+          >前往一言</a
+        >，在这里感谢一言团队
       </div>
     </div>
     <sentence-report
@@ -304,10 +312,19 @@ export default class Home extends Vue {
     }
     switch (type) {
       case 'upload':
+        this.$router.push('/sentence/add')
         break
       case 'myself':
+        this.$notify.info({
+          title: '提示',
+          message: '正在开发中~~~',
+        })
         break
       case 'check':
+        this.$notify.info({
+          title: '提示',
+          message: '正在开发中~~~',
+        })
         break
     }
   }
@@ -346,6 +363,7 @@ export default class Home extends Vue {
 
 .sentence-text {
   background: #2193b0;
+  text-shadow: rgba(28, 216, 210, 0.38) 0.1em 0.1em 0.2em;
   // background-image: linear-gradient(to right, #ec6f66, #f3a183);
   background-image: radial-gradient(
     circle 248px at center,
@@ -365,6 +383,7 @@ export default class Home extends Vue {
 }
 .sentence-text.caihong-sentence {
   background-image: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
+  text-shadow: rgba(255, 117, 140, 0.38) 0.1em 0.1em 0.2em;
 }
 .sentence-night .sentence-text:not(.caihong-sentence) {
   background: none;

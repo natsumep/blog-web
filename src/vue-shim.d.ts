@@ -15,3 +15,8 @@ declare module '@nuxt/types' {
     $prompt: any
   }
 }
+declare module 'vue/types/vue' {
+  interface Vue {
+    $api: any
+  }
+}

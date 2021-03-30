@@ -1,5 +1,19 @@
 export const sentence = [
   {
+    name: 'type',
+    method: 'GET',
+    path: '/type',
+    notShowError: true,
+    serverPath: 'https://api.tinker.run/sentence',
+  },
+  {
+    name: 'add',
+    method: 'POST',
+    path: '/add',
+    notShowError: true,
+    serverPath: 'https://api.tinker.run/sentence',
+  },
+  {
     name: 'index',
     method: 'GET',
     path: '/',
@@ -40,6 +54,14 @@ export const sentence = [
     path: '/report',
     notShowError: true,
     serverPath: 'https://api.tinker.run/sentence',
+  },
+
+  {
+    name: 'caihongadd',
+    method: 'POST',
+    path: '/add',
+    notShowError: true,
+    serverPath: 'https://api.tinker.run/caihong',
   },
   {
     name: 'caihong',
