@@ -80,7 +80,7 @@
 
 <script>
 import CommentBox from './CommentBox'
-import { dateFormat } from '~/utils/time.ts'
+import { dateDiff } from '~/utils/time.ts'
 
 export default {
   components: {
@@ -88,7 +88,7 @@ export default {
   },
   filters: {
     formatTime: (val) => {
-      return dateFormat('YYYY-mm-dd HH:MM:SS', new Date(val).getTime())
+      return dateDiff(new Date(val).getTime())
     },
   },
   props: {

@@ -5,6 +5,7 @@
       <comment-box
         :has-cancel="hasCancel"
         :rows="4"
+        :type="type"
         @hideBox="hideBox"
         @addItem="addItemParent($event)"
       />

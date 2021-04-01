@@ -13,7 +13,7 @@
         style="margin-left: 10px"
         type="primary"
         round
-        @click="release"
+        @click="postData"
         >发布</el-button
       >
       <div v-else>
@@ -21,13 +21,44 @@
           <p style="text-align: center; margin-bottom: 14px">
             您尚未登录, 可自定义邮箱或者昵称哦~
           </p>
-          <el-form label-width="60px">
-            <el-form-item label="昵称" style="margin-bottom: 0">
-              <el-input v-model="commentNickName" size="mini"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱">
+          <el-form ref="form" :model="user" label-width="60px">
+            <el-form-item
+              prop="commentNickName"
+              label="昵称"
+              style="margin-bottom: 10px"
+              :rules="{
+                required: true,
+                message: '昵称不能为空',
+                trigger: 'blur',
+              }"
+            >
               <el-input
-                v-model="commentEmail"
+                v-model="user.commentNickName"
+                maxlength="10"
+                show-word-limit
+                size="mini"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              prop="commentEmail"
+              :rules="[
+                {
+                  required: true,
+                  message: '请输入邮箱地址',
+                  trigger: ['blur', 'change'],
+                },
+                {
+                  type: 'email',
+                  message: '请输入正确的邮箱地址',
+                  trigger: ['blur', 'change'],
+                },
+              ]"
+              label="邮箱"
+            >
+              <el-input
+                v-model="user.commentEmail"
+                maxlength="50"
+                show-word-limit
                 placeholder="邮箱不会被公布"
                 size="mini"
               ></el-input>
@@ -105,8 +136,10 @@ export default {
       hasInfo: false,
       visible: false,
       comment: '',
-      commentNickName: '',
-      commentEmail: '',
+      user: {
+        commentNickName: '',
+        commentEmail: '',
+      },
     }
   },
   computed: {
@@ -140,44 +173,24 @@ export default {
         return
       }
       if (sessionStorage.getItem('comment_info')) {
-        this.commentNickName = JSON.parse(
+        this.user.commentNickName = JSON.parse(
           sessionStorage.getItem('comment_info')
         ).nickName
-        this.commentEmail = JSON.parse(
+        this.user.commentEmail = JSON.parse(
           sessionStorage.getItem('comment_info')
         ).email
-        ;(this.commentNickName.trim() || this.commentEmail.trim()) &&
+        ;(this.user.commentNickName.trim() || this.user.commentEmail.trim()) &&
           (this.hasInfo = true)
       }
     },
     release() {
-      this.visible = false
-      const comment = this.comment.trim()
-      if (!comment) {
-        this.$message.error(`请输入${this.type}内容`)
-        return
-      }
-      if (comment.length > 200) {
-        this.$message.error(`${this.type}内容最多支持200字`)
-        return
-      }
-      // 未登录的话让他自己掰个昵称或邮箱
-      if (!this.userInfo) {
-        const obj = {
-          nickName: this.commentNickName,
-          email: this.commentEmail,
+      this.$refs.form.validate((v) => {
+        if (v) {
+          this.visible = false
+          this.postData()
         }
-        sessionStorage.setItem('comment_info', JSON.stringify(obj))
-        ;(this.commentNickName.trim() || this.commentEmail.trim()) &&
-          (this.hasInfo = true)
-      }
-      const data = {
-        comment,
-        nickName: this.commentNickName,
-        email: this.commentEmail,
-      }
-      this.comment = ''
-      this.$emit('addItem', data)
+      })
+
       // this.$api[this.postApi](data)
       //   .then(() => {
       //     this.comment = ''
@@ -187,6 +200,34 @@ export default {
       //   .catch((err) => {
       //     this.$message.error(err.msg)
       //   })
+    },
+    postData() {
+      const comment = this.comment.trim()
+      if (!comment) {
+        this.$message.error(`请输入${this.type}内容`)
+        return
+      }
+      if (comment.length > 200) {
+        this.$message.error(`${this.type}内容最多支持200字`)
+        return
+      }
+
+      if (!this.userInfo) {
+        const obj = {
+          nickName: this.user.commentNickName,
+          email: this.user.commentEmail,
+        }
+        sessionStorage.setItem('comment_info', JSON.stringify(obj))
+        ;(this.user.commentNickName.trim() || this.user.commentEmail.trim()) &&
+          (this.hasInfo = true)
+      }
+      const data = {
+        comment,
+        nickName: this.user.commentNickName,
+        email: this.user.commentEmail,
+      }
+      this.comment = ''
+      this.$emit('addItem', data)
     },
     hideBox() {
       this.$emit('hideBox')

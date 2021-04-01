@@ -3,6 +3,7 @@ import { user } from './user'
 import { comments } from './comments'
 import { sentence } from './sentence'
 import { qa } from './qa'
+import { message } from './message'
 import { SERVER_PATH as serverPath } from '~/config/index'
 
 export default {
@@ -41,4 +42,5 @@ export default {
   comments,
   sentence,
   qa,
+  message,
 }
