@@ -56,7 +56,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { userStore } from '~/utils/store-accessor'
-import { dateFormat } from '~/utils/time'
+import { dateDiff } from '~/utils/time'
 
 const bgc = [
   {
@@ -97,7 +97,7 @@ async function getArticleList(param: any, $api: any) {
     const obj = {
       index: i + 1 + (page - 1) * rows,
       ...item,
-      time: dateFormat('YYYY-mm-dd HH:MM:SS', item.createTime),
+      time: dateDiff(item.createTime),
       cardPic: item.cardPic.replace('.jpg', '_thumb.jpg'),
       type: item.type.split('/'),
       bgc: getBgc(item.views),

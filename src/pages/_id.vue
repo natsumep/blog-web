@@ -65,7 +65,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { userStore } from '~/utils/store-accessor'
-import { dateFormat } from '~/utils/time'
+import { dateDiff } from '~/utils/time'
 
 const bgc = [
   {
@@ -106,7 +106,7 @@ async function getArticleList(param: any, $api: any) {
     const obj = {
       index: i + 1 + (page - 1) * rows,
       ...item,
-      time: dateFormat('YYYY-mm-dd HH:MM:SS', item.createTime),
+      time: dateDiff(item.createTime),
       cardPic: item.cardPic.replace('.jpg', '_thumb.jpg'),
       type: item.type.split('/'),
       bgc: getBgc(item.views),
@@ -124,24 +124,32 @@ async function getArticleList(param: any, $api: any) {
   }
 }
 @Component({
-  async asyncData({ $api, route }) {
+  async asyncData({ $api, route, error }) {
     const { t, q } = route.query
-    const data = await Promise.all([
-      getArticleList(
-        {
-          page: 1,
-          rows: 20,
+    let data: any = []
+    try {
+      data = await Promise.all([
+        getArticleList(
+          {
+            page: 1,
+            rows: 20,
+            home: route.params.id || '',
+            searchText: route.query.q || '',
+            type: route.query.t,
+          },
+          $api
+        ),
+        $api['article/type']({
           home: route.params.id || '',
-          searchText: route.query.q || '',
-          type: route.query.t,
-        },
-        $api
-      ),
-      $api['article/type']({
-        home: route.params.id || '',
-      }),
-      $api['user/home']({ id: route.params.id }),
-    ])
+        }),
+        $api['user/home']({ id: route.params.id }),
+      ])
+    } catch (e) {
+      error({
+        statusCode: 404,
+      })
+    }
+
     return {
       ...data[0],
       typeList: data[1],

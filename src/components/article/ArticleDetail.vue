@@ -116,9 +116,9 @@
   </div>
 </template>
 <script>
-import * as Jspdf from 'jspdf'
+import { jsPDF } from 'jspdf'
 import html2canvas from 'html2canvas'
-import { dateFormat } from '~/utils/time'
+import { dateDiff } from '~/utils/time'
 export default {
   components: {
     markdownViewer: () => import('../MarkdownViewer.client'),
@@ -151,8 +151,8 @@ export default {
       }
     },
     formatData() {
-      return (val, type = 'YYYY-mm-dd HH:MM') => {
-        return dateFormat(type, val)
+      return (val) => {
+        return dateDiff(val)
       }
     },
   },
@@ -302,9 +302,13 @@ export default {
       }).then((canvas) => {
         // const pageData = canvas.toDataURL('image/jpeg', 1.0)
         // 方向默认竖直，尺寸ponits，格式a4[595.28,841.89]
-        const pdf = new Jspdf('', 'px', [canvas.width, canvas.height])()
+        // eslint-disable-next-line new-cap
+        const pdf = new jsPDF({
+          unit: 'px',
+          format: [canvas.width, canvas.height],
+        })
         // addImage后两个参数控制添加图片的尺寸，此处将页面高度按照a4纸宽高比列进行压缩
-        pdf.addImage(canvas, 'JPEG', 20, 0, canvas.width, canvas.height)
+        pdf.addImage(canvas, 'JPEG', 0, 0, canvas.width, canvas.height)
         pdf.save(this.data.title + 'a4.nopage.pdf')
       })
     },
@@ -330,14 +334,18 @@ export default {
         const imgWidth = 595.28
         const imgHeight = (592.28 / contentWidth) * contentHeight
         const pageData = canvas.toDataURL('image/jpeg', 1.0)
-        const pdf = new Jspdf('', 'pt', 'a4')
+        // eslint-disable-next-line new-cap
+        const pdf = new jsPDF({
+          unit: 'px',
+          format: 'a4',
+        })
         // 有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
         // 当内容未超过pdf一页显示的范围，无需分页
         if (leftHeight < pageHeight) {
-          pdf.addImage(pageData, 'JPEG', 20, 0, imgWidth, imgHeight)
+          pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight)
         } else {
           while (leftHeight > 0) {
-            pdf.addImage(pageData, 'JPEG', 20, position, imgWidth, imgHeight)
+            pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
             leftHeight -= pageHeight
             position -= 841.89
             // 避免添加空白页

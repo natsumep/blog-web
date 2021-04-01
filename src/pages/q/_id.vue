@@ -20,7 +20,7 @@
         <img
           class="avatar"
           :src="
-            !detail.anonymous && detail.user && detail.user.avatar
+            detail.user && detail.user.avatar
               ? detail.user.avatar
               : defaultAvatar
           "
@@ -28,8 +28,10 @@
         />
         <p class="name">
           {{
-            !detail.anonymous && detail.user && detail.user.nickName
+            detail.user && detail.user.nickName
               ? detail.user.nickName
+              : detail.nickName
+              ? detail.nickName
               : '匿名'
           }}
         </p>
@@ -155,7 +157,7 @@
 
 <script>
 import { userStore } from '~/store'
-import { dateFormat } from '~/utils/time'
+import { dateDiff } from '~/utils/time'
 function getHTMLLength(html) {
   let div = document.createElement('div')
   div.innerHTML = html
@@ -170,7 +172,7 @@ export default {
   },
   filters: {
     formatTime: (val) => {
-      return dateFormat('YYYY-mm-dd HH:MM:SS', new Date(val).getTime())
+      return dateDiff(val)
     },
   },
   data() {
@@ -296,10 +298,7 @@ export default {
         (data) => {
           this.detail = data
           this.detail.createTime &&
-            (this.detail.createTime = dateFormat(
-              'YYYY-mm-dd HH:MM:SS',
-              this.detail.createTime
-            ))
+            (this.detail.createTime = dateDiff(this.detail.createTime))
           this.detail.type && (this.detail.type = this.detail.type.split('/'))
         },
         () => {
@@ -437,7 +436,7 @@ export default {
   position: absolute;
   top: 24px;
   right: 24px;
-  z-index: 5;
+  z-index: 1;
   color: #c0c4cc;
   font-size: 20px;
   cursor: pointer;

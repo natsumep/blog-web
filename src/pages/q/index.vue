@@ -72,7 +72,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { userStore } from '~/utils/store-accessor'
 
-import { dateFormat } from '~/utils/time'
+import { dateDiff } from '~/utils/time'
 @Component({
   async asyncData({ $api }) {
     // await this.getArticleList()
@@ -96,7 +96,7 @@ import { dateFormat } from '~/utils/time'
         const time = (now - val) / 1000 / 60
         return `${Math.ceil(time)}分钟前`
       } else {
-        return dateFormat('YYYY-mm-dd HH:MM:SS', val)
+        return dateDiff(val)
       }
     },
   },
