@@ -38,10 +38,15 @@
               <p style="margin-left: 10px">{{ item.number }}楼</p>
             </div>
             <el-popconfirm
+              v-if="item.canDelete"
               title="确定要删除这条留言吗？"
               @confirm="deleteMessage(item.id)"
             >
-              <i slot="reference" class="el-icon-delete"></i>
+              <i
+                slot="reference"
+                style="cursor: pointer"
+                class="el-icon-delete delete-btn"
+              ></i>
             </el-popconfirm>
           </div>
           <div class="answer-content">
@@ -277,5 +282,13 @@ export default class Index extends Vue {
   width: 90%;
   margin: 0 auto;
   cursor: pointer;
+}
+.delete-btn {
+  cursor: pointer;
+  &:hover {
+    transition: transform 0.3s;
+    color: red;
+    transform: scale(1.1);
+  }
 }
 </style>
