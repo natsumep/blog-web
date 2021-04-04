@@ -17,6 +17,8 @@
         <el-menu-item index="/article/edit">添加文章</el-menu-item>
         <el-menu-item index="/q">问答</el-menu-item>
         <el-menu-item index="/sentence">句子杂货铺</el-menu-item>
+        <el-menu-item index="/caihong">彩虹屁🌈</el-menu-item>
+
         <el-menu-item index="/api">开放接口</el-menu-item>
         <!-- <el-menu-item index="/about">碎碎念</el-menu-item> -->
         <el-menu-item index="/comment">留言</el-menu-item>
