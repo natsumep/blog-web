@@ -13,9 +13,21 @@
 <script>
 // import { easeout } from '~/utils/animation'
 export default {
-  async asyncData({ error, $api, params }) {
+  async asyncData({ error, $api, params, app }) {
     try {
       const data = await $api['article/detail']({ id: params.id })
+      app.head.title = data.title
+      app.head.meta = [
+        {
+          hid: 'description',
+          name: 'description',
+          content: data.abstract || data.val.slice(0, 100),
+        },
+        {
+          name: 'keywords',
+          content: data.type.split('/').join(','),
+        },
+      ]
       return {
         data,
       }
