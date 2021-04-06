@@ -1,8 +1,9 @@
 <template>
   <div class="api-content">
     <iframe
+      ref="ifarme"
       width="100%"
-      height="100%"
+      :height="height"
       src="https://api.tinker.run/docs"
       frameborder="0"
     ></iframe>
@@ -10,8 +11,13 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-@Component
-export default class Index extends Vue {}
+@Component({
+  layout: 'nobottom',
+})
+export default class Index extends Vue {
+  height = '100%'
+  mounted() {}
+}
 </script>
 <style lang="less" scoped>
 .api-content {
