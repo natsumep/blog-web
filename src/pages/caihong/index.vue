@@ -116,6 +116,11 @@
           {{ formName }}
         </div>
       </div>
+      <div style="position: absolute; bottom: 15px">
+        <a href="https://tinker.run/core" style="color: #2196f3"
+          >彩虹屁：chrome插件使用说明</a
+        >
+      </div>
     </div>
     <sentence-report
       v-model="showReport"

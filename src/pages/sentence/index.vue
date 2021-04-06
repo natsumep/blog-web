@@ -116,12 +116,10 @@
           {{ formName }}
         </div>
       </div>
-      <div style="position: absolute; right: 15px; bottom: 15px">
-        部分数据来源于一言(Hitokoto)，<a
-          href="https://hitokoto.cn/"
-          target="_blank"
-          >前往一言</a
-        >，在这里感谢一言团队
+      <div style="position: absolute; bottom: 15px">
+        <a href="https://tinker.run/core" style="color: #2196f3"
+          >句子杂货：chrome插件使用说明</a
+        >
       </div>
     </div>
     <sentence-report
