@@ -35,10 +35,6 @@ export default class Index extends Vue {
     const userinfo = this.userinfo
     return userinfo && userinfo.profile
   }
-
-  mounted() {
-    console.log(this.userinfo)
-  }
 }
 </script>
 
