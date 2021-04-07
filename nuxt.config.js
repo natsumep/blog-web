@@ -43,8 +43,9 @@ export default {
     '@/plugins/axios.server',
     '@/plugins/axios-accessor',
     '@/plugins/visit-view.client',
+    '@/plugins/browser-init.client',
     '@/plugins/onInit',
-    // '@/plugins/ba.client',
+    '@/plugins/ba.client',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

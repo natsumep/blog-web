@@ -20,7 +20,7 @@
         </el-tag>
       </el-card>
     </div>
-    <div class="filter-wrapper">
+    <div class="filter-wrapper flex-item-center">
       <p>
         {{ getSearchTitle.first }}
         <span style="color: #409eff">{{ getSearchTitle.tag }}</span>

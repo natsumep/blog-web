@@ -29,7 +29,7 @@
         <el-tab-pane label="私人文章" name="private"></el-tab-pane>
       </el-tabs>
     </div>
-    <div class="filter-wrapper">
+    <div class="filter-wrapper flex-item-center">
       <p>
         {{ getSearchTitle.first }}
         <span style="color: #409eff">{{ getSearchTitle.tag }}</span>
