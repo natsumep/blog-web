@@ -84,14 +84,14 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { userStore } from '~/store'
 import { exit } from '~/utils/loginPreservationUserInfo'
-
 @Component
 export default class Index extends Vue {
+  userDefault = require('~/assets/images/user-default.png')
   visible = false
   loginVisible = false
   info = {
     nickname: '',
-    avatar: '',
+    avatar: this.userDefault,
   }
 
   get userInfo() {
@@ -114,7 +114,7 @@ export default class Index extends Vue {
   @Watch('userInfo')
   changeUserInfo(val: any) {
     this.info.nickname = val.nickname
-    this.info.avatar = val.avatar || require('~/assets/images/user-default.png')
+    this.info.avatar = val.avatar || this.userDefault
   }
 
   created() {
@@ -122,6 +122,7 @@ export default class Index extends Vue {
       ...this.info,
       ...this.userInfo,
     }
+    this.info.avatar = this.info.avatar || this.userDefault
   }
 
   handleLoginHidden() {

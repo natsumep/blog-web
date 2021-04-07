@@ -174,7 +174,7 @@ export default class Home extends Vue {
   total = 0
   typeList = []
   type = ''
-  userHomeInfo = userStore.userinfoObj
+  userHomeInfo: any = {}
   chartdata: any = {
     labels: [],
     datasets: [
@@ -232,7 +232,9 @@ export default class Home extends Vue {
   }
 
   mounted() {
+    this.userHomeInfo = userStore.userinfoObj
     this.isMyself = userStore.userinfoObj.home === this.$route.params.id
+    this.userHomeInfo.avatar = this.userHomeInfo.avatar || this.userDefault
     document.addEventListener('scroll', this.handleScroll, true)
   }
 

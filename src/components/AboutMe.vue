@@ -4,9 +4,9 @@
     <div slot="header" class="clearfix">
       <span>About Me</span>
     </div>
-    <div v-if="userinfo">
-      <div v-if="userinfo.avatar" class="flex flex-just-center">
-        <img class="user-img" :src="userinfo.avatar" alt="" />
+    <div>
+      <div class="flex flex-just-center">
+        <img class="user-img" :src="userinfo.avatar || userDefault" alt="" />
       </div>
       <div class="text-centen" style="color: #3c68e6; margin-bottom: 10px">
         {{ userinfo.nickname }}
@@ -26,12 +26,18 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component
 export default class Index extends Vue {
+  userDefault = require('~/assets/images/user-default.png')
+
   @Prop()
   userinfo!: any
 
   get profile() {
     const userinfo = this.userinfo
     return userinfo && userinfo.profile
+  }
+
+  mounted() {
+    console.log(this.userinfo)
   }
 }
 </script>
