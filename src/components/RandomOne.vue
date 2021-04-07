@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <nuxt-link to="/api/core"
+    <nuxt-link to="/core"
       ><div class="want-api">我也要用这个接口</div></nuxt-link
     >
   </el-card>
