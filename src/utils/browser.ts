@@ -19,7 +19,7 @@ export function getUrlParam(paraName?: string, url = location.href) {
     for (let i = 0; i < arrPara.length; i++) {
       arr = arrPara[i].split('=')
       if (arr != null) {
-        if (paraName && arr[0] == paraName) {
+        if (paraName && arr[0] === paraName) {
           return arr[1]
         } else {
           para[arr[0]] = arr[1]
