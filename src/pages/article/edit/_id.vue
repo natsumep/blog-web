@@ -21,7 +21,7 @@
             <el-input
               v-model="title"
               class="flex-auto"
-              maxlength="30"
+              maxlength="100"
               type="text"
               placeholder="请输入标题"
               :show-word-limit="true"
