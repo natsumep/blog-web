@@ -6,6 +6,7 @@ export const sentence = [
     method: 'GET',
     path: '/type',
     notShowError: true,
+
     serverPath: serverPath + 'sentence',
   },
   {
@@ -19,6 +20,9 @@ export const sentence = [
     name: 'index',
     method: 'GET',
     path: '/',
+    params: {
+      from: 'web',
+    },
     notShowError: true,
     serverPath: serverPath + 'sentence',
   },
@@ -69,6 +73,9 @@ export const sentence = [
     name: 'caihong',
     method: 'GET',
     path: '/',
+    params: {
+      from: 'web',
+    },
     notShowError: true,
     serverPath: serverPath + 'caihong',
   },

@@ -328,10 +328,7 @@ export default class Home extends Vue {
         this.$router.push('/sentence/add')
         break
       case 'myself':
-        this.$notify.info({
-          title: '提示',
-          message: '正在开发中~~~',
-        })
+        this.$router.push('/sentence/me')
         break
       case 'check':
         this.$notify.info({

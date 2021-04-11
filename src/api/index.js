@@ -4,6 +4,7 @@ import { comments } from './comments'
 import { sentence } from './sentence'
 import { qa } from './qa'
 import { message } from './message'
+import { sentenceMe } from './sentence-my'
 import { SERVER_PATH as serverPath } from '~/config/index'
 
 export default {
@@ -43,4 +44,5 @@ export default {
   sentence,
   qa,
   message,
+  sentenceMe,
 }
