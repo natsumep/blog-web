@@ -135,11 +135,18 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { isSupportWebp } from '@/utils/browser'
 import { userStore } from '@/utils/store-accessor'
-async function loadData(api: any, type = 'caihong') {
+async function loadData(api: any, type = 'caihong', id = '') {
   let data
-  const url = type === 'sentence' ? 'sentence/index' : 'sentence/caihong'
+  let url = type === 'sentence' ? 'sentence/index' : 'sentence/caihong'
+  if (id) {
+    url += 'id'
+  }
   try {
-    data = await api[url]()
+    const option: any = {}
+    if (id) {
+      option.uuid = id
+    }
+    data = await api[url](option)
     return data
   } catch (e) {
     return null
@@ -147,9 +154,9 @@ async function loadData(api: any, type = 'caihong') {
 }
 
 @Component({
-  async asyncData({ $api }) {
-    const data = await loadData($api)
-    return { wordInfo: data } || {}
+  async asyncData({ $api, query }) {
+    const data = await loadData($api, 'caihong', (query as any).uuid)
+    return (data && { wordInfo: data }) || {}
   },
   head: {
     title: '彩虹屁🌈 _ 随机一条彩虹屁~',
@@ -170,7 +177,7 @@ async function loadData(api: any, type = 'caihong') {
 })
 export default class Home extends Vue {
   style: any = {}
-  needLoop = true
+  needLoop = false
   isCaihong = true
   likeLoading = false
   loopTime = 30
@@ -329,10 +336,7 @@ export default class Home extends Vue {
         this.$router.push('/sentence/add')
         break
       case 'myself':
-        this.$notify.info({
-          title: '提示',
-          message: '正在开发中~~~',
-        })
+        this.$router.push('/sentence/me')
         break
       case 'check':
         this.$notify.info({
@@ -345,6 +349,11 @@ export default class Home extends Vue {
 
   mounted() {
     this.initBackgroun()
+    this.$router.replace({ query: { uuid: this.wordInfo.uuid } })
+  }
+
+  destroyed() {
+    this.clearLoop()
   }
   // and more functionality to discover
 }

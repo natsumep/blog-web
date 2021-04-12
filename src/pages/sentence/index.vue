@@ -135,11 +135,18 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { isSupportWebp } from '@/utils/browser'
 import { userStore } from '@/utils/store-accessor'
-async function loadData(api: any, type = 'sentence') {
+async function loadData(api: any, type = 'sentence', id = '') {
   let data
-  const url = type === 'sentence' ? 'sentence/index' : 'sentence/caihong'
+  let url = type === 'sentence' ? 'sentence/index' : 'sentence/caihong'
+  if (id) {
+    url += 'id'
+  }
   try {
-    data = await api[url]()
+    const option: any = {}
+    if (id) {
+      option.uuid = id
+    }
+    data = await api[url](option)
     return data
   } catch (e) {
     return null
@@ -147,9 +154,9 @@ async function loadData(api: any, type = 'sentence') {
 }
 
 @Component({
-  async asyncData({ $api }) {
-    const data = await loadData($api)
-    return { wordInfo: data } || {}
+  async asyncData({ $api, query }) {
+    const data = await loadData($api, 'sentence', (query as any).uuid)
+    return (data && { wordInfo: data }) || {}
   },
   head: {
     title: '句子杂货铺 _ 来一条随机的句子吧~',
@@ -169,7 +176,7 @@ async function loadData(api: any, type = 'sentence') {
 })
 export default class Home extends Vue {
   style: any = {}
-  needLoop = true
+  needLoop = false
   isCaihong = false
   likeLoading = false
   loopTime = 30
@@ -341,6 +348,11 @@ export default class Home extends Vue {
 
   mounted() {
     this.initBackgroun()
+    this.$router.replace({ query: { uuid: this.wordInfo.uuid } })
+  }
+
+  destroyed() {
+    this.clearLoop()
   }
   // and more functionality to discover
 }

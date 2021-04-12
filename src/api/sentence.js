@@ -27,6 +27,16 @@ export const sentence = [
     serverPath: serverPath + 'sentence',
   },
   {
+    name: 'indexid',
+    method: 'GET',
+    path: '/id/:uuid',
+    params: {
+      from: 'web',
+    },
+    notShowError: true,
+    serverPath: serverPath + 'sentence',
+  },
+  {
     name: 'like',
     method: 'POST',
     path: '/like/:id',
@@ -73,6 +83,16 @@ export const sentence = [
     name: 'caihong',
     method: 'GET',
     path: '/',
+    params: {
+      from: 'web',
+    },
+    notShowError: true,
+    serverPath: serverPath + 'caihong',
+  },
+  {
+    name: 'caihongid',
+    method: 'GET',
+    path: '/id/:uuid',
     params: {
       from: 'web',
     },

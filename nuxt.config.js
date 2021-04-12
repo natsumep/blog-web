@@ -9,7 +9,7 @@ export default {
   // },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: '博客',
+    title: '博客铺子 _ store',
     meta: [
       { charset: 'utf-8' },
       {
@@ -27,7 +27,30 @@ export default {
         content:
           'initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width',
       },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        name: 'apple-mobile-web-app-title',
+        content: '博客铺子 _ store',
+      },
+      {
+        name: 'og:title',
+        property: 'og:title',
+        content: '博客铺子 _ store',
+      },
+      {
+        name: 'og:type',
+        property: 'og:type',
+        content: 'article',
+      },
+      {
+        name: 'og:url',
+        property: 'og:url',
+        content: 'https://www.tinker.run/',
+      },
+      {
+        name: 'og:image',
+        property: 'og:image',
+        content: '/icon.png',
+      },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/icon.png' }],
   },
