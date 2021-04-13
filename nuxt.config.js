@@ -51,7 +51,11 @@ export default {
         content: '/icon.png',
       },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/icon.png' }],
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'shortcut icon', href: '/favicon.ico' },
+      { rel: 'apple-touch-icon', href: '/favicon.ico' },
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css

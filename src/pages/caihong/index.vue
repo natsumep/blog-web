@@ -175,6 +175,17 @@ async function loadData(api: any, type = 'caihong', id = '') {
     title: '彩虹屁🌈 _ 随机一条彩虹屁~',
     meta: [
       {
+        name: 'og:title',
+        property: 'og:title',
+        content: '彩虹屁🌈 _ 随机一条彩虹屁~',
+      },
+      {
+        name: 'og:description',
+        property: 'og:description',
+        content:
+          '这是一个彩虹屁合集,你可以查看、收藏、喜欢各种各样的彩虹屁，还可以上传自己喜欢的彩虹屁，利用chrome插件，可以在chrome浏览器查看彩虹屁，上传彩虹屁。开放的彩虹屁api接口，可以通过接口查询到彩虹屁',
+      },
+      {
         hid: 'description',
         name: 'description',
         content:

@@ -171,8 +171,19 @@ async function loadData(api: any, type = 'sentence', id = '') {
     return (data && { wordInfo: data }) || {}
   },
   head: {
-    title: '句子杂货铺 _ 来一条随机的句子吧~',
+    title: '句子杂货铺💬 _ 来一条随机的句子吧~',
     meta: [
+      {
+        name: 'og:title',
+        property: 'og:title',
+        content: '句子杂货铺 _ 来一条随机的句子吧~',
+      },
+      {
+        name: 'og:description',
+        property: 'og:description',
+        content:
+          '句子杂货铺💬 ：这是一个分类句子合集,你可以查看、收藏、喜欢各种各样的句子，还可以上传自己喜欢的句子，利用chrome插件，可以在chrome浏览器查看句子，上传句子。开放的句子api接口，可以通过接口查询到句子',
+      },
       {
         hid: 'description',
         name: 'description',
