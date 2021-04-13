@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-just-beew" style="position: relative">
+  <div class="flex-just-beew flex-item-center" style="position: relative">
     <svg
       v-if="item.isPrivate"
       t="1611736894190"
@@ -33,21 +33,25 @@
       ></path>
     </svg>
     <div class="flex-auto title-wrapper">
-      <div>
-        <div class="title-content flex-item-center">
-          <nuxt-link class="flex-fixed title" :to="`/article/${item.id}`">
-            {{ item.title }}
-          </nuxt-link>
-          <template v-for="(option, index) in item.type">
-            <nuxt-link :key="index" class="flex-center" to="">
-              <span class="class-ification" :class="item.bgc">{{
-                option
-              }}</span>
+      <div class="flex flex-item-center">
+        <div>
+          <div class="title-content flex-item-center">
+            <nuxt-link class="flex-fixed title" :to="`/article/${item.id}`">
+              {{ item.title }}
             </nuxt-link>
-          </template>
+            <div class="flex">
+              <template v-for="(option, index) in item.type">
+                <nuxt-link :key="index" class="flex-center" to="">
+                  <span class="class-ification" :class="item.bgc">{{
+                    option
+                  }}</span>
+                </nuxt-link>
+              </template>
+            </div>
+          </div>
+          <p class="abstr">{{ item.abstract }}</p>
         </div>
-
-        <p class="abstr">{{ item.abstract }}</p>
+        <img v-if="item.cardPic" class="poster" :src="item.cardPic" alt="" />
       </div>
       <div class="txt">
         <nuxt-link class="flex margin user-item" :to="'/' + item.userHome">
@@ -72,7 +76,6 @@
         </div>
       </div>
     </div>
-    <img v-if="item.cardPic" class="poster" :src="item.cardPic" alt="" />
   </div>
 </template>
 
@@ -189,7 +192,7 @@ a {
   height: 100px;
   border-radius: 4px;
   border: 1px solid #f0f0f0;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .is-private {
@@ -201,5 +204,18 @@ a {
   fill: #eee;
   transform: rotate(30deg);
   z-index: 0;
+}
+@media screen and (max-width: 400px) {
+  .title-content {
+    flex-wrap: wrap;
+    .title {
+      width: 100%;
+      margin-bottom: 4px;
+    }
+    .poster {
+      width: 80px;
+      height: 80px;
+    }
+  }
 }
 </style>

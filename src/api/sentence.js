@@ -20,6 +20,7 @@ export const sentence = [
     name: 'index',
     method: 'GET',
     path: '/',
+    notRouterError: true,
     params: {
       from: 'web',
     },
@@ -30,6 +31,7 @@ export const sentence = [
     name: 'indexid',
     method: 'GET',
     path: '/id/:uuid',
+    notRouterError: true,
     params: {
       from: 'web',
     },
@@ -83,6 +85,7 @@ export const sentence = [
     name: 'caihong',
     method: 'GET',
     path: '/',
+    notRouterError: true,
     params: {
       from: 'web',
     },
@@ -93,6 +96,7 @@ export const sentence = [
     name: 'caihongid',
     method: 'GET',
     path: '/id/:uuid',
+    notRouterError: true,
     params: {
       from: 'web',
     },

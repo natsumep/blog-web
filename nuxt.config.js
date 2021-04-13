@@ -145,7 +145,9 @@ export default {
   cli: {
     bannerColor: 'red',
   },
-
+  render: {
+    compressor: false,
+  },
   // server: {
   //   // https: {
   //   //   key: fs.readFileSync(path.resolve(__dirname, 'cert', 'cert.key')),

@@ -53,6 +53,13 @@
     <div v-for="item in list" :key="item.id" class="item">
       <ArticleListItem :item="item"></ArticleListItem>
     </div>
+    <div
+      v-if="list.length === total"
+      class="text-centen"
+      style="padding: 20px 0 0 0"
+    >
+      没有更多内容了~
+    </div>
     <div v-if="!list.length" class="text-centen" style="margin-top: 150px">
       空空如也，快去写一篇吧
       <nuxt-link to="/article/edit" style="color: #409eff">
@@ -378,6 +385,24 @@ export default class Home extends Vue {
   .total {
     font-weight: 700;
     color: rgb(247, 61, 73);
+  }
+}
+@media screen and (max-width: 400px) {
+  .wrapper {
+    width: 100%;
+    margin: 0;
+    padding: 10px 0;
+    .filter-wrapper {
+      padding: 0 10px 10px 10px;
+    }
+  }
+  .item {
+    margin: 0;
+    padding: 20px 10px;
+    &:not(:last-child) {
+      border-bottom: 1px solid #eee;
+      border-radius: 0;
+    }
   }
 }
 </style>

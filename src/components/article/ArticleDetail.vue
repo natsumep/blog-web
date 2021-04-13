@@ -1,7 +1,7 @@
 <template>
   <div class="detail-wrapper">
     <div v-if="data.val" class="detail">
-      <div style="padding: 10px 0; font-size: 14px" class="flex-just-beew">
+      <div class="flex-just-beew top-info">
         <div>
           <p class="top-system">
             <span>分类：{{ data.type || '未分类' }} </span>
@@ -18,7 +18,7 @@
           </p>
         </div>
 
-        <div>
+        <div class="top-btn">
           <router-link v-if="data.canDelete" :to="`/article/edit/${data.id}`"
             ><el-button type="primary" icon="el-icon-edit" circle></el-button
           ></router-link>
@@ -360,7 +360,8 @@ export default {
   },
 }
 </script>
-<style>
+
+<style scoped>
 /* 目录css */
 .li {
   display: block;
@@ -445,7 +446,10 @@ export default {
   padding: 0 50px 50px 50px;
   width: 100%;
 }
-
+.top-info {
+  padding: 10px 0;
+  font-size: 14px;
+}
 .top-system {
   span {
     margin-right: 20px;
@@ -470,6 +474,24 @@ export default {
 @media screen and (max-width: 1600px) {
   .directory-wrapper {
     display: none;
+  }
+}
+@media screen and (max-width: 400px) {
+  .detail-wrapper {
+    width: 100%;
+  }
+  .download-btn,
+  .top-btn {
+    display: none;
+  }
+  .top-system span {
+    display: inline-block;
+  }
+  .top-info {
+    padding: 10px;
+  }
+  .detail {
+    padding: 0;
   }
 }
 </style>

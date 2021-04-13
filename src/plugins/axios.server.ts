@@ -22,11 +22,16 @@ const pulgin: Plugin = function ({ $axios, req, error }) {
     const resData = responseError?.data || responseError?.request || {}
     const code = resData.code * 1 || resData.status // 强转数字
     const msg = resData.msg || '服务端异常'
+    const config = responseError.config || {}
     if (code >= 500) {
-      error({
-        statusCode: 500,
-        message: msg,
-      })
+      if (config.notRouterError) {
+        return Promise.reject(resData)
+      } else {
+        error({
+          statusCode: 500,
+          message: msg,
+        })
+      }
     }
   })
 }

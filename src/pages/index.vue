@@ -303,4 +303,22 @@ export default class Home extends Vue {
     color: rgb(247, 61, 73);
   }
 }
+@media screen and (max-width: 400px) {
+  .wrapper {
+    width: 100%;
+    margin: 0;
+    padding: 10px 0;
+    .filter-wrapper {
+      padding: 0 10px 10px 10px;
+    }
+  }
+  .item {
+    margin: 0;
+    padding: 20px 10px;
+    &:not(:last-child) {
+      border-bottom: 1px solid #eee;
+      border-radius: 0;
+    }
+  }
+}
 </style>

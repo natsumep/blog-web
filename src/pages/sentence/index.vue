@@ -94,7 +94,7 @@
                 src="~/assets/images/refresh.svg"
                 style="width: 40px; cursor: pointer"
                 alt="刷新"
-                @click="hanldeRefresh"
+                @click="hanldeRefresh()"
               />
             </div>
           </div>
@@ -109,7 +109,13 @@
             </div>
           </div>
         </div>
-        <div class="sentence-text" :class="{ 'caihong-sentence': isCaihong }">
+        <div
+          class="sentence-text"
+          :class="{
+            'caihong-sentence': isCaihong,
+            'is-error': wordInfo.isError,
+          }"
+        >
           {{ word }}
         </div>
         <div class="sentence-author">
@@ -132,7 +138,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { isSupportWebp } from '@/utils/browser'
 import { userStore } from '@/utils/store-accessor'
 async function loadData(api: any, type = 'sentence', id = '') {
@@ -149,7 +155,7 @@ async function loadData(api: any, type = 'sentence', id = '') {
     data = await api[url](option)
     return data
   } catch (e) {
-    return null
+    return { content: e.msg + ' \n 点击刷新按钮查看其它', isError: true }
   }
 }
 
@@ -264,14 +270,20 @@ export default class Home extends Vue {
     // isLike
   }
 
-  async hanldeRefresh() {
-    this.wordInfo = await loadData((this as any).$api, this.searchType)
+  async refreshData(uuid?: any) {
+    const data = await loadData((this as any).$api, this.searchType, uuid)
+    this.wordInfo = data || {}
+    this.$router.push({ query: { uuid: this.wordInfo.uuid } })
+  }
+
+  hanldeRefresh() {
+    this.refreshData()
   }
 
   loopSearch() {
     this.clearLoop()
     this.timer = setInterval(() => {
-      this.hanldeRefresh()
+      this.refreshData()
     }, this.loopTime * 1000)
   }
 
@@ -295,11 +307,11 @@ export default class Home extends Vue {
 
   changeType() {
     this.initBackgroun()
-    this.hanldeRefresh()
+    this.refreshData()
   }
 
   initBackgroun() {
-    this.loopSearch()
+    this.changeLoop(this.needLoop)
     const canWebp = isSupportWebp()
     const hours = new Date().getHours()
     this.isNight = hours > 16 || hours < 6
@@ -348,7 +360,16 @@ export default class Home extends Vue {
 
   mounted() {
     this.initBackgroun()
-    this.$router.replace({ query: { uuid: this.wordInfo.uuid } })
+  }
+
+  @Watch('$route')
+  routeChange() {
+    const uuid = this.$route.query.uuid
+    if (this.$route.query.uuid) {
+      if (uuid !== this.wordInfo.uuid) {
+        this.refreshData(uuid)
+      }
+    }
   }
 
   destroyed() {
@@ -406,6 +427,12 @@ export default class Home extends Vue {
 .sentence-text.caihong-sentence {
   background-image: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
   text-shadow: rgba(255, 117, 140, 0.38) 0.1em 0.1em 0.2em;
+}
+.sentence-text.is-error {
+  background: none !important;
+  background-image: none !important;
+  -webkit-text-fill-color: red !important;
+  text-shadow: none !important;
 }
 .sentence-night .sentence-text:not(.caihong-sentence) {
   background: none;

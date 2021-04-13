@@ -62,4 +62,10 @@ export default {
     margin-right: 20px;
   }
 }
+@media screen and (max-width: 400px) {
+  .to-top {
+    right: 10px;
+    bottom: 50px;
+  }
+}
 </style>

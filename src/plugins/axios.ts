@@ -50,6 +50,7 @@ class MakeApi {
         showErrorText,
         serverPath = '',
         notShowError,
+        notRouterError,
         hasLoading,
       } = api
       const apiName = `${namespace}${sep}${name}`
@@ -78,6 +79,7 @@ class MakeApi {
                   baseURL: serverPath,
                   method,
                   notShowError,
+                  notRouterError,
                   path,
                 },
                 outerOptions

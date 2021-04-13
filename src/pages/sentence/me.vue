@@ -23,7 +23,7 @@
           <el-option label="全部" value=""> </el-option>
           <el-option label="审核中" value="0"> </el-option>
           <el-option label="正常" value="1"> </el-option>
-          <el-option label="审核失败" value="-1"> </el-option>
+          <el-option label="驳回" value="-1"> </el-option>
         </el-select>
       </div>
       <el-table
