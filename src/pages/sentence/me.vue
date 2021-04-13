@@ -40,16 +40,17 @@
             :min-width="item.width"
             :align="item.align || 'left'"
           >
-            <el-button
-              v-for="btn in item.children"
-              :key="btn.type"
-              slot-scope="scope"
-              size="mini"
-              type="text"
-              style="padding: 0 10px"
-              @click="tableBtnClick(btn.type, scope.row)"
-              >{{ btn.name }}</el-button
-            >
+            <template v-for="btn in item.children">
+              <el-button
+                :key="btn.type"
+                slot-scope="scope"
+                size="mini"
+                type="text"
+                style="padding: 0 10px"
+                @click="tableBtnClick(btn.type, scope.row)"
+                >{{ btn.name }}</el-button
+              >
+            </template>
           </el-table-column>
           <el-table-column
             v-else-if="searchType === 'like' && item.prop === 'length'"
