@@ -71,7 +71,7 @@
               </el-tooltip>
             </div>
           </div>
-          <h3 class="no-directory" style="padding: 20px 0">
+          <h3 class="no-directory abstract" style="padding: 20px 0">
             {{ data.abstract }}
           </h3>
           <!-- <nuxt-content :document="data.val" height="100%" /> -->
@@ -462,7 +462,10 @@ export default {
   background-color: rgba(255, 255, 255, 0.9);
   margin-top: 24px;
 }
-
+.abstract {
+  font-size: 16px;
+  color: #666;
+}
 .directory-wrapper {
   max-width: 300px;
   position: fixed;

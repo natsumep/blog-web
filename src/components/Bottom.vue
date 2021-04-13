@@ -1,6 +1,6 @@
 <template>
-  <div slot="bottom">
-    <div class="footer">
+  <div>
+    <div v-if="isWeb" class="footer">
       <div>
         2019 ~ {{ new Date().getFullYear() }} 🐈 Copyright© by pp - zy ✏
         <div>
@@ -18,9 +18,13 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { systemStore } from '~/utils/store-accessor'
 @Component
 export default class Index extends Vue {
   views: any = {}
+  get isWeb() {
+    return systemStore.isWeb
+  }
 
   async created() {
     const data = await this.$axios.get('/views').catch()

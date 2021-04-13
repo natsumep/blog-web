@@ -22,32 +22,34 @@
         <div class="finger"></div>
       </div>
     </div>
-    <form :class="formClass" @submit.prevent="handleLogin">
-      <div class="hand"></div>
-      <div class="hand rgt"></div>
-      <h1 style="text-align: center">登 录</h1>
-      <div class="form-group">
-        <input v-model="username" required="required" class="form-control" />
-        <label class="form-label">账号 </label>
-      </div>
-      <div class="form-group">
-        <input
-          id="password"
-          v-model="password"
-          type="password"
-          required="required"
-          class="form-control"
-          @focus="passwordIn"
-          @blur="passwordOut"
-        />
-        <label class="form-label">密码</label>
-        <p class="alert">{{ errorinfo }}</p>
-        <button class="btn">登录</button>
-        <p style="margin-top: 10px">
-          没有账号？去<nuxt-link to="/user">注册</nuxt-link>
-        </p>
-      </div>
-    </form>
+    <div class="from-content">
+      <form :class="formClass" @submit.prevent="handleLogin">
+        <div class="hand"></div>
+        <div class="hand rgt"></div>
+        <h1 style="text-align: center">登 录</h1>
+        <div class="form-group">
+          <input v-model="username" required="required" class="form-control" />
+          <label class="form-label">账号 </label>
+        </div>
+        <div class="form-group">
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            required="required"
+            class="form-control"
+            @focus="passwordIn"
+            @blur="passwordOut"
+          />
+          <label class="form-label">密码</label>
+          <p class="alert">{{ errorinfo }}</p>
+          <button class="btn">登录</button>
+          <p style="margin-top: 10px">
+            没有账号？去<nuxt-link to="/user">注册</nuxt-link>
+          </p>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -143,7 +145,12 @@ export default class Index extends Vue {
   width: 200px;
   margin: 50px auto;
 }
-
+.from-content {
+  position: relative;
+  width: 380px;
+  height: 244px;
+  margin: 0 auto;
+}
 .face {
   width: 200px;
   height: 200px;

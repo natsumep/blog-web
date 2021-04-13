@@ -1,10 +1,15 @@
 <template>
   <div class="comment">
-    <div class="comment-title flex-center">
-      <h2 class="font-color">期待你留言</h2>
+    <!-- <div class="comment-title flex-center"></div> -->
+    <div class="banner flex-just-center">
+      <img
+        style="height: 100%; width: 80%"
+        src="~/assets/images/waiting.svg"
+        alt=""
+      />
     </div>
 
-    <div>
+    <div class="comment-box">
       <comments type="留言" @addItem="addItem" />
     </div>
 
@@ -72,8 +77,15 @@
         </div>
       </template>
 
-      <div v-else class="font-color flex-center" style="height: 200px">
-        期待你的第一条留言~
+      <div
+        v-else
+        class="font-color flex-center flex-warp"
+        style="width: 100%; margin-top: 30px"
+      >
+        <div class="flex-center flex-warp" style="width: 80%">
+          <img width="60%" src="~/assets/images/null.svg" alt="" />
+          <div style="margin-top: 10px">暂时没有留言，期待你的第一条留言~</div>
+        </div>
       </div>
     </div>
   </div>
@@ -188,16 +200,28 @@ export default class Index extends Vue {
 </script>
 <style lang="less" scoped>
 .comment {
-  width: 60%;
-  max-width: 1200px;
-  min-width: 800px;
+  max-width: 900px;
+  min-width: 500px;
+  min-height: 100vh;
+  padding: 20px;
+  background: #fff;
   margin: 0 auto;
   .comment-title {
     height: 150px;
     border: 1px solid #666;
     border-radius: 10px;
     margin: 30px 0;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
+}
+.banner {
+  height: 250px;
+  margin-bottom: 20px;
+}
+.comment-box {
+  width: 80%;
+  margin: 0 auto;
 }
 .font-color {
   background: #2193b0;
@@ -289,6 +313,19 @@ export default class Index extends Vue {
     transition: transform 0.3s;
     color: red;
     transform: scale(1.1);
+  }
+}
+@media screen and (max-width: 400px) {
+  .comment {
+    width: 100%;
+    min-width: 200px;
+    padding: 20px;
+    .banner {
+      height: 180px;
+    }
+    .comment-box {
+      width: 100%;
+    }
   }
 }
 </style>

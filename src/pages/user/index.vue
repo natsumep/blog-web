@@ -1,110 +1,114 @@
 <template>
   <div class="user-index">
     <template v-if="!notLogin">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item
-          >{{ isEdit ? '编辑' : '新增' }}个人资料</el-breadcrumb-item
-        >
-      </el-breadcrumb>
+      <el-card class="box-card">
+        <div slot="header" class="clearfix">
+          <span> {{ isEdit ? '编辑' : '新增' }}个人资料</span>
+        </div>
+        <div class="form-wrapper">
+          <el-form
+            ref="userForm"
+            label-position="right"
+            label-width="80px"
+            :model="ruleForm"
+            :rules="rules"
+          >
+            <el-row>
+              <el-col :span="isWeb ? 12 : 24">
+                <div :class="{ 'flex-center': isWeb }">
+                  <el-form-item label="头像">
+                    <upload-pic
+                      :check-size="true"
+                      :avatar="ruleForm.avatar"
+                      @avatarChange="avatarChange"
+                    />
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="isWeb ? 12 : 24">
+                <el-form-item v-if="!isEdit" label="账号" prop="username">
+                  <el-input
+                    v-model="ruleForm.username"
+                    maxlength="30"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item v-if="isEdit" label="账号">
+                  <span>{{ ruleForm.username }}</span>
+                </el-form-item>
 
-      <div class="form-wrapper">
-        <el-form
-          ref="userForm"
-          label-position="right"
-          label-width="80px"
-          :model="ruleForm"
-          :rules="rules"
-        >
-          <el-row>
-            <el-col :span="12">
-              <div style="margin: 0 0 17px 220px">
-                <upload-pic
-                  :check-size="true"
-                  :avatar="ruleForm.avatar"
-                  @avatarChange="avatarChange"
-                />
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item v-if="!isEdit" label="账号" prop="username">
-                <el-input v-model="ruleForm.username" maxlength="30"></el-input>
-              </el-form-item>
-              <el-form-item v-if="isEdit" label="账号">
-                <span>{{ ruleForm.username }}</span>
-              </el-form-item>
-
-              <el-form-item v-if="!isEdit" label="密码" prop="password">
-                <el-input
-                  v-model="ruleForm.password"
-                  maxlength="18"
-                  type="password"
-                  autocomplete="off"
-                ></el-input>
-              </el-form-item>
-              <el-form-item v-if="!isEdit" label="确认密码" prop="checkPass">
-                <el-input
-                  v-model="ruleForm.checkPass"
-                  maxlength="18"
-                  type="password"
-                  autocomplete="off"
-                ></el-input>
-              </el-form-item>
-              <el-form-item label="昵称" prop="nickname">
-                <el-input v-model="ruleForm.nickname" maxlength="18"></el-input>
-              </el-form-item>
-              <el-form-item label="姓名">
-                <el-input v-model="ruleForm.name"></el-input>
-              </el-form-item>
-              <el-form-item label="电话" prop="phone">
-                <el-input v-model="ruleForm.phone"></el-input>
-              </el-form-item>
-              <el-form-item
-                placeholder="请输入正确的email，用于更换密码"
-                label="email"
-                prop="email"
-              >
-                <el-input v-model="ruleForm.email"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item label="自我介绍">
-            <el-input
-              v-model="ruleForm.profile"
-              placeholder="支持自定义dom,配置个人主页about me，暂未开放。
+                <el-form-item v-if="!isEdit" label="密码" prop="password">
+                  <el-input
+                    v-model="ruleForm.password"
+                    maxlength="18"
+                    type="password"
+                    autocomplete="off"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item v-if="!isEdit" label="确认密码" prop="checkPass">
+                  <el-input
+                    v-model="ruleForm.checkPass"
+                    maxlength="18"
+                    type="password"
+                    autocomplete="off"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item label="昵称" prop="nickname">
+                  <el-input
+                    v-model="ruleForm.nickname"
+                    maxlength="18"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item label="姓名">
+                  <el-input v-model="ruleForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="电话" prop="phone">
+                  <el-input v-model="ruleForm.phone"></el-input>
+                </el-form-item>
+                <el-form-item
+                  placeholder="请输入正确的email，用于更换密码"
+                  label="email"
+                  prop="email"
+                >
+                  <el-input v-model="ruleForm.email"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item label="自我介绍">
+              <el-input
+                v-model="ruleForm.profile"
+                placeholder="支持自定义dom,配置个人主页about me，暂未开放。
 出于安全考虑 全局样式和js代码会被过滤
 如果有其他需求可以在留言提交"
-              :autosize="{ minRows: 5, maxRows: 10 }"
-              type="textarea"
-              maxlength="500"
-              show-word-limit
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="个人主页" prop="home">
-            <el-input
-              v-model="ruleForm.home"
-              placeholder="个人主页支持输入1~24位字母加数字组合,通过访问 https://www.tinker.run/${个人主页} 可以进入个人主页 
+                :autosize="{ minRows: 5, maxRows: 10 }"
+                type="textarea"
+                maxlength="500"
+                show-word-limit
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="个人主页" prop="home">
+              <el-input
+                v-model="ruleForm.home"
+                placeholder="个人主页支持输入1~24位字母加数字组合,通过访问 https://www.tinker.run/${个人主页} 可以进入个人主页 
 暂未开放"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="github">
-            <el-input
-              v-model="ruleForm.github"
-              placeholder="输入个人github账号"
-            ></el-input>
-          </el-form-item>
-          <el-form-item>
-            <div style="text-align: right">
-              <el-button
-                style="margin-left: 45%"
-                type="primary"
-                @click="submitForm"
-                >保存{{ isEdit ? '编辑' : '新增' }}</el-button
-              >
-              <el-button @click="resetForm">重置</el-button>
-            </div>
-          </el-form-item>
-        </el-form>
-      </div>
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="github">
+              <el-input
+                v-model="ruleForm.github"
+                placeholder="输入个人github账号"
+              ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <div style="text-align: right">
+                <el-button type="primary" @click="submitForm"
+                  >保存{{ isEdit ? '编辑' : '新增' }}</el-button
+                >
+                <el-button @click="resetForm">重置</el-button>
+              </div>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-card>
     </template>
     <template v-else>
       <div class="flex-center flex-warp">
@@ -127,7 +131,7 @@
 import isEmail from 'validator/es/lib/isEmail'
 import isMobilePhone from 'validator/es/lib/isMobilePhone'
 import { setTokenInfo } from '@/utils/passwordManagement'
-import { userStore } from '~/utils/store-accessor'
+import { userStore, systemStore } from '~/utils/store-accessor'
 export default {
   data() {
     return {
@@ -184,6 +188,11 @@ export default {
         ],
       },
     }
+  },
+  computed: {
+    isWeb() {
+      return systemStore.isWeb
+    },
   },
   watch: {
     $route() {
@@ -275,9 +284,7 @@ export default {
 .user-index {
   width: 1200px;
   margin: 24px auto 0;
-  padding: 24px;
   min-height: calc(100vh - 188px);
-  background-color: rgba(255, 255, 255, 0.4);
 
   .form-wrapper {
     margin-top: 24px;
@@ -290,6 +297,15 @@ export default {
 
   &:hover {
     text-decoration: underline;
+  }
+}
+@media screen and (max-width: 400px) {
+  .user-index {
+    width: 100%;
+    margin: 0;
+  }
+  .avatar-uploader-wrapper {
+    padding: 1px;
   }
 }
 </style>

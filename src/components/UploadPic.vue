@@ -1,9 +1,9 @@
 <template>
   <div class="avatar-uploader-wrapper">
-    <label class="avatar-uploader" for="avatar-input">
+    <label class="avatar-uploader flex-center" for="avatar-input">
       <template v-if="current">
         <img class="avatar" :src="current" alt="" />
-        <div class="box-wrapper">
+        <div class="box-wrapper flex-center">
           <i class="el-icon-plus avatar-uploader-icon"></i>
         </div>
       </template>
@@ -81,14 +81,15 @@ export default {
   }
 }
 .avatar-uploader {
-  width: 164px;
   background-color: #fff;
-  border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
+  width: 164px;
+  height: 164px;
+  border: 1px dashed #8c939d;
   position: relative;
   overflow: hidden;
-  display: block;
+  display: flex;
 }
 .avatar-uploader:hover {
   border-color: #ffd04b;
@@ -96,15 +97,16 @@ export default {
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 164px;
-  height: 164px;
-  line-height: 164px;
   text-align: center;
 }
 .avatar {
-  width: 164px;
-  height: 164px;
   display: block;
   object-fit: contain;
+}
+@media screen and (max-width: 400px) {
+  .avatar-uploader {
+    width: 80px;
+    height: 80px;
+  }
 }
 </style>

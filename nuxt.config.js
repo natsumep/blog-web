@@ -3,10 +3,9 @@
 import { SERVER_PATH, SERVER_USER_PATH } from './src/config'
 export default {
   srcDir: 'src/',
-  // server: {
-  //   port: 8000, // default: 3000
-  //   host: '0.0.0.0', // default: localhost
-  // },
+  server: {
+    host: '0.0.0.0', // default: localhost
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: '博客铺子 _ store',

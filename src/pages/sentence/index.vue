@@ -3,7 +3,7 @@
     <div class="sentence-body flex-center">
       <div class="top-btns">
         <div style="margin-bottom: 20px" class="flex flex-warp flex-center">
-          <div class="flex-item-center">
+          <div v-if="isWeb" class="flex-item-center">
             轮询：
             <el-switch
               v-model="needLoop"
@@ -13,7 +13,7 @@
               @change="changeLoop"
             ></el-switch>
           </div>
-          <div style="margin-left: 20px" class="flex-item-cente">
+          <div v-if="isWeb" style="margin-left: 20px" class="flex-item-cente">
             轮询时间(秒)：
             <el-select
               v-model="loopTime"
@@ -45,10 +45,16 @@
           </div>
         </div>
         <div class="top-menus flex flex-right">
-          <el-button type="primary" @click="handleTabBtnClick('myself')"
+          <el-button
+            v-if="isWeb"
+            type="primary"
+            @click="handleTabBtnClick('myself')"
             >我的</el-button
           >
-          <el-button type="primary" @click="handleTabBtnClick('check')"
+          <el-button
+            v-if="isWeb"
+            type="primary"
+            @click="handleTabBtnClick('check')"
             >我要审核</el-button
           >
           <el-button type="primary" @click="handleTabBtnClick('upload')">
@@ -57,7 +63,7 @@
           ></el-button>
         </div>
       </div>
-      <div style="margin-bottom: 10vh; max-width: 50vw">
+      <div class="sentence-content">
         <div class="sentence-btns flex-just-center">
           <div class="icon-content" :class="{ 'like-active': isLiked }">
             <like-icon
@@ -104,7 +110,7 @@
                 src="~/assets/images/report.svg"
                 style="width: 40px; cursor: pointer"
                 alt="举报"
-                @click="showReport = true"
+                @click="handleTabBtnClick('report')"
               />
             </div>
           </div>
@@ -140,7 +146,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { isSupportWebp } from '@/utils/browser'
-import { userStore } from '@/utils/store-accessor'
+import { userStore, systemStore } from '@/utils/store-accessor'
 async function loadData(api: any, type = 'sentence', id = '') {
   let data
   let url = type === 'sentence' ? 'sentence/index' : 'sentence/caihong'
@@ -224,6 +230,10 @@ export default class Home extends Vue {
 
   get collceLenght() {
     return this.wordInfo.collects
+  }
+
+  get isWeb() {
+    return systemStore.isWeb
   }
 
   async collceChange() {
@@ -355,6 +365,9 @@ export default class Home extends Vue {
           message: '正在开发中~~~',
         })
         break
+      case 'report':
+        this.showReport = true
+        break
     }
   }
 
@@ -390,6 +403,10 @@ export default class Home extends Vue {
   height: 100%;
   width: 100%;
   // background: rgba(0, 0, 0, 0.2);
+}
+.sentence-content {
+  margin-bottom: 10vh;
+  max-width: 50vw;
 }
 .sentence-btns {
   margin-bottom: 15px;
@@ -453,5 +470,29 @@ export default class Home extends Vue {
   padding: 20px;
   top: 0;
   right: 0;
+}
+
+@media screen and (max-width: 400px) {
+  .sentence {
+    height: 100%;
+    height: calc(100vh - 60px);
+    background-size: cover;
+    position: relative;
+    background-position: 28%;
+    .sentence-body {
+      padding-top: 130px;
+    }
+  }
+  .sentence-content {
+    margin-bottom: 10vh;
+    max-width: 100vw;
+    padding: 20px;
+    .sentence-text {
+      font-size: 28px;
+    }
+    .sentence-author {
+      font-size: 20px;
+    }
+  }
 }
 </style>

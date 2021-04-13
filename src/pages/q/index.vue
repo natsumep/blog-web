@@ -233,4 +233,9 @@ export default class Index extends Vue {
     color: #999;
   }
 }
+@media screen and (max-width: 400px) {
+  .qa-wrapper {
+    width: 100%;
+  }
+}
 </style>

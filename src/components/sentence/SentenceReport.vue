@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    width="28%"
+    :width="isWeb ? '28%' : '90%'"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :lock-scroll="false"
@@ -90,6 +90,7 @@ import {
   Emit,
   Watch,
 } from 'vue-property-decorator'
+import { systemStore } from '@/utils/store-accessor'
 @Component
 export default class Index extends Vue {
   showDialog = false
@@ -112,6 +113,10 @@ export default class Index extends Vue {
     if (val) {
       this.showDialog = true
     }
+  }
+
+  get isWeb() {
+    return systemStore.isWeb
   }
 
   onSubmitReport() {

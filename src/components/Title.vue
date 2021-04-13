@@ -2,6 +2,7 @@
   <div class="fixed">
     <div class="inner">
       <el-menu
+        v-if="isWeb"
         class="el-menu-demo"
         mode="horizontal"
         :default-active="$route.path"
@@ -23,14 +24,38 @@
         <!-- <el-menu-item index="/about">碎碎念</el-menu-item> -->
         <el-menu-item index="/comment">留言</el-menu-item>
       </el-menu>
-      <div class="user-top-wrapper flex">
-        <el-popover
-          v-model="visible"
-          placement="bottom"
-          width="120"
-          trigger="hover"
+      <div v-else class="flex-item-center">
+        <i class="menu-btn el-icon-menu" @click="drawer = true"></i>
+        <el-drawer
+          :visible.sync="drawer"
+          :append-to-body="true"
+          title="菜单"
+          size="50%"
+          direction="ltr"
         >
-          <div style="text-align: right; margin: 0" @click="visible = !visible">
+          <el-menu
+            :default-active="$route.path"
+            :router="true"
+            @select="drawer = false"
+          >
+            <el-menu-item v-if="token" :index="`/${userInfo.home}`"
+              >我的主页</el-menu-item
+            >
+            <el-menu-item index="/">文章列表</el-menu-item>
+            <el-menu-item index="/q">问答</el-menu-item>
+            <el-menu-item index="/sentence">句子杂货铺</el-menu-item>
+            <el-menu-item index="/caihong">彩虹屁🌈</el-menu-item>
+
+            <el-menu-item index="/core">开放接口</el-menu-item>
+            <!-- <el-menu-item index="/about">碎碎念</el-menu-item> -->
+            <el-menu-item index="/comment">留言</el-menu-item>
+          </el-menu>
+        </el-drawer>
+      </div>
+
+      <div class="user-top-wrapper flex">
+        <el-popover placement="bottom" width="120" trigger="click">
+          <div style="text-align: right; margin: 0">
             <router-link :to="{ name: 'user' }" class="pop-btn"
               >注册</router-link
             >
@@ -47,11 +72,7 @@
           </div>
           <div slot="reference" class="flex-item-center">
             <p class="username">{{ info.nickname }}</p>
-            <div
-              class="user-solid"
-              :class="{ 'user-active': token }"
-              @click="visible = !visible"
-            >
+            <div class="user-solid" :class="{ 'user-active': token }">
               <img v-if="token" class="avatar" :src="info.avatar" alt="" />
               <div v-else class="flex" style="color: #fff">
                 <i
@@ -67,7 +88,7 @@
     </div>
     <el-dialog
       title=""
-      width="600px"
+      :width="isWeb ? '600px' : '100%'"
       top="10vh"
       custom-class="login-dialog"
       destroy-on-close
@@ -77,18 +98,26 @@
       @close="handleLoginHidden"
     >
       <login-panda></login-panda>
+      <div class="flex-center" style="padding: 20px">
+        <i
+          class="el-icon-circle-close"
+          style="font-size: 40px; color: #fff; cursor: pointer"
+          @click="loginVisible = false"
+        ></i>
+      </div>
     </el-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { userStore } from '~/store'
+import { userStore, systemStore } from '~/store'
 import { exit } from '~/utils/loginPreservationUserInfo'
 @Component
 export default class Index extends Vue {
   userDefault = require('~/assets/images/user-default.png')
   visible = false
   loginVisible = false
+  drawer = false
   info = {
     nickname: '',
     avatar: this.userDefault,
@@ -104,6 +133,10 @@ export default class Index extends Vue {
 
   get dialog() {
     return userStore && userStore.loginDialogVisible
+  }
+
+  get isWeb() {
+    return systemStore.isWeb
   }
 
   @Watch('dialog')
@@ -137,6 +170,7 @@ export default class Index extends Vue {
 <style lang="less" scoped>
 .inner {
   width: 1200px;
+  height: 60px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -193,6 +227,19 @@ export default class Index extends Vue {
 
   &:hover {
     background-color: #f5f5f5;
+  }
+}
+.menu-btn {
+  color: #fff;
+  font-size: 40px;
+}
+@media screen and (max-width: 400px) {
+  .inner {
+    width: 100%;
+    padding: 0 10px;
+  }
+  .el-menu-demo {
+    position: absolute;
   }
 }
 </style>

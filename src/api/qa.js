@@ -43,6 +43,12 @@ export const qa = [
     path: 'qa/:qaId/answer',
     serverPath,
   },
+  {
+    name: 'deleteanswer',
+    method: 'DELETE',
+    path: '/qa/answer/:id',
+    serverPath,
+  },
   // 回复
   {
     name: 'getcomment',

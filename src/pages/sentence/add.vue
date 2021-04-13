@@ -169,4 +169,10 @@ export default class Index extends Vue {
   display: inline-block;
   box-sizing: border-box;
 }
+@media screen and (max-width: 400px) {
+  .sentence-add {
+    width: 100%;
+    padding: 10px;
+  }
+}
 </style>

@@ -33,7 +33,7 @@
       ></path>
     </svg>
     <div class="flex-auto title-wrapper">
-      <div class="flex flex-item-center">
+      <div class="flex flex-item-center flex-just-beew">
         <div>
           <div class="title-content flex-item-center">
             <nuxt-link class="flex-fixed title" :to="`/article/${item.id}`">

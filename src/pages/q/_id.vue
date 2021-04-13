@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="qa-detail">
     <el-breadcrumb
       style="width: 1200px; margin: 24px auto"
       separator-class="el-icon-arrow-right"
@@ -8,11 +8,11 @@
       <el-breadcrumb-item :to="{ path: '/q' }">问答</el-breadcrumb-item>
       <el-breadcrumb-item>问答详情</el-breadcrumb-item>
     </el-breadcrumb>
-    <div class="section qa-detail" style="margin-top: 24px">
+    <div class="section qa-detail-main" style="margin-top: 24px">
       <h1 class="title">{{ detail.title }}</h1>
       <div v-if="detail.canDelete" class="del">
-        <el-popconfirm title="确定删除这篇文章吗？" @confirm="del">
-          <i slot="reference" class="el-icon-delete"></i>
+        <el-popconfirm title="确定删除这条问答吗？" @confirm="del">
+          <i slot="reference" class="el-icon-delete delete-btn"></i>
         </el-popconfirm>
       </div>
 
@@ -76,13 +76,20 @@
       />
     </div>
 
-    <div class="qa-detail" style="background: none; padding: 0">
+    <div class="qa-detail-main" style="background: none; padding: 0">
       <p class="title-h1">{{ total || 0 }} 个回复</p>
       <div
         v-if="total === 0"
         style="text-align: center; color: #999; padding: 20px"
       >
-        等待回复中...
+        <div>
+          <img
+            class="write-icon"
+            src="~/assets/images/write.svg"
+            alt="等待回复"
+          />
+          <div>期待您的回复...</div>
+        </div>
       </div>
       <div v-if="!refreshAnswer">
         <div
@@ -90,20 +97,28 @@
           :key="index"
           class="answer-section"
         >
-          <div class="info" style="margin-bottom: 14px">
-            <img
-              class="avatar"
-              :src="
-                !item.anonymous && item.user && item.user.avatar
-                  ? item.user.avatar
-                  : defaultAvatar
-              "
-              alt=""
-            />
-            <p class="name">
-              {{ !item.anonymous && item.user ? item.user.nickName : '匿名' }}
-            </p>
-            <p class="time">创建于 {{ item.createTime | formatTime }}</p>
+          <div class="info flex-just-beew" style="margin-bottom: 14px">
+            <div class="flex">
+              <img
+                class="avatar"
+                :src="
+                  !item.anonymous && item.user && item.user.avatar
+                    ? item.user.avatar
+                    : defaultAvatar
+                "
+                alt=""
+              />
+              <p class="name">
+                {{ !item.anonymous && item.user ? item.user.nickName : '匿名' }}
+              </p>
+              <p class="time">创建于 {{ item.createTime | formatTime }}</p>
+            </div>
+            <el-popconfirm
+              title="确定删除该回复吗？"
+              @confirm="delAnswer(item.id)"
+            >
+              <i slot="reference" class="el-icon-delete delete-btn"></i>
+            </el-popconfirm>
           </div>
           <div class="answer-content">
             <client-only placeholder="markdow内容loading...">
@@ -135,7 +150,11 @@
       </div>
     </div>
 
-    <div v-show="userStore.token" class="qa-detail" style="padding-bottom: 1px">
+    <div
+      v-show="userStore.token"
+      class="qa-detail-main"
+      style="padding-bottom: 1px"
+    >
       <p class="title-h1" style="margin-top: 10px">撰写回答</p>
       <div class="widget-vertical-three-main" style="margin-top: 10px">
         <div class="flex-end">
@@ -293,6 +312,11 @@ export default {
         this.$router.replace('/q')
       })
     },
+    delAnswer(id) {
+      this.$api['qa/deleteanswer']({ id }).then(() => {
+        this.getAnswerList()
+      })
+    },
     loadData() {
       this.$api['qa/detail']({ id: this.$route.params.id }).then(
         (data) => {
@@ -366,7 +390,7 @@ export default {
   position: relative;
 }
 
-.qa-detail {
+.qa-detail-main {
   width: 1200px;
   padding: 25px 50px;
   margin: 24px auto;
@@ -439,9 +463,17 @@ export default {
   z-index: 1;
   color: #c0c4cc;
   font-size: 20px;
-  cursor: pointer;
 }
-
+.write-icon {
+  width: 30%;
+  margin-bottom: 20px;
+}
+.delete-btn {
+  cursor: pointer;
+  &:hover {
+    color: red;
+  }
+}
 .answer-content {
   width: 90%;
   margin: 0 auto;
@@ -456,5 +488,17 @@ export default {
   width: 90%;
   margin: 0 auto;
   cursor: pointer;
+}
+@media screen and (max-width: 400px) {
+  .qa-detail {
+    padding: 16px;
+  }
+  .answer-section,
+  .qa-detail-main {
+    width: 100%;
+  }
+  .write-icon {
+    width: 80%;
+  }
 }
 </style>
