@@ -31,3 +31,17 @@ export function getUrlParam(paraName?: string, url = location.href) {
     return paraName ? undefined : {}
   }
 }
+
+export function isWeb(userAgent: string) {
+  if (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      userAgent
+    )
+  ) {
+    // true for mobile device
+    return false
+  } else {
+    // false for not mobile device
+    return true
+  }
+}

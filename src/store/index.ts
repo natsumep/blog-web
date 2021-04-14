@@ -1,6 +1,11 @@
 import { Store } from 'vuex'
 import { getCookie } from '~/utils/cookie'
-import { initialiseStores, userStore } from '~/utils/store-accessor'
+import { isWeb } from '~/utils/browser'
+import {
+  initialiseStores,
+  userStore,
+  systemStore,
+} from '~/utils/store-accessor'
 const initializer = (store: Store<any>) => initialiseStores(store)
 export const plugins = [initializer]
 
@@ -18,6 +23,7 @@ export const actions = {
           userStore.set_user_token(userToken)
         } catch (e) {}
       }
+      systemStore.set_web(isWeb(req.headers['user-agent']))
       // const token = req.;
     }
   },
