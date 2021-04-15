@@ -101,7 +101,8 @@ export default {
 }
 .avatar {
   display: block;
-  object-fit: contain;
+  object-fit: cover;
+  width: 100%;
 }
 @media screen and (max-width: 400px) {
   .avatar-uploader {

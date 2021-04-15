@@ -150,7 +150,7 @@
       </div>
       <div style="position: absolute; bottom: 15px">
         <a href="https://tinker.run/core" style="color: #2196f3"
-          >句子杂货：chrome插件使用说明</a
+          >句子杂货铺💬 ：chrome插件使用说明</a
         >
       </div>
     </div>
@@ -441,6 +441,10 @@ export default class Home extends Vue {
   mounted() {
     this.initSentenceType()
     this.initBackgroun()
+    this.$router.replace({
+      path: '/sentence',
+      query: { uuid: this.wordInfo.uuid },
+    })
   }
 
   @Watch('$route')

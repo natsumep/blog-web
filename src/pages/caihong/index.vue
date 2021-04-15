@@ -130,7 +130,7 @@
       </div>
       <div style="position: absolute; bottom: 15px">
         <a href="https://tinker.run/core" style="color: #2196f3"
-          >彩虹屁：chrome插件使用说明</a
+          >彩虹屁🌈 ：chrome插件使用说明</a
         >
       </div>
     </div>
@@ -386,6 +386,10 @@ export default class Home extends Vue {
 
   mounted() {
     this.initBackgroun()
+    this.$router.replace({
+      path: '/caihong',
+      query: { uuid: this.wordInfo.uuid },
+    })
   }
 
   @Watch('$route')
