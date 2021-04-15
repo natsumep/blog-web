@@ -231,7 +231,7 @@ export default class Index extends Vue {
 }
 .menu-btn {
   color: #fff;
-  font-size: 40px;
+  font-size: 32px;
 }
 @media screen and (max-width: 400px) {
   .inner {
