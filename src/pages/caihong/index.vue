@@ -31,7 +31,7 @@
               </el-option>
             </el-select>
           </div>
-          <div style="margin-left: 20px" class="flex-item-center">
+          <!-- <div style="margin-left: 20px" class="flex-item-center">
             显示内容：
             <el-switch
               v-model="isCaihong"
@@ -42,7 +42,7 @@
               @change="changeType"
             >
             </el-switch>
-          </div>
+          </div> -->
         </div>
         <div class="top-menus flex flex-right">
           <el-button

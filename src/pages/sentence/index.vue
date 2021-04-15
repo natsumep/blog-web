@@ -3,7 +3,27 @@
     <div class="sentence-body flex-center">
       <div class="top-btns">
         <div style="margin-bottom: 20px" class="flex flex-warp flex-center">
-          <div v-if="isWeb" class="flex-item-center">
+          <div v-if="!isCaihong" class="flex-item-cente">
+            分类：
+            <el-select
+              v-model="sentenceType"
+              multiple
+              collapse-tags
+              style="width: 130px"
+              placeholder="请选择"
+              size="mini"
+              @change="sentenceTypeChange"
+            >
+              <el-option
+                v-for="item in sentenceTypeItem"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div v-if="isWeb" style="margin-left: 20px" class="flex-item-center">
             轮询：
             <el-switch
               v-model="needLoop"
@@ -31,7 +51,7 @@
               </el-option>
             </el-select>
           </div>
-          <div style="margin-left: 20px" class="flex-item-center">
+          <!-- <div style="margin-left: 20px" class="flex-item-center">
             显示内容：
             <el-switch
               v-model="isCaihong"
@@ -42,7 +62,7 @@
               @change="changeType"
             >
             </el-switch>
-          </div>
+          </div> -->
         </div>
         <div class="top-menus flex flex-right">
           <el-button
@@ -147,17 +167,17 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { isSupportWebp } from '@/utils/browser'
 import { userStore, systemStore } from '@/utils/store-accessor'
-async function loadData(api: any, type = 'sentence', id = '') {
+async function loadData(
+  api: any,
+  type = 'sentence',
+  option: { uuid?: string; t?: string } = {}
+) {
   let data
   let url = type === 'sentence' ? 'sentence/index' : 'sentence/caihong'
-  if (id) {
+  if (option.uuid) {
     url += 'id'
   }
   try {
-    const option: any = {}
-    if (id) {
-      option.uuid = id
-    }
     data = await api[url](option)
     return data
   } catch (e) {
@@ -167,7 +187,7 @@ async function loadData(api: any, type = 'sentence', id = '') {
 
 @Component({
   async asyncData({ $api, query }) {
-    const data = await loadData($api, 'sentence', (query as any).uuid)
+    const data = await loadData($api, 'sentence', { uuid: (query as any).uuid })
     return (data && { wordInfo: data }) || {}
   },
   head: {
@@ -207,6 +227,8 @@ export default class Home extends Vue {
   timer: any = null
   showReport = false
   isNight = false
+  sentenceType = ['']
+  sentenceTypeItem = []
   wordInfo: any = {
     content: '一日不见兮，思之如狂。',
     source: '凤求凰 / 琴歌',
@@ -291,8 +313,36 @@ export default class Home extends Vue {
     // isLike
   }
 
+  sentenceTypeChange(v: []) {
+    if (v.length && v[v.length - 1] === '') {
+      this.sentenceType = ['']
+      return
+    }
+    const type = this.sentenceType
+    if (type.length > 1) {
+      this.sentenceType = type.filter((i) => !!i)
+    } else if (type.length === 0) {
+      this.sentenceType = ['']
+    }
+    this.refreshData()
+  }
+
+  getSentenceType() {
+    if (this.sentenceType.some((item) => item === '')) {
+      return null
+    } else {
+      return this.sentenceType.join(',')
+    }
+  }
+
   async refreshData(uuid?: any) {
-    const data = await loadData((this as any).$api, this.searchType, uuid)
+    const option: any = {}
+    uuid && (option.uuid = uuid)
+    if (!this.isCaihong) {
+      const type = this.getSentenceType()
+      type && (option.t = type)
+    }
+    const data = await loadData((this as any).$api, this.searchType, option)
     this.wordInfo = data || {}
     this.$router.push({ query: { uuid: this.wordInfo.uuid } })
   }
@@ -329,6 +379,12 @@ export default class Home extends Vue {
   changeType() {
     this.initBackgroun()
     this.refreshData()
+  }
+
+  async initSentenceType() {
+    const list = await this.$api['sentence/type']()
+    list.unshift({ name: '全部', id: '' })
+    this.sentenceTypeItem = list
   }
 
   initBackgroun() {
@@ -383,6 +439,7 @@ export default class Home extends Vue {
   }
 
   mounted() {
+    this.initSentenceType()
     this.initBackgroun()
   }
 
