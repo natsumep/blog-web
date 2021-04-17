@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:  
+Sitemap: https://tinker.run/Sitemap.xml
