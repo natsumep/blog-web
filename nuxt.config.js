@@ -11,6 +11,11 @@ export default {
     title: '博客铺子 _ store',
     meta: [
       { charset: 'utf-8' },
+      // google 验证
+      {
+        name: 'google-site-verification',
+        content: 'EXeON780PopcgKRsKvtGqt_I0J6NYIKG_9eBJD8LK8c',
+      },
       {
         name: 'description',
         content:

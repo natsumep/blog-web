@@ -1,5 +1,6 @@
 <template>
   <div>
+    <a class="sitemap-a" href="https://tinker.run/sitemap.xml"></a>
     <Title />
     <div class="main">
       <Nuxt />
@@ -26,6 +27,11 @@ export default class Home extends Vue {
 .main {
   padding-top: 60px;
   min-height: 100vh;
+}
+.sitemap-a {
+  position: absolute;
+  top: -99999px;
+  left: -99999px;
 }
 @media screen and (max-width: 400px) {
   .main {
