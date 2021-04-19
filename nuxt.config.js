@@ -17,14 +17,16 @@ export default {
         content: 'EXeON780PopcgKRsKvtGqt_I0J6NYIKG_9eBJD8LK8c',
       },
       {
+        hid: 'description',
         name: 'description',
         content:
           '一个包含技术问答、博客、前端、后端、web、html、css、javascript、typescript、后端的技术交流平台。你可以编写博客、提问、访问开放api。',
       },
       {
+        hid: 'keywords',
         name: 'keywords',
         content:
-          '技术问答,博客,前端,后端,web,html,css,javascript,typescript,后端,nuxt,开发者社区,技术笔记,api',
+          '技术问答,博客,前端,后端,web,html,css,javascript,typescript,后端,nuxt,开发者社区,技术笔记,api,彩虹屁,句子,句子杂货铺',
       },
       {
         name: 'viewport',
@@ -36,21 +38,25 @@ export default {
         content: '博客铺子 _ store',
       },
       {
+        hid: 'og:title',
         name: 'og:title',
         property: 'og:title',
         content: '博客铺子 _ store',
       },
       {
+        hid: 'og:type',
         name: 'og:type',
         property: 'og:type',
         content: 'article',
       },
       {
+        hid: 'og:url',
         name: 'og:url',
         property: 'og:url',
         content: 'https://www.tinker.run/',
       },
       {
+        hid: 'og:image',
         name: 'og:image',
         property: 'og:image',
         content: '/icon.png',

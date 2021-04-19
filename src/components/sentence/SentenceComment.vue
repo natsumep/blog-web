@@ -1,16 +1,7 @@
 <template>
   <div class="comment">
-    <!-- <div class="comment-title flex-center"></div> -->
-    <div class="banner flex-just-center">
-      <img
-        style="height: 100%; width: 80%"
-        src="~/assets/images/waiting.svg"
-        alt=""
-      />
-    </div>
-
     <div class="comment-box">
-      <comments type="留言" @addItem="addItem" />
+      <comments type="评论" @addItem="addItem" />
     </div>
 
     <div>
@@ -62,7 +53,7 @@
             role="button"
             @click="item.hasMyComment = !item.hasMyComment"
           >
-            评论
+            回复
           </p>
           <div class="comments">
             <comments
@@ -76,7 +67,6 @@
           </div>
         </div>
       </template>
-
       <div
         v-else
         class="font-color flex-center flex-warp"
@@ -84,99 +74,117 @@
       >
         <div class="flex-center flex-warp" style="width: 80%">
           <img width="60%" src="~/assets/images/null.svg" alt="" />
-          <div style="margin-top: 10px">暂时没有留言，期待你的第一条留言~</div>
+          <div style="margin-top: 10px">暂时没有评论，期待你的第一条~</div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<script>
-import { Component, Vue } from 'vue-property-decorator'
-import { dateDiff } from '~/utils/time'
+<script lang="ts">
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import userImg from '~/assets/images/user-default.png'
+import { dateDiff } from '~/utils/time'
+
 @Component({
   filters: {
-    formatTime: (val) => {
+    formatTime: (val: any) => {
       return dateDiff(val)
     },
   },
 })
-export default class Index extends Vue {
+export default class Home extends Vue {
   list = []
   defaultAvatar = userImg
   total = 0
   page = 1
   rows = 10
+
+  @Prop({
+    default: 'caihong',
+  })
+  type: any
+
+  @Prop({
+    required: true,
+  })
+  id: any
+
   mounted() {
-    this.refreshData()
+    this.refresComment()
   }
 
-  async refreshData() {
-    const data = await this.$api['message/list']({ id: 1 })
-    this.total = data.total
-    this.list = data.list.map((item, index) => {
-      item.hasMyComment = false
-      item.number = this.total - ((this.page - 1) * this.rows + index)
-      item.children &&
-        item.children.map &&
-        item.children.map((item) => {
-          item.showCommentBox = false
-          item.showMoreNum = 2
-          return item
-        })
-      return item
+  async refresComment() {
+    const data = await this.$api['sentenceMessage/' + this.type + 'message']({
+      id: this.id,
     })
+    this.total = data.total
+    this.list = data.list.map(
+      (
+        item: { hasMyComment: boolean; number: number; children: any[] },
+        index: number
+      ) => {
+        item.hasMyComment = false
+        item.number = this.total - ((this.page - 1) * this.rows + index)
+        item.children &&
+          item.children.map &&
+          item.children.map((item) => {
+            item.showCommentBox = false
+            item.showMoreNum = 2
+            return item
+          })
+        return item
+      }
+    )
   }
 
-  async addItem(data) {
+  async addItem(data: any) {
     const { comment, email, nickName } = data.content
-    await this.$api['message/add']({
+    await this.$api['sentenceMessage/' + this.type + 'messagePost']({
       message: comment,
-      id: 1,
+      id: this.id,
       email,
       nickName,
     })
-    this.$message.success('留言成功~')
-    this.refreshData()
+    this.$message.success('回复成功~')
+    this.refresComment()
   }
 
-  async deleteMessage(id) {
-    await this.$api['message/delete']({ id })
+  async deleteMessage(id: number) {
+    await this.$api['sentenceMessage/' + this.type + 'messageDelete']({ id })
     this.$message.success('删除成功~')
-    this.refreshData()
+    this.refresComment()
   }
 
-  async loadComment(messageId) {
+  deleteComment(id: number, message: any) {
+    this.$api['sentenceMessage/' + this.type + 'commentDelete']({ id })
+      .then(async () => {
+        this.$message.success('删除成功')
+        const data = await this.loadComment(message.id)
+        message.children = data
+      })
+      .catch((err: any) => {
+        this.$message.error(err.msg)
+      })
+  }
+
+  async loadComment(messageId: number) {
     let data = []
     try {
-      data = await this.$api['message/commentList']({
+      data = await this.$api['sentenceMessage/' + this.type + 'comment']({
         messageId,
       })
     } catch (_e) {
       return data
     }
 
-    return data.map((item) => {
+    return data.map((item: any) => {
       item.showCommentBox = false
       item.showMoreNum = 2
       return item
     })
   }
 
-  deleteComment(id, message) {
-    this.$api['message/commentDelete']({ id })
-      .then(async () => {
-        this.$message.success('删除成功')
-        const data = await this.loadComment(message.id)
-        message.children = data
-      })
-      .catch((err) => {
-        this.$message.error(err.msg)
-      })
-  }
-
-  addComment(dataInfo, message) {
+  addComment(dataInfo: any, message: any) {
     const { content, item } = dataInfo
     const option = {
       ...content,
@@ -186,13 +194,13 @@ export default class Index extends Vue {
     if (item.id) {
       option.pid = item.id
     }
-    this.$api['message/commentAdd'](option)
+    this.$api['sentenceMessage/' + this.type + 'commentPost'](option)
       .then(async () => {
         const data = await this.loadComment(message.id)
         message.children = data
         this.$message.success('新增成功')
       })
-      .catch((err) => {
+      .catch((err: any) => {
         this.$message.error(err.msg)
       })
   }
@@ -200,7 +208,7 @@ export default class Index extends Vue {
 </script>
 <style lang="less" scoped>
 .comment {
-  max-width: 900px;
+  max-width: 800px;
   min-width: 500px;
   min-height: 100vh;
   padding: 20px;

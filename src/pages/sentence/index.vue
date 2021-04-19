@@ -1,57 +1,62 @@
 <template>
-  <div class="sentence" :class="{ 'sentence-night': isNight }" :style="style">
-    <div class="sentence-body flex-center">
-      <div class="top-btns">
-        <div style="margin-bottom: 20px" class="flex flex-warp flex-center">
-          <div v-if="!isCaihong" class="flex-item-cente">
-            分类：
-            <el-select
-              v-model="sentenceType"
-              multiple
-              collapse-tags
-              style="width: 130px"
-              placeholder="请选择"
-              size="mini"
-              @change="sentenceTypeChange"
-            >
-              <el-option
-                v-for="item in sentenceTypeItem"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
+  <div class="main-page">
+    <div class="sentence" :class="{ 'sentence-night': isNight }" :style="style">
+      <div class="sentence-body flex-center">
+        <div class="top-btns">
+          <div style="margin-bottom: 20px" class="flex flex-warp flex-center">
+            <div v-if="!isCaihong" class="flex-item-cente">
+              分类：
+              <el-select
+                v-model="sentenceType"
+                multiple
+                collapse-tags
+                style="width: 130px"
+                placeholder="请选择"
+                size="mini"
+                @change="sentenceTypeChange"
               >
-              </el-option>
-            </el-select>
-          </div>
-          <div v-if="isWeb" style="margin-left: 20px" class="flex-item-center">
-            轮询：
-            <el-switch
-              v-model="needLoop"
-              active-color="#13ce66"
-              active-text="开启"
-              inactive-text="关闭"
-              @change="changeLoop"
-            ></el-switch>
-          </div>
-          <div v-if="isWeb" style="margin-left: 20px" class="flex-item-cente">
-            轮询时间(秒)：
-            <el-select
-              v-model="loopTime"
-              style="width: 80px"
-              placeholder="请选择"
-              size="mini"
-              @change="changeLoopTime"
+                <el-option
+                  v-for="item in sentenceTypeItem"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <div
+              v-if="isWeb"
+              style="margin-left: 20px"
+              class="flex-item-center"
             >
-              <el-option
-                v-for="item in [10, 20, 30, 40, 50, 60, 100, 200]"
-                :key="item"
-                :label="item"
-                :value="item"
+              轮询：
+              <el-switch
+                v-model="needLoop"
+                active-color="#13ce66"
+                active-text="开启"
+                inactive-text="关闭"
+                @change="changeLoop"
+              ></el-switch>
+            </div>
+            <div v-if="isWeb" style="margin-left: 20px" class="flex-item-cente">
+              轮询时间(秒)：
+              <el-select
+                v-model="loopTime"
+                style="width: 80px"
+                placeholder="请选择"
+                size="mini"
+                @change="changeLoopTime"
               >
-              </el-option>
-            </el-select>
-          </div>
-          <!-- <div style="margin-left: 20px" class="flex-item-center">
+                <el-option
+                  v-for="item in [10, 20, 30, 40, 50, 60, 100, 200]"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <!-- <div style="margin-left: 20px" class="flex-item-center">
             显示内容：
             <el-switch
               v-model="isCaihong"
@@ -63,97 +68,104 @@
             >
             </el-switch>
           </div> -->
+          </div>
+          <div class="top-menus flex flex-right">
+            <el-button
+              v-if="isWeb"
+              type="primary"
+              @click="handleTabBtnClick('myself')"
+              >我的</el-button
+            >
+            <el-button
+              v-if="isWeb"
+              type="primary"
+              @click="handleTabBtnClick('check')"
+              >我要审核</el-button
+            >
+            <el-button type="primary" @click="handleTabBtnClick('upload')">
+              我要上传
+              <i class="el-icon-upload el-icon--right"></i
+            ></el-button>
+          </div>
         </div>
-        <div class="top-menus flex flex-right">
-          <el-button
-            v-if="isWeb"
-            type="primary"
-            @click="handleTabBtnClick('myself')"
-            >我的</el-button
-          >
-          <el-button
-            v-if="isWeb"
-            type="primary"
-            @click="handleTabBtnClick('check')"
-            >我要审核</el-button
-          >
-          <el-button type="primary" @click="handleTabBtnClick('upload')">
-            我要上传
-            <i class="el-icon-upload el-icon--right"></i
-          ></el-button>
-        </div>
-      </div>
-      <div class="sentence-content">
-        <div class="sentence-btns flex-just-center">
-          <div class="icon-content" :class="{ 'like-active': isLiked }">
-            <like-icon
-              v-if="wordInfo.id"
-              :width="40"
-              :is-load="likeLoading"
-              :is-active="isLiked"
-              :can-click="!isLiked"
-              @change="likeChange"
-            ></like-icon>
-            <div class="icon-length">
-              {{ likeLenght }}
+        <div class="sentence-content">
+          <div class="sentence-btns flex-just-center">
+            <div class="icon-content" :class="{ 'like-active': isLiked }">
+              <like-icon
+                v-if="wordInfo.id"
+                :width="40"
+                :is-load="likeLoading"
+                :is-active="isLiked"
+                :can-click="!isLiked"
+                @change="likeChange"
+              ></like-icon>
+              <div class="icon-length">
+                {{ likeLenght }}
+              </div>
+            </div>
+            <div
+              class="icon-content"
+              style="margin-left: 30px"
+              :class="{ 'collce-active': isCollceed }"
+            >
+              <collce-icon
+                v-if="wordInfo.id"
+                :width="40"
+                :is-load="collceLoading"
+                :is-active="isCollceed"
+                @change="collceChange"
+              ></collce-icon>
+              <div class="icon-length">
+                {{ collceLenght }}
+              </div>
+            </div>
+            <div>
+              <div style="margin-left: 30px">
+                <img
+                  src="~/assets/images/refresh.svg"
+                  style="width: 40px; cursor: pointer"
+                  alt="刷新"
+                  @click="hanldeRefresh()"
+                />
+              </div>
+            </div>
+            <div>
+              <div style="margin-left: 60px">
+                <img
+                  src="~/assets/images/report.svg"
+                  style="width: 40px; cursor: pointer"
+                  alt="举报"
+                  @click="handleTabBtnClick('report')"
+                />
+              </div>
             </div>
           </div>
           <div
-            class="icon-content"
-            style="margin-left: 30px"
-            :class="{ 'collce-active': isCollceed }"
+            class="sentence-text"
+            :class="{
+              'caihong-sentence': isCaihong,
+              'is-error': wordInfo.isError,
+            }"
           >
-            <collce-icon
-              v-if="wordInfo.id"
-              :width="40"
-              :is-load="collceLoading"
-              :is-active="isCollceed"
-              @change="collceChange"
-            ></collce-icon>
-            <div class="icon-length">
-              {{ collceLenght }}
-            </div>
+            {{ word }}
           </div>
-          <div>
-            <div style="margin-left: 30px">
-              <img
-                src="~/assets/images/refresh.svg"
-                style="width: 40px; cursor: pointer"
-                alt="刷新"
-                @click="hanldeRefresh()"
-              />
-            </div>
-          </div>
-          <div>
-            <div style="margin-left: 60px">
-              <img
-                src="~/assets/images/report.svg"
-                style="width: 40px; cursor: pointer"
-                alt="举报"
-                @click="handleTabBtnClick('report')"
-              />
-            </div>
+          <div class="sentence-author">
+            {{ formName }}
           </div>
         </div>
-        <div
-          class="sentence-text"
-          :class="{
-            'caihong-sentence': isCaihong,
-            'is-error': wordInfo.isError,
-          }"
-        >
-          {{ word }}
+        <div style="position: absolute; bottom: 15px">
+          <a href="https://tinker.run/core" style="color: #2196f3"
+            >句子杂货铺💬 ：chrome插件使用说明</a
+          >
         </div>
-        <div class="sentence-author">
-          {{ formName }}
-        </div>
-      </div>
-      <div style="position: absolute; bottom: 15px">
-        <a href="https://tinker.run/core" style="color: #2196f3"
-          >句子杂货铺💬 ：chrome插件使用说明</a
-        >
       </div>
     </div>
+    <sentence-comment
+      v-if="wordInfo.id"
+      :id="wordInfo.id"
+      style="margin-top: 20px"
+      type="sentence"
+    ></sentence-comment>
     <sentence-report
       v-model="showReport"
       :sententce="wordInfo.content"
@@ -186,19 +198,30 @@ async function loadData(
 }
 
 @Component({
-  async asyncData({ $api, query }) {
-    const data = await loadData($api, 'sentence', { uuid: (query as any).uuid })
+  async asyncData({ $api, query, app }) {
+    const data: any = await loadData($api, 'sentence', {
+      uuid: (query as any).uuid,
+    })
+    ;(app as any).head.meta = [
+      {
+        hid: 'description',
+        name: 'description',
+        content: data.content,
+      },
+    ]
     return (data && { wordInfo: data }) || {}
   },
   head: {
     title: '句子杂货铺💬 _ 来一条随机的句子吧~',
     meta: [
       {
+        hid: 'og:title',
         name: 'og:title',
         property: 'og:title',
         content: '句子杂货铺 _ 来一条随机的句子吧~',
       },
       {
+        hid: 'og:description',
         name: 'og:description',
         property: 'og:description',
         content:
@@ -211,6 +234,7 @@ async function loadData(
           '句子杂货铺：这是一个分类句子合集,你可以查看、收藏、喜欢各种各样的句子，还可以上传自己喜欢的句子，利用chrome插件，可以在chrome浏览器查看句子，上传句子。开放的句子api接口，可以通过接口查询到句子',
       },
       {
+        hid: 'keywords',
         name: 'keywords',
         content: '句子 杂货铺 文艺 chrome插件 句子api接口 句子合集',
       },
@@ -344,7 +368,10 @@ export default class Home extends Vue {
     }
     const data = await loadData((this as any).$api, this.searchType, option)
     this.wordInfo = data || {}
-    this.$router.push({ query: { uuid: this.wordInfo.uuid } })
+    this.$router.push({
+      path: this.$route.path,
+      query: { uuid: this.wordInfo.uuid },
+    })
   }
 
   hanldeRefresh() {
@@ -441,10 +468,11 @@ export default class Home extends Vue {
   mounted() {
     this.initSentenceType()
     this.initBackgroun()
-    this.$router.replace({
-      path: '/sentence',
-      query: { uuid: this.wordInfo.uuid },
-    })
+    !this.$route.query.uuid &&
+      this.$router.replace({
+        path: '/sentence',
+        query: { uuid: this.wordInfo.uuid },
+      })
   }
 
   @Watch('$route')

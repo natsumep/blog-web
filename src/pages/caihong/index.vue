@@ -1,37 +1,38 @@
 <template>
-  <div class="sentence" :class="{ 'sentence-night': isNight }" :style="style">
-    <div class="sentence-body flex-center">
-      <div class="top-btns">
-        <div style="margin-bottom: 20px" class="flex flex-warp flex-center">
-          <div v-if="isWeb" class="flex-item-center">
-            轮询：
-            <el-switch
-              v-model="needLoop"
-              active-color="#13ce66"
-              active-text="开启"
-              inactive-text="关闭"
-              @change="changeLoop"
-            ></el-switch>
-          </div>
-          <div v-if="isWeb" style="margin-left: 20px" class="flex-item-cente">
-            轮询时间(秒)：
-            <el-select
-              v-model="loopTime"
-              style="width: 80px"
-              placeholder="请选择"
-              size="mini"
-              @change="changeLoopTime"
-            >
-              <el-option
-                v-for="item in [10, 20, 30, 40, 50, 60, 100, 200]"
-                :key="item"
-                :label="item"
-                :value="item"
+  <div class="main-page">
+    <div class="sentence" :class="{ 'sentence-night': isNight }" :style="style">
+      <div class="sentence-body flex-center">
+        <div class="top-btns">
+          <div style="margin-bottom: 20px" class="flex flex-warp flex-center">
+            <div v-if="isWeb" class="flex-item-center">
+              轮询：
+              <el-switch
+                v-model="needLoop"
+                active-color="#13ce66"
+                active-text="开启"
+                inactive-text="关闭"
+                @change="changeLoop"
+              ></el-switch>
+            </div>
+            <div v-if="isWeb" style="margin-left: 20px" class="flex-item-cente">
+              轮询时间(秒)：
+              <el-select
+                v-model="loopTime"
+                style="width: 80px"
+                placeholder="请选择"
+                size="mini"
+                @change="changeLoopTime"
               >
-              </el-option>
-            </el-select>
-          </div>
-          <!-- <div style="margin-left: 20px" class="flex-item-center">
+                <el-option
+                  v-for="item in [10, 20, 30, 40, 50, 60, 100, 200]"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <!-- <div style="margin-left: 20px" class="flex-item-center">
             显示内容：
             <el-switch
               v-model="isCaihong"
@@ -43,97 +44,104 @@
             >
             </el-switch>
           </div> -->
+          </div>
+          <div class="top-menus flex flex-right">
+            <el-button
+              v-if="isWeb"
+              type="primary"
+              @click="handleTabBtnClick('myself')"
+              >我的</el-button
+            >
+            <el-button
+              v-if="isWeb"
+              type="primary"
+              @click="handleTabBtnClick('check')"
+              >我要审核</el-button
+            >
+            <el-button type="primary" @click="handleTabBtnClick('upload')">
+              我要上传
+              <i class="el-icon-upload el-icon--right"></i
+            ></el-button>
+          </div>
         </div>
-        <div class="top-menus flex flex-right">
-          <el-button
-            v-if="isWeb"
-            type="primary"
-            @click="handleTabBtnClick('myself')"
-            >我的</el-button
-          >
-          <el-button
-            v-if="isWeb"
-            type="primary"
-            @click="handleTabBtnClick('check')"
-            >我要审核</el-button
-          >
-          <el-button type="primary" @click="handleTabBtnClick('upload')">
-            我要上传
-            <i class="el-icon-upload el-icon--right"></i
-          ></el-button>
-        </div>
-      </div>
-      <div class="sentence-content">
-        <div class="sentence-btns flex-just-center">
-          <div class="icon-content" :class="{ 'like-active': isLiked }">
-            <like-icon
-              v-if="wordInfo.id"
-              :width="40"
-              :is-load="likeLoading"
-              :is-active="isLiked"
-              :can-click="!isLiked"
-              @change="likeChange"
-            ></like-icon>
-            <div class="icon-length">
-              {{ likeLenght }}
+        <div class="sentence-content">
+          <div class="sentence-btns flex-just-center">
+            <div class="icon-content" :class="{ 'like-active': isLiked }">
+              <like-icon
+                v-if="wordInfo.id"
+                :width="40"
+                :is-load="likeLoading"
+                :is-active="isLiked"
+                :can-click="!isLiked"
+                @change="likeChange"
+              ></like-icon>
+              <div class="icon-length">
+                {{ likeLenght }}
+              </div>
+            </div>
+            <div
+              class="icon-content"
+              style="margin-left: 30px"
+              :class="{ 'collce-active': isCollceed }"
+            >
+              <collce-icon
+                v-if="wordInfo.id"
+                :width="40"
+                :is-load="collceLoading"
+                :is-active="isCollceed"
+                @change="collceChange"
+              ></collce-icon>
+              <div class="icon-length">
+                {{ collceLenght }}
+              </div>
+            </div>
+            <div>
+              <div style="margin-left: 30px">
+                <img
+                  src="~/assets/images/refresh.svg"
+                  style="width: 40px; cursor: pointer"
+                  alt="刷新"
+                  @click="btnRefresh"
+                />
+              </div>
+            </div>
+            <div>
+              <div style="margin-left: 60px">
+                <img
+                  src="~/assets/images/report.svg"
+                  style="width: 40px; cursor: pointer"
+                  alt="举报"
+                  @click="handleTabBtnClick('report')"
+                />
+              </div>
             </div>
           </div>
           <div
-            class="icon-content"
-            style="margin-left: 30px"
-            :class="{ 'collce-active': isCollceed }"
+            class="sentence-text"
+            :class="{
+              'caihong-sentence': isCaihong,
+              'is-error': wordInfo.isError,
+            }"
           >
-            <collce-icon
-              v-if="wordInfo.id"
-              :width="40"
-              :is-load="collceLoading"
-              :is-active="isCollceed"
-              @change="collceChange"
-            ></collce-icon>
-            <div class="icon-length">
-              {{ collceLenght }}
-            </div>
+            {{ word }}
           </div>
-          <div>
-            <div style="margin-left: 30px">
-              <img
-                src="~/assets/images/refresh.svg"
-                style="width: 40px; cursor: pointer"
-                alt="刷新"
-                @click="btnRefresh"
-              />
-            </div>
-          </div>
-          <div>
-            <div style="margin-left: 60px">
-              <img
-                src="~/assets/images/report.svg"
-                style="width: 40px; cursor: pointer"
-                alt="举报"
-                @click="handleTabBtnClick('report')"
-              />
-            </div>
+          <div class="sentence-author">
+            {{ formName }}
           </div>
         </div>
-        <div
-          class="sentence-text"
-          :class="{
-            'caihong-sentence': isCaihong,
-            'is-error': wordInfo.isError,
-          }"
-        >
-          {{ word }}
+        <div style="position: absolute; bottom: 15px">
+          <a href="https://tinker.run/core" style="color: #2196f3"
+            >彩虹屁🌈 ：chrome插件使用说明</a
+          >
         </div>
-        <div class="sentence-author">
-          {{ formName }}
-        </div>
-      </div>
-      <div style="position: absolute; bottom: 15px">
-        <a href="https://tinker.run/core" style="color: #2196f3"
-          >彩虹屁🌈 ：chrome插件使用说明</a
-        >
       </div>
     </div>
+    <sentence-comment
+      v-if="wordInfo.id"
+      :id="wordInfo.id"
+      style="margin-top: 20px"
+      type="caihong"
+    ></sentence-comment>
     <sentence-report
       v-model="showReport"
       :sententce="wordInfo.content"
@@ -167,31 +175,41 @@ async function loadData(api: any, type = 'caihong', id = '') {
 }
 
 @Component({
-  async asyncData({ $api, query }) {
+  async asyncData({ $api, query, app }) {
     const data = await loadData($api, 'caihong', (query as any).uuid)
+    ;(app as any).head.meta = [
+      {
+        hid: 'description',
+        name: 'description',
+        content: data.content,
+      },
+    ]
     return (data && { wordInfo: data }) || {}
   },
   head: {
     title: '彩虹屁🌈 _ 随机一条彩虹屁~',
     meta: [
       {
+        hid: 'og:title',
         name: 'og:title',
         property: 'og:title',
         content: '彩虹屁🌈 _ 随机一条彩虹屁~',
       },
       {
+        hid: 'og:description',
         name: 'og:description',
         property: 'og:description',
         content:
           '这是一个彩虹屁合集,你可以查看、收藏、喜欢各种各样的彩虹屁，还可以上传自己喜欢的彩虹屁，利用chrome插件，可以在chrome浏览器查看彩虹屁，上传彩虹屁。开放的彩虹屁api接口，可以通过接口查询到彩虹屁',
       },
+      // {
+      //   hid: 'description',
+      //   name: 'description',
+      //   content:
+      //     '这是一个彩虹屁合集,你可以查看、收藏、喜欢各种各样的彩虹屁，还可以上传自己喜欢的彩虹屁，利用chrome插件，可以在chrome浏览器查看彩虹屁，上传彩虹屁。开放的彩虹屁api接口，可以通过接口查询到彩虹屁',
+      // },
       {
-        hid: 'description',
-        name: 'description',
-        content:
-          '这是一个彩虹屁合集,你可以查看、收藏、喜欢各种各样的彩虹屁，还可以上传自己喜欢的彩虹屁，利用chrome插件，可以在chrome浏览器查看彩虹屁，上传彩虹屁。开放的彩虹屁api接口，可以通过接口查询到彩虹屁',
-      },
-      {
+        hid: 'keywords',
         name: 'keywords',
         content:
           '彩虹屁 🌈 夸人 网络流行语 文艺 给女友语录 chrome插件 彩虹屁api接口',

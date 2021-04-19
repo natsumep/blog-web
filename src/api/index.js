@@ -5,8 +5,8 @@ import { sentence } from './sentence'
 import { qa } from './qa'
 import { message } from './message'
 import { sentenceMe } from './sentence-my'
+import { sentenceMessage } from './sentence-message'
 import { SERVER_PATH as serverPath } from '~/config/index'
-
 export default {
   file: [
     {
@@ -45,4 +45,5 @@ export default {
   qa,
   message,
   sentenceMe,
+  sentenceMessage,
 }
