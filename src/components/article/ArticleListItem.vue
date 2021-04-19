@@ -35,7 +35,7 @@
     <div class="flex-auto title-wrapper">
       <div class="flex flex-item-center flex-just-beew">
         <div>
-          <div class="title-content flex-item-center">
+          <div class="title-content flex-item-center flex-warp">
             <nuxt-link class="flex-fixed title" :to="`/article/${item.id}`">
               {{ item.title }}
             </nuxt-link>
@@ -174,6 +174,7 @@ a {
   // background-image: linear-gradient(135deg, #eece13 10%, #b210ff 100%);
   // background-clip: text;
   color: #0396ff;
+  width: 100%;
   padding: 2px 10px;
   border-radius: 20px;
   transition: all 0.5s;
@@ -205,7 +206,7 @@ a {
   transform: rotate(30deg);
   z-index: 0;
 }
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 800px) {
   .title-content {
     flex-wrap: wrap;
     .title {

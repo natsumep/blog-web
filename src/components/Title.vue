@@ -169,7 +169,7 @@ export default class Index extends Vue {
 </script>
 <style lang="less" scoped>
 .inner {
-  width: 1200px;
+  width: 900px;
   height: 60px;
   margin: 0 auto;
   display: flex;
@@ -233,7 +233,7 @@ export default class Index extends Vue {
   color: #fff;
   font-size: 32px;
 }
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 800px) {
   .inner {
     width: 100%;
     padding: 0 10px;

@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div class="article-tag">
+    <div v-if="isWeb" class="article-tag">
       <div style="margin-bottom: 15px">
         <random-one></random-one>
       </div>
@@ -21,7 +21,7 @@
       </el-card>
     </div>
     <div class="filter-wrapper flex-item-center">
-      <p>
+      <p class="flex-fixed" style="margin-right: 8px">
         {{ getSearchTitle.first }}
         <span style="color: #409eff">{{ getSearchTitle.tag }}</span>
         {{ getSearchTitle.last }}<span class="total"> {{ total }}</span> 篇
@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { userStore } from '~/utils/store-accessor'
+import { userStore, systemStore } from '~/utils/store-accessor'
 import { dateDiff } from '~/utils/time'
 
 const bgc = [
@@ -160,6 +160,9 @@ export default class Home extends Vue {
     return userStore.token
   }
 
+  get isWeb() {
+    return systemStore.isWeb
+  }
   // @Watch('searchText')
   // changeSearchText() {
   //   this.resetList()
@@ -253,7 +256,7 @@ export default class Home extends Vue {
 
 <style lang="less" scoped>
 .wrapper {
-  width: 850px;
+  width: 56vw;
   min-height: calc(100vh - 66px);
   margin: 0 auto;
   padding: 20px;
@@ -261,7 +264,7 @@ export default class Home extends Vue {
 .article-tag {
   position: fixed;
   top: 130px;
-  left: calc(100vw / 2 + 425px);
+  left: calc(100vw / 2 + 28vw);
   max-width: 300px;
   bottom: 0;
   overflow: auto;
@@ -303,10 +306,10 @@ export default class Home extends Vue {
     color: rgb(247, 61, 73);
   }
 }
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 800px) {
   .wrapper {
-    width: 100%;
-    margin: 0;
+    width: 80%;
+    margin: 0 auto;
     padding: 10px 0;
     .filter-wrapper {
       padding: 0 10px 10px 10px;
@@ -319,6 +322,11 @@ export default class Home extends Vue {
       border-bottom: 1px solid #eee;
       border-radius: 0;
     }
+  }
+}
+@media screen and (max-width: 500px) {
+  .wrapper {
+    width: 100%;
   }
 }
 </style>
