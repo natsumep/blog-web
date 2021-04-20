@@ -306,6 +306,7 @@ export default class Home extends Vue {
     color: rgb(247, 61, 73);
   }
 }
+
 @media screen and (max-width: 800px) {
   .wrapper {
     width: 80%;

@@ -33,15 +33,20 @@
       ></path>
     </svg>
     <div class="flex-auto title-wrapper">
-      <div class="flex flex-item-center flex-just-beew">
+      <div class="flex flex-just-beew">
         <div>
-          <div class="title-content flex-item-center flex-warp">
+          <div class="title-content flex flex-warp">
             <nuxt-link class="flex-fixed title" :to="`/article/${item.id}`">
               {{ item.title }}
             </nuxt-link>
-            <div class="flex">
+            <div class="flex" style="padding-left: 4px">
               <template v-for="(option, index) in item.type">
-                <nuxt-link :key="index" class="flex-center" to="">
+                <nuxt-link
+                  :key="index"
+                  class="flex-center"
+                  style="margin-right: 8px"
+                  to=""
+                >
                   <span class="class-ification" :class="item.bgc">{{
                     option
                   }}</span>
@@ -51,7 +56,12 @@
           </div>
           <p class="abstr">{{ item.abstract }}</p>
         </div>
-        <img v-if="item.cardPic" class="poster" :src="item.cardPic" alt="" />
+        <img
+          v-if="item.cardPic"
+          class="poster flex-fixed"
+          :src="item.cardPic"
+          alt=""
+        />
       </div>
       <div class="txt">
         <nuxt-link class="flex margin user-item" :to="'/' + item.userHome">
@@ -115,6 +125,7 @@ a {
 }
 .txt {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   font-size: 14px;
   white-space: nowrap;
@@ -146,7 +157,6 @@ a {
   color: #fff;
   background-color: rgb(174, 136, 192);
   border-radius: 4px;
-  margin-left: 8px;
   &:hover {
     background-image: linear-gradient(135deg, #fff6b7 10%, #f6416c 100%);
   }
@@ -174,8 +184,9 @@ a {
   // background-image: linear-gradient(135deg, #eece13 10%, #b210ff 100%);
   // background-clip: text;
   color: #0396ff;
-  width: 100%;
-  padding: 2px 10px;
+  display: inline-block;
+  max-width: 100%;
+  padding: 4px 10px 4px 0;
   border-radius: 20px;
   transition: all 0.5s;
   &:hover {
@@ -189,6 +200,7 @@ a {
 }
 .poster {
   display: block;
+  margin-left: 8px;
   width: 150px;
   height: 100px;
   border-radius: 4px;
@@ -209,14 +221,16 @@ a {
 @media screen and (max-width: 800px) {
   .title-content {
     flex-wrap: wrap;
+
     .title {
+      display: inline-block;
+      padding: 8px 4px;
       width: 100%;
-      margin-bottom: 4px;
     }
-    .poster {
-      width: 80px;
-      height: 80px;
-    }
+  }
+  .poster {
+    width: 80px;
+    max-height: 120px;
   }
 }
 </style>
