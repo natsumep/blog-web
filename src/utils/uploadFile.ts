@@ -24,7 +24,7 @@ function compressorFile(blob: Blob): any {
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line no-new
     new Compressor(blob, {
-      quality: 1,
+      quality: 0.7,
       maxWidth: 1000,
       success(result) {
         resolve(result)
