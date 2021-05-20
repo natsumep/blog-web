@@ -21,3 +21,5 @@ declare module 'vue/types/vue' {
     $api: any
   }
 }
+
+declare module 'compressorjs' {}

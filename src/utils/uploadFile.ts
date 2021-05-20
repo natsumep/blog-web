@@ -29,7 +29,7 @@ function compressorFile(blob: Blob): any {
       success(result) {
         resolve(result)
       },
-      error(err) {
+      error(err: any) {
         reject(err)
       },
     })
