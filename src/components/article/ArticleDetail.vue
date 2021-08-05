@@ -246,8 +246,9 @@ export default {
         }
       })
       // 锚点定位
-      const offsetTop = document.querySelector(this.directoryList[index].href)
-        .offsetTop
+      const offsetTop = document.querySelector(
+        this.directoryList[index].href
+      ).offsetTop
       document.documentElement.scrollTop = offsetTop - 30
     },
     handleScroll() {
