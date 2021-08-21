@@ -159,6 +159,9 @@ export default {
     transpile: [/^element-ui/, /^validator/],
     // 默认: true 为开发模式(development)， false 为生产模式(production)。
     // cssSourceMap: true,
+    babel: {
+      plugins: [['@babel/plugin-proposal-private-methods', { loose: true }]],
+    },
   },
   cli: {
     bannerColor: 'red',
