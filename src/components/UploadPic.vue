@@ -1,6 +1,7 @@
+p.p:
 <template>
   <div class="avatar-uploader-wrapper">
-    <label class="avatar-uploader flex-center" for="avatar-input">
+    <label class="avatar-uploader flex-center" @click="labelClick">
       <template v-if="current">
         <img class="avatar" :src="current" alt="" />
         <div class="box-wrapper flex-center">
@@ -10,7 +11,7 @@
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </label>
     <input
-      id="avatar-input"
+      ref="uploadFile"
       class="upload-file"
       type="file"
       @change="avatarUpload($event)"
@@ -47,11 +48,15 @@ export default {
   destroyed() {},
   created() {},
   methods: {
+    labelClick() {
+      this.$refs.uploadFile.click()
+    },
     async avatarUpload(e) {
       const file = e.target.files[0]
       if (file) {
         if (!file.type.includes('image')) return
         this.current = await updateFile(file)
+        console.log(this.current)
         this.current && this.$emit('avatarChange', this.current)
       }
     },

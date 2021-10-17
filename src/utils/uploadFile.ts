@@ -1,17 +1,21 @@
+import Compressor from 'compressorjs'
 import { $axios } from '@/utils/api'
 // import { Message } from 'element-ui'
-import Compressor from 'compressorjs'
 export async function updateFile(blob: Blob) {
   const size = blob.size
   let file: any = blob
+  console.log(file)
   if (size > 1024 * 950) {
     try {
       file = await compressorFile(blob)
+      console.log('await', file)
     } catch (e) {
+      console.log('error', e)
       return false
     }
   }
   const formDate = new FormData()
+  console.log('endif', file)
   formDate.append('file', file, file.name)
   formDate.append('time', String(+new Date()))
   const data: any = await $axios.post('/upload', formDate).catch()
@@ -26,7 +30,8 @@ function compressorFile(blob: Blob): any {
     new Compressor(blob, {
       quality: 0.7,
       maxWidth: 1000,
-      success(result) {
+      maxHeight: 1000,
+      success(result: any) {
         resolve(result)
       },
       error(err: any) {

@@ -23,6 +23,7 @@
         <el-menu-item index="/core">开放接口</el-menu-item>
         <!-- <el-menu-item index="/about">碎碎念</el-menu-item> -->
         <el-menu-item index="/comment">留言</el-menu-item>
+        <el-menu-item index="/recipe">厨房</el-menu-item>
       </el-menu>
       <div v-else class="flex-item-center">
         <i class="menu-btn el-icon-menu" @click="drawer = true"></i>
@@ -49,6 +50,7 @@
             <el-menu-item index="/core">开放接口</el-menu-item>
             <!-- <el-menu-item index="/about">碎碎念</el-menu-item> -->
             <el-menu-item index="/comment">留言</el-menu-item>
+            <el-menu-item index="/recipe">厨房</el-menu-item>
           </el-menu>
         </el-drawer>
       </div>
