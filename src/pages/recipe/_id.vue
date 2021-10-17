@@ -92,7 +92,6 @@ export default {
       })
       this.ingredients = JSON.parse(this.datas.ingredients)
       this.steps = JSON.parse(this.datas.steps)
-      console.log(this.datas)
     },
     back() {
       this.$router.push({ path: '/recipe' })

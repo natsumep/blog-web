@@ -4,18 +4,14 @@ import { $axios } from '@/utils/api'
 export async function updateFile(blob: Blob) {
   const size = blob.size
   let file: any = blob
-  console.log(file)
   if (size > 1024 * 950) {
     try {
       file = await compressorFile(blob)
-      console.log('await', file)
     } catch (e) {
-      console.log('error', e)
       return false
     }
   }
   const formDate = new FormData()
-  console.log('endif', file)
   formDate.append('file', file, file.name)
   formDate.append('time', String(+new Date()))
   const data: any = await $axios.post('/upload', formDate).catch()

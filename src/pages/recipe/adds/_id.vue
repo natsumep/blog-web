@@ -260,11 +260,9 @@ export default {
     },
     avatarChange(val) {
       this.formFood.url1 = val
-      console.log(val)
     },
     avatarChange2(val, index) {
       this.formFood.arrsteps[index].url = val
-      console.log(val)
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -284,10 +282,10 @@ export default {
       this.$refs[formName].resetFields()
     },
     save() {
-      const _food = this.formFood.arrfoods.map(function (d, array) {
+      const _food = this.formFood.arrfoods.map(function (d) {
         return { ingredient: d.ingredients, vulue: d.many }
       })
-      const _step = this.formFood.arrsteps.map(function (c, array) {
+      const _step = this.formFood.arrsteps.map(function (c) {
         return { cookstep: c.cookstep, vulue: c.url }
       })
       const obj = {

@@ -56,7 +56,6 @@ export default {
       if (file) {
         if (!file.type.includes('image')) return
         this.current = await updateFile(file)
-        console.log(this.current)
         this.current && this.$emit('avatarChange', this.current)
       }
     },

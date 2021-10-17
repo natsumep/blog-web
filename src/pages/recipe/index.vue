@@ -88,9 +88,7 @@ export default {
     loadAll() {
       return []
     },
-    handleSelect(item) {
-      console.log(item)
-    },
+    handleSelect() {},
     todofood() {
       this.$router.push({ path: '/recipe/adds' })
     },
@@ -120,7 +118,6 @@ export default {
         searchText: this.searchText,
       }
       this.datas = await this.$api['recipe/loadlist'](params)
-      console.log(this.datas)
     },
   },
 }
