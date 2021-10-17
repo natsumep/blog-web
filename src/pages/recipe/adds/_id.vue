@@ -235,7 +235,6 @@ export default {
     add() {
       this.formFood.isDisabled = false
       this.formFood.arrfoods.push({ ingredients: '', many: '' })
-      console.log(this.formFood)
     },
     add2() {
       this.formFood.isDisabled2 = false
@@ -271,9 +270,9 @@ export default {
           this.save()
 
           this.$router.replace('/recipe')
-          alert('创建成功')
+          this.$message.success('创建成功')
         } else {
-          alert('error submit!!')
+          this.$message.error('error submit!!')
           return false
         }
       })
