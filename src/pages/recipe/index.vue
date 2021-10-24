@@ -56,7 +56,7 @@ export default {
       datas: [],
       page: 1,
       searchText: '',
-      rows: 3,
+      rows: 12,
     }
   },
   computed: {
