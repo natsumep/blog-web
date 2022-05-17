@@ -5,7 +5,7 @@
         2019 ~ {{ new Date().getFullYear() }} 🐈 Copyright© by pp - zy ✏
         <div>
           备案号：<a href="http://beian.miit.gov.cn/" target="_blank"
-            >湘ICP备20010808号-1</a
+            >湘ICP备20010808号</a
           >
         </div>
       </div>
